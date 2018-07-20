@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+	</head>
+	<body>
+	</body>
+	<script type="text/javascript">
+		$(function(){
+			var reg = new RegExp('"',"g");  
+			(function ($) {
+			    $.getUrlParam = function (name) {
+			        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			        var r = window.location.search.substr(1).match(reg);
+			        if (r != null) return unescape(r[2]); return null;
+			    }
+			})(jQuery);
+			//生产
+//			var link='http://mp.qtoubao.cn/#/'
+//			var link1="http://h5.qtoubao.cn"
+			
+			//uat
+			var link='http://outer.qtoubao.cn/#/'
+			var link1="http://outer.qtoubao.cn"
+			if($.getUrlParam('type')=="afternoon"){
+				window.location.href=link+$.getUrlParam('code')+"?temCode="+$.getUrlParam('temCode')
+			}
+			if($.getUrlParam('type')=="recommendedDetails"){
+				window.location.href=link+$.getUrlParam('code')+"?seq="+$.getUrlParam('seq')+"&custId="+$.getUrlParam('custId')+"&userId="+$.getUrlParam('userId')
+			}
+			if($.getUrlParam('type')=="preview"){
+				window.location.href=link+$.getUrlParam('code')+"?celId="+$.getUrlParam('celId')+"&custId="+$.getUrlParam('custId')+"&userId="+$.getUrlParam('userId')
+			}
+			if($.getUrlParam('type')=="reinforce"){
+				window.location.href=link1+"/work/signingAgent/index.html?brokerCode="+$.getUrlParam('brokerCode')
+			}
+			
+		})
+	</script>
+</html>
