@@ -49,7 +49,7 @@
 		<div class="index_top">
 			<div class="my_div_itemall" @click="myConfirmation">
 				<img class="my_img_itemicon" src="/static/qijianwei/my_Insurance_icon.png" />
-				<div class="my_img_itemname">我的客户确认书</div>
+				<div class="my_img_itemname">我的客户委托书</div>
 				<img class="my_img_itemnext" src="/static/qijianwei/btn_next.png" />
 			</div>
 			<div class="my_bg"></div>
@@ -99,6 +99,11 @@
 				<div class="my_img_itemname">申请进度查询</div>
 				<img class="my_img_itemnext" src="/static/qijianwei/btn_next.png" />
 			</div>
+			<div class="my_div_itemall" @click="toNew">
+				<img class="my_img_itemicon" src="/static/qijianwei/gengduo.png" />
+				<div class="my_img_itemname">newApp</div>
+				<img class="my_img_itemnext" src="/static/qijianwei/btn_next.png" />
+			</div>
 		</div>
 
 		<div class="my_div_out" v-on:click="exitYes">退出登录</div>
@@ -125,19 +130,17 @@
 			}
 		},
 		methods: { //方法
+			toNew() {
+				this.$router.push('/newIndex/home')
+			},
 			notcan() {
 				this.indexstatus = true;
 			},
 			proginquiry() {
 				var progdata = {
 
-					"brokerId": localStorage.BrokerId
-					//					"brokerId": "1475362" //驳回
-					//										"brokerId":"1475180" 
-					//										"brokerId":"1525009"
-
-					// 成功
-					//  未审批
+					"brokerId": this.$store.state.brokerInfo.brokerId
+				
 				}
 				console.log(progdata);
 				Indicator.open();
@@ -145,22 +148,26 @@
 					Indicator.close();
 					console.log(res.data)
 					if(res.data.code == "SYS_S_000") {
-						if(typeof(res.data.output.tblBrokerRegHis) == "undefined") {
+					
+						if(JSON.stringify(res.data.output.tblBrokerRegHis) =="{}" ) {
 							if(res.data.output.brokerReg.regStatus == "TN" ) {
 								this.$router.push('/waitindex?regStatus='+res.data.output.brokerReg.regStatus)
 							} 
-							
+								
 
 						} else {
+								
 							this.indexstatus = false;
-							if(typeof(res.data.output.brokerReg) != "undefined") {
+							if(JSON.stringify(res.data.output.brokerReg) != "{}") {
+
 								if(res.data.output.brokerReg.regStatus == "NE" || res.data.output.brokerReg.regStatus == "ZE" || res.data.output.brokerReg.regStatus == "CE") {
+									
 									this.failure = res.data.output.tblBrokerRegHis.regRemarks;
-									this.$router.push('/failindex?failure=' + this.failure + "&brokerId=" + localStorage.BrokerId)
+									this.$router.push('/failindex?failure=' + this.failure + "&brokerId=" + this.$store.state.brokerInfo.brokerId)
 								}else if(res.data.output.brokerReg.regStatus == "CN" || res.data.output.brokerReg.regStatus == "ZN"){
 									this.$router.push('/waitindex?regStatus='+res.data.output.brokerReg.regStatus)
 								}else if(res.data.output.brokerReg.regStatus == "ZS") {
-								this.$router.push('/step?brokerId=' + localStorage.BrokerId)
+								this.$router.push('/step?brokerId=' + this.$store.state.brokerInfo.brokerId)
 								}
 							}
 
@@ -200,7 +207,7 @@
 			myConfirmation() {
 				//我的客户确认书
 				var data = {
-					"brokerId": localStorage.BrokerId
+					"brokerId": this.$store.state.brokerInfo.brokerId
 				};
 				console.log(data)
 				Indicator.open();

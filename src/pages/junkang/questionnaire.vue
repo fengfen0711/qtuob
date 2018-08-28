@@ -26,13 +26,13 @@
 						<label class="inputLabel3 left">1.您是否吸烟？</label>
 						<span class="inputText inputSpan left">
 								<span class="sex sexM" @click="sexChose">
-									<img src="/static/img/sexNo.png" class="sexImg" v-show="reSexShow" />
-									<img src="/static/img/sexS.png" class="sexImg" v-show="!reSexShow" />
+									<img src="/static/muhaha/Noben.png" class="sexImg" v-show="reSexShow" />
+									<img src="/static/muhaha/ben.png" class="sexImg" v-show="!reSexShow" />
 									<label>是</label>
 								</span>
 								<span class="sex sexF" @click="sexChose">
-									<img src="/static/img/sexNo.png" class="sexImg" v-show="!reSexShow" />
-									<img src="/static/img/sexS.png" class="sexImg" v-show="reSexShow" />
+									<img src="/static/muhaha/Noben.png" class="sexImg" v-show="!reSexShow" />
+									<img src="/static/muhaha/ben.png" class="sexImg" v-show="reSexShow" />
 									<label>否</label>
 								</span>
 						</span>
@@ -41,13 +41,13 @@
 						<label class="inputLabel4 left">2.您日常是否饮酒？</label>
 						<span class="inputText inputSpan14 left">
 								<span class="sex sexM" @click="sexChose1">
-									<img src="/static/img/sexNo.png" class="sexImg" v-show="reSexShow1" />
-									<img src="/static/img/sexS.png" class="sexImg" v-show="!reSexShow1" />
+									<img src="/static/muhaha/Noben.png" class="sexImg" v-show="reSexShow1" />
+									<img src="/static/muhaha/ben.png" class="sexImg" v-show="!reSexShow1" />
 									<label>是</label>
 								</span>
 								<span class="sex sexF" @click="sexChose1">
-									<img src="/static/img/sexNo.png" class="sexImg" v-show="!reSexShow1" />
-									<img src="/static/img/sexS.png" class="sexImg" v-show="reSexShow1" />
+									<img src="/static/muhaha/Noben.png" class="sexImg" v-show="!reSexShow1" />
+									<img src="/static/muhaha/ben.png" class="sexImg" v-show="reSexShow1" />
 									<label>否</label>
 								</span>
 						</span>
@@ -99,10 +99,10 @@
 				}
 			},
 			lastClick() {
-				this.$router.push('/recognizee');
+				this.$router.push('/beneficiary');
 			},
        		nextClick() {
-				this.$router.push('/questionnaire');
+				this.$router.push('/questionnaire1');
 			},
 			
 		}
@@ -169,9 +169,12 @@
 	}
 	.one {
 		width: 100%;
+		/*height:100%;*/	
 		min-height: 100%;
 		position: absolute;
 		background: #F3F3F3;
+		top:0;
+		left: 0;
 	}
 	.twoCon {
 		margin-bottom: 0.4rem;
@@ -185,7 +188,7 @@
 		-webkit-overflow-scrolling: touch;
 	}
 	.twoCon1 {
-		margin-bottom: 0.4rem;
+		/*margin-bottom: 0.4rem;*/
 		padding: 0 0.4rem;
 		/*font-size: 0.32rem;*/
 		font-size:lighter;
@@ -327,12 +330,17 @@
 		line-height:0.45rem;
 		font-size: 0.28rem;
 	}
+
 	.btnBox {
-		position: absolute;
-		width:6.64rem;
-		height:0.88rem;
-		bottom: 0.9rem;
-		left: 0.48rem;
+		/*position: absolute;*/
+		width:100%;
+		/*height:0.88rem;*/
+		background:#F3F3F3;
+		display: flex;
+		justify-content: space-around;
+		/*margin: 0 auto;
+		padding-top: 0.64rem;*/
+		/*padding-bottom: 0.64rem;*/
 	}
 	.boxLast {
 		width: 3.12rem;
@@ -340,9 +348,9 @@
 		line-height: 0.88rem;
 		text-align: center;
 		font-size: 0.32rem;
-		color: #EB7760;
+		color:#c9141e;
 		letter-spacing: 0;
-		border: 1px solid #c9141e;
+		border:0.01rem solid #c9141e;
 		border-radius: .44rem;
 		float: left;
 		margin-right: 0.3rem;
@@ -354,10 +362,10 @@
 		line-height: 0.88rem;
 		text-align: center;
 		font-size: 0.32rem;
-		color: #fff;
-		background: #c9141e;
+		color:  #c9141e;
+		/*background: #c9141e;*/
 		letter-spacing: 0;
-		border: 1px solid #EB7760;
+		border:0.01rem solid #c9141e;
 		border-radius: .44rem;
 		float: right;
 	}

@@ -35,7 +35,7 @@
 					<p class="inputGrop inputGrop2 clearFloat">
 						<label class="inputLabel left">证件有效期至</label>
 						<span class="inputText dateInput left inputSpan2" :class="{opa0:dateInput}">请选择证件有效期</span>
-						<input type="date" id="dateTime" :class="{opa0:!dateInput}" class="inputText dateInput left" placeholder="请选择证件有效期" v-model="termValidityDate" @click="termValidityDateSel" @change="termValidityDateSel" />
+						<input type="date" id="dateTime" :class="{opa0:!dateInput}" class="inputText dateInput left" placeholder="请选择证件有效期" v-model="termValidityDate" @change="termValidityDateSel" />
 						<span class="dateBox" @click="dateSel">
 							<img src="/static/sexNo.png" class="selImg" v-show="termValidityDateShow" />
 							<img src="/static/selected.png" class="selImg" v-show="!termValidityDateShow" />
@@ -48,7 +48,7 @@
 					<p class="inputGrop inputGrop2 clearFloat">
 						<label class="inputLabel left">出生日期</label>
 						<span class="inputText dateInput left inputSpan2" :class="{opa0:dateInputBirth,opa1:dateInputBirth1}">请选择出生日期</span>
-						<input type="date" id="dateTimeBirth" :class="{opa0:!dateInputBirth}" class="inputText dateInput left" v-model="birthDate" placeholder="请选择出生日期" @click="birthDateSel" @change="birthDateSel"/>
+						<input type="date" id="dateTimeBirth" :class="{opa0:!dateInputBirth}" class="inputText dateInput left" v-model="birthDate" placeholder="请选择出生日期" @change="birthDateSel"/>
 						<label class="dateB" for="dateTimeBirth">
 							<img src="/static/upDown.png" class="upDownImg3" />
 						</label>
@@ -109,7 +109,7 @@
 						</p>
 						<p class="inputselectP clearFloat">
 							<label class="inputLabel inputLabel1 left"></label>
-							<select class="inputText1 inputWidth left" v-model="countyType" @change="countyChange">
+							<select class="inputText1 inputWidth left" v-model="countyType">
 								<option :value="county.cnCode" v-for="county in countyList" >{{county.cnName}}</option>
 							</select>
 						</p>
@@ -154,17 +154,16 @@
 					</p>
 				</div>
 			</div>
-			<Beneficiary ref="getBen" @child_saya="listenToMyChild" v-show="!childShow" :beneficiaryList="[ben.id,ben.index,benList[ben.index-1]]" @deletId="deletBen" v-for="ben in beneficiaryList" :key="ben.index"></Beneficiary>
+			<Beneficiary ref="getBen" @child_saya="listenToMyChild" v-show="!childShow" :beneficiaryList="[ben.id,ben.index,benList[ben.index]]" @deletId="deletBen" v-for="ben in beneficiaryList" :key="ben.index"></Beneficiary>
 			<p class="pushBox" v-show="!pushBtnShow">
 				<span @click="addBeneficiary" class="pushBtn">添加受益人</span>
 			</p>
 			<RenewalPay ref="getPay" @child_paySay="listenToMyPay" v-show="RenewalPayShow" :payList="[payList1,policyHolderName,cmpCode]"></RenewalPay>
-			<p class="btnBox clearFloat" :class="{btnBox1:btnBoxShow}">
-				<span class="btn btn1 left" @click="handleClickUp">上一步</span>
-				<span class="btn left" @click="goNext">下一步</span>
+			<p class="btnBox" :class="{btnBox1:btnBoxShow}">
+				<span class="btn btn1" @click="handleClickUp">上一步</span>
+				<span class="btn" @click="goNext">下一步</span>
 			</p>
 		</div>
-			
 	</div>
 </template>
 
@@ -258,15 +257,6 @@
     		UserList : UserList,
     	},
     	created(){
-  			this.age = this.$store.state.insrntReqInfo.age
-  			this.birthDate = this.$store.state.insrntReqInfo.birthday
-  			this.dateInputBirth = true
-  			this.custGender = this.$store.state.insrntReqInfo.gender
-  			if (this.custGender == "M") {
-	  			this.sexShow = false
-	  		}else{
-	  			this.sexShow = true
-	  		}
     		this.pro()
     		this.big()
     		this.OrderInfoAjax()
@@ -297,18 +287,20 @@
 				}
 //				console.log(data)
 				this.$http.post(this.$store.state.link + "/cut/cut/queryCustInfo", data).then(response => {
+					console.log(response.data)
 					if(response.data.code == "SYS_S_000"){
 						if(response.data.output.custName != undefined){
 							this.policyHolderName = response.data.output.custName
 						}else{
 							this.policyHolderName = ""
 						}
-						if(response.data.output.custIdNo != undefined && response.data.output.custIdNo != "" && response.data.output.custCertiType == "A"){
+						if(response.data.output.custIdNo != undefined && response.data.output.custIdNo != "" && response.data.output.custCertiType == "0"){
 							this.IDnum = response.data.output.custIdNo
 							this.dateInputBirth = true
 							this.dateInputBirth1 = true
 							this.sexBlur = false
 							this.IDtrue = true
+							this.cardnum(1)
 						}else{
 							this.IDnum = ""
 							this.IDtrue = false
@@ -360,10 +352,11 @@
 	  		},
     		deletBen(...data){
     			this.deletId = data
-    			console.log(this.deletId)
+//  			console.log(this.deletId)
     			for (let a = 0; a < this.beneficiaryList.length; a++) {
     				if (this.beneficiaryList[a].index == this.deletId) {
     					this.beneficiaryList.splice(a,1)
+    					this.benList.splice(a,1)
     				}
     			}
     			if (this.beneficiaryList.length < 3) {
@@ -433,7 +426,6 @@
 			  	this.provinceType1 = allData.mainResp.province
 			  	this.cityType1 = allData.mainResp.city
 			  	this.countyType1 = allData.mainResp.county
-			  	
 			  	//投保人信息
 			  	if (allData.applntResp.address) {
 			  		this.custGender = allData.applntResp.gender
@@ -485,11 +477,20 @@
 	      					this.tmiddle()
 	      				}
 	      			}
-	      			
 	      			//被保人信息
 			  		this.nexusType = allData.insrntResp.relaToAppnt
 			  		if (this.nexusType == "00") {
 			  			this.nexus = "本人"
+			  		}
+			  	}else{
+			  		this.age = this.$store.state.insrntReqInfo.age
+		  			this.birthDate = this.$store.state.insrntReqInfo.birthday
+		  			this.dateInputBirth = true
+		  			this.custGender = this.$store.state.insrntReqInfo.gender
+		  			if (this.custGender == "M") {
+			  			this.sexShow = false
+			  		}else{
+			  			this.sexShow = true
 			  		}
 			  	}
 				//受益人
@@ -500,17 +501,19 @@
 					}else{
 						this.lowFlag = "A"
 					}
-					for (let i=0; i< allData.bnfResp.length; i++) {
-						if (i==0) {
-							this.beneficiaryList.push({"id":"Y","index":i+1})
-						}else{
-							this.beneficiaryList.push({"id":"N","index":i+1})
-						}
-					}
 					if (allData.bnfResp.length < 3) {
 						this.pushBtnShow = false
 					}
-					this.benList = allData.bnfResp
+					if(allData.bnfResp.length > 0){
+						this.benList = allData.bnfResp
+					}
+					for (var i=0; i< this.benList.length; i++) {
+						if (i==0) {
+							this.beneficiaryList.push({"id":"Y","index":i})
+						}else{
+							this.beneficiaryList.push({"id":"N","index":i})
+						}
+					}
 				}
     		},
     		isCardID(sId) {
@@ -965,7 +968,7 @@
 						      	"cvrgName": this.cvrgName,
 						      	"freqyNo": "",
 						      	"lifeAmtAge": "",
-						      	"city": this.benCity,
+						      	"city": this.cityType1,
 						      	"occDetailCode": this.tlittleType,
 								"occTypeCode": this.tplLevel,
 						      	"prodId": this.$route.query.prodCode,
@@ -1535,8 +1538,10 @@
     				Toast("投保人详细地址不能为空~")
     				return
     			}else{
-    				var myRege = /.*[\u4e00-\u9fa5]{4,}.*/;
-					if (!myRege.test(this.add)) {
+//  				var myRege = /.*[\u4e00-\u9fa5]{4,}.*/;
+    				var re = /[\u4E00-\u9FA5]/g;
+//					if (!myRege.test(this.add)) {
+					if (this.add.match(re).length < 4) {
 						Toast("投保人详细地址必须包含四个汉字~")
 						return
 					}
@@ -1550,7 +1555,6 @@
 							}
 	    				}
 	    			}
-	    			console.log(this.benList)
 	    			let sum = 0;
 	    			for (let i=0; i<this.benList.length;i++) {
 	    				sum += parseInt(this.benList[i].bnfShare)
@@ -1558,11 +1562,10 @@
 //	    			console.log(sum)
 	    			if (this.benList[0].relatoInsured && this.benList[0].bnfName && this.benList[0].certfCode && this.benList[0].certfEndTime && this.benList[0].birthday ) {
 	    				if(sum != 100){
-		    				Toast("收益人比例之和不等于100%~")
+		    				Toast("受益人比例之和不等于100%~")
 		    				return
 	    				}
 	    			}else{
-	    				Toast("1")
 	    				return
 	    			}
 	    			if (this.benList.length > 1) {
@@ -1610,30 +1613,27 @@
 				})
     		},
     		provinceChange(){
-    			console.log(this.provinceType)
+//  			console.log(this.provinceType)
     			this.cityType = ""
     			this.city()
     		},
     		cityChange(){
-    			console.log(this.cityType)
+//  			console.log(this.cityType)
     			this.countyType = ""
     			this.coun()
     		},
-    		countyChange(){
-    			console.log(this.countyType)
-    		},
     		tbigChange(){
-    			console.log(this.tbigType)
+//  			console.log(this.tbigType)
     			this.tmiddleType = ""
     			this.tmiddle()
     		},
     		tmiddleChange(){
-    			console.log(this.tmiddleType)
+//  			console.log(this.tmiddleType)
     			this.tlittleType = ""
     			this.tlittle()
     		},
     		tlittleChange(){
-    			console.log(this.tlittleTypeBox)
+//  			console.log(this.tlittleTypeBox)
     			this.tlittleType = this.tlittleTypeBox[0]
     			this.tplLevel = this.tlittleTypeBox[1]
     		},
@@ -1768,7 +1768,7 @@
 		margin-top: 0.275rem;
 	}
 	.btnBox {
-		padding: 0.64rem 0.4rem;
+		padding: 0.64rem 0;
 		text-align: center;
 	}
 	.btnBox1 {
@@ -1776,6 +1776,7 @@
 		left: 0;
 		bottom: 0.64rem;
 		padding-bottom: 0;
+		width: 100%;
 	}
 	.btn {
 		display: inline-block;
@@ -1979,7 +1980,7 @@
 		position: absolute;
 		right: 1.86rem;
 		top: 0;
-		z-index: 1;
+		z-index: -1;
 		width: 0.4rem;
 		height: 0.87rem;
 		background: #FFFFFF;

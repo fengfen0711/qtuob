@@ -25,29 +25,30 @@
 				</p>
                 <p class="inputGrop clearFloat">
 					<label class="inputLabel3 left"><label class="start left">*</label>付款账号</label>
-					<input type="text" maxlength="18" class="inputTextCard left" placeholder="请输入付款账号" />
+					<input type="text" maxlength="19" class="inputTextCard left" placeholder="请输入付款账号" v-model="bankNumber" @input="checknumber"/>
 				</p>
                 <p class="inputGrop clearFloat">
 					<label class="inputLabel left"><label class="start left">*</label>支付方式</label>
 					<span class="inputText inputSpan left">
-					<span class="sex sexM">
-						<img src="/static/img/sexNo.png" class="sexImg" v-if="true" style="width:0.48rem;height:0.48rem;"/>
-						<img src="/static/img/sexS.png" class="sexImg" v-else="false" style="width:0.48rem;height:0.48rem;" />
+					<span class="sex sexM" @click="automatic('1')">
+						<img src="/static/img/sexNo.png" class="sexImg"  v-show="automatic1" style="width:0.48rem;height:0.48rem;"/>
+						<img src="/static/img/selected.png" class="sexImg"  v-show="!automatic1" style="width:0.48rem;height:0.48rem;" />
 						<label>实时支付</label>
 					</span>
-					<span class="sex sexF" style="marginLeft:0.6rem;">
-						<img src="/static/img/sexNo.png" class="sexImg" v-if="true" style="width:0.48rem;height:0.48rem;"/>
-						<img src="/static/img/sexS.png" class="sexImg" v-else="false" style="width:0.48rem;height:0.48rem;"/>
+					<span class="sex sexF" @click="automatic('2')" style="marginLeft:0.6rem;">
+						<img src="/static/img/sexNo.png" class="sexImg"  v-show="automatic2" style="width:0.48rem;height:0.48rem;"/>
+						<img src="/static/img/selected.png" class="sexImg"  v-show="!automatic2" style="width:0.48rem;height:0.48rem;"/>
 						<label>批量支付</label>
 					</span>
 					</span>
 				</p>
 			</div>
 		</div>
-		<p class="btnBox clearFloat">
-			<span class="btn btn1 left" @click="lastClick">上一步</span>
-			<span class="btn left" @click="nextClick">下一步</span>
-		</p>
+		<div  class="btnBox clearFloat" >
+					<div class="boxLast" @click="lastClick">上一步</div>
+					<div class="boxNext" @click="nextClick">下一步</div>
+		</div>
+		<!-- <dateTools :dateToolsKey="2" :trainDateList="trainDateList2" :trainDateFullList="trainDateFullList" ref="topDateTools2" @topDateEvent2="topDateFun2"></dateTools> -->
 	</div>
 </template>
 
@@ -55,20 +56,41 @@
 	import { Toast } from 'mint-ui'
 	import { Indicator } from 'mint-ui'
 	export default {
-		name: "recognizee",
+		name: "",
 		data() {
 			return {
+				automatic1: true,
+				automatic2: true,
+				bankNumber: ''//银行卡
             }
-        },
+		},
         methods:{
-			
+			checknumber() {
+				this.bankNumber = this.bankNumber.replace(/[\s]/g, '').replace(/(\d{4})(?=\d)/g, "$1 ")
+			},
 			lastClick() {
 				this.$router.push('/businessInform');
 			},
        		nextClick() {
 //				this.$router.push('/');
 			},
-			
+			automatic(index) {
+				if(this.automatic1 == true && this.automatic2 == true) {
+					if(index == "1") {
+						this.automatic1 = false;
+					} else if(index == "2") {
+						this.automatic2 = false;
+					}
+				} else {
+					if(index == "1") {
+						this.automatic1 = false;
+						this.automatic2 = true;
+					} else if(index == "2") {
+						this.automatic1 = true;
+						this.automatic2 = false;
+					}
+				}
+			}
 		}
 	}
 </script>
@@ -76,10 +98,6 @@
 <style scoped="scoped">
 	.left {
 		float: left;
-	}
-	
-	.right {
-		float: right;
 	}
 	
 	input,
@@ -118,10 +136,6 @@
 		font-weight: 100;
 	}
 	
-	.labsex {
-		color: #C8C7CC;
-	}
-	
 	.clearFloat:after {
 		height: 0;
 		display: block;
@@ -131,101 +145,24 @@
 		content: "";
 	}
 	
-	.inputLabel2 {
-		display: block;
-		height: 0.88rem;
-		line-height: 0.88rem;
-		color: #555555;
-	}
-	
-	.brspanbo {
-		display: block;
-		position: absolute;
-		left: 2.3rem;
-		top: 0;
-		height: 0.88rem;
-		line-height: 0.88rem;
-		color: #B2B2B2;
-	}
-	
-	.opa0 {
-		opacity: 0;
-	}
-	
 	.one {
 		width: 100%;
 		min-height: 100%;
 		position: absolute;
 		background: #F3F3F3;
 	}
-	
-	.oneTitle {
-		width: 100%;
-		height: 1.28rem;
-		padding-top: 0.32rem;
-		background: #FFFFFF;
-	}
-	
-	.oneTitleText {
-		height: 0.34rem;
-		line-height: 0.34rem;
-		font-size: 0.26rem;
-		color: #999999;
-	}
-	
+
 	.start {
 		display: block;
 		height: 0.88rem;
 		line-height: 0.88rem;
 		color: red;
 	}
-	
-	.startopacity {
-		display: block;
-		height: 0.88rem;
-		line-height: 0.88rem;
-		color: red;
-		opacity: 0;
-	}
-	
-	.oneTitleTextSpan1 {
-		margin-left: 0.2rem;
-	}
-	
-	.oneTitleTextSpan2 {
-		margin-left: 1.5rem;
-	}
-	
-	.oneTitleTextSpan3 {
-		margin-right: 0.2rem;
-	}
-	
-	.ranchImg {
-		display: block;
-		width: 6.3rem;
-		margin: 0 auto;
-		margin-bottom: 0.2rem;
-	}
-	
+
 	.selected {
 		color: #EB7760;
 	}
-	
-	.boderbo {
-		/*width: 5.5rem;*/
-		border: none;
-		border-radius: 0;
-		border-bottom: 0.02rem solid #979797;
-	}
-	
-	.bg {
-		margin-top: 0.2rem;
-	}
-	
-	.bg1 {
-		margin-left: 0.2rem;
-	}
-	
+
 	.twoCon {
 		/*margin-top: 0.4rem;*/
 		padding: 0 0.4rem;
@@ -248,11 +185,7 @@
 		line-height: 1.11rem;
 		border-bottom: solid 0.01rem #C8C7CC;
 	}
-	
-	.borderNone {
-		border: none;
-	}
-	
+
 	.titleLable_twoCon {
 		display: inline-block;
 		font-size: 0.34rem;
@@ -265,11 +198,6 @@
 		width: 0.56rem;
 		height: 0.56rem;
 		margin-top: 0.275rem;
-	}
-	
-	.btnBox {
-		padding: 0.64rem 0.4rem;
-		text-align: center;
 	}
 	
 	.btnBox1 {
@@ -291,39 +219,14 @@
 		color: #EB7760;
 		text-align: center;
 	}
-	
-	.btn1 {
-		margin-right: 0.3rem;
-	}
-	
-	.inputGrop1 {
-		font-size: 0.28rem;
-		border-bottom: solid 0.01rem #C8C7CC;
-	}
-	
+
 	.inputGrop {
 		position: relative;
 		height: 0.88rem;
 		font-size: 0.28rem;
 		border-bottom: solid 0.01rem #C8C7CC;
 	}
-	
-	.inputSpan {
-		line-height: 0.88rem;
-		color: #555555;
-		font-weight: bold;
-	}
-	
-	.inputLabel {
-		display: block;
-		width: 2.04rem;
-		height: 0.88rem;
-		line-height: 0.88rem;
-		font-weight: bold;
-		color: #555555;
-		padding-left: 0;
-	}
-	
+
 	.inputLabel3 {
 		display: block;
 		width: 2.3rem;
@@ -333,41 +236,21 @@
 		color: #555555;
 		/*background: #669900;*/
 	}
-	
-	.padleftitem {
-		padding-left: 0.25rem;
-	}
-	
-	.inputLabel1 {
-		line-height: 0.68rem;
-	}
-	
+
 	.inputText {
 		height: 0.88rem;
 		font-size: 0.28rem;
 		color: #666666;
 		padding-left: 0;
 	}
-	
-	.inputText2 {
-		width: 2.7rem;
-		height: 0.88rem;
-		font-size: 0.28rem;
-		color: #666666;
-		padding-left: 0;
-	}
-	
+
 	.inputTextCard {
 		width: 3rem;
 		height: 0.88rem;
 		font-size: 0.28rem;
 		color: #666666;
 	}
-	
-	.inpuDate {
-		width: 3rem;
-	}
-	
+
 	select {
 		padding-right: 0.48rem;
 		border: none;
@@ -379,50 +262,7 @@
 		-webkit-appearance: none;
 		-moz-appearance: none;
 	}
-	
-	.dateBox {
-		position: absolute;
-		right: 0;
-		top: 0;
-		z-index: 1;
-		display: block;
-		height: 0.87rem;
-		padding: 0 0.2rem;
-		line-height: 0.88rem;
-		background: #FFFFFF;
-		border-left: solid 0.01rem #C8C7CC;
-	}
-	
-	.dateB {
-		position: absolute;
-		right: 1.78rem;
-		top: 0;
-		z-index: -1;
-		width: 0.4rem;
-		height: 0.87rem;
-		background: #FFFFFF;
-	}
-	
-	.upDownImg3 {
-		display: block;
-		width: 0.4rem;
-		height: 0.44rem;
-		margin-top: 0.22rem;
-	}
-	
-	.dateBox1 {
-		position: absolute;
-		right: 0;
-		top: 0;
-		z-index: 1;
-		display: block;
-		width: 1.8rem;
-		height: 0.87rem;
-		padding: 0 0.26rem;
-		line-height: 0.88rem;
-		background: #FFFFFF;
-	}
-	
+
 	.selImg {
 		display: block;
 		float: left;
@@ -447,131 +287,59 @@
 		color: #666666;
 		padding-left: 0;
 	}
-	
-	.pro {
-		width: 3.6rem;
-	}
-	
-	.dateInput {
-		width: 2.7rem;
-	}
-	
+
 	.inputWidth {
 		width: 4.4rem;
 	}
-	
-	.inputWidth11 {
-		width: 4.4rem;
-		overflow: hidden;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-	}
-	
-	.inputWidth1 {
-		width: 3rem;
-	}
-	
-	.inputWidth2 {
-		width: 3.5rem;
-	}
-	
+
 	.inputselect {
 		height: 0.68rem;
 	}
-	
-	.sBox {
-		padding: 0 0.4rem;
-		margin-top: 0.34rem;
-		margin-bottom: 0.88rem;
-		font-size: 0.28rem;
-		line-height: 0.4rem;
-	}
-	
-	.sImg {
-		display: block;
-		width: 0.48rem;
-		height: 0.48rem;
-		margin-top: -0.04rem;
-	}
-	
-	.sDes {
-		margin-left: 0.16rem;
-	}
-	
-	.sSpan {
-		color: #6BD1CF;
-	}
-	
-	.inputselectP {
-		position: relative;
-		height: 0.68rem;
-	}
-	
-	.upDownImg {
-		position: absolute;
-		right: 0;
-		top: 0.22rem;
-		z-index: 3;
-		width: 0.4rem;
-		height: 0.44rem;
-	}
-	
-	.upDownImg1 {
-		top: 0.12rem;
-	}
-	
-	.upDownImg2 {
-		right: 2rem;
-	}
+
 	.twoCon .inputGrop:last-child {
 		border: none;
+		line-height: 0.88rem;
 	}
-	
-	.twoCon1 {
-		margin-top: 0.4rem;
+	.sex{
+		margin-left: 1rem;
 	}
-	
-	.sumBtn {
-		position: absolute;
-		right: 0;
-		top: 0;
-		z-index: 3;
-		width: 0.4rem;
+	.btnBox{
+		display: flex;
+		justify-content: space-around;
+		padding-left: 0.3rem;
+		margin-top: 6rem;
+	}
+	.btnBox {
+		/*position: absolute;*/
+		width:6.64rem;
+		height:0.88rem;
+		margin:5.5rem auto 0.4rem;
+	}
+	.boxLast {
+		width: 3.12rem;
 		height: 0.88rem;
 		line-height: 0.88rem;
-		font-size: 0.6rem;
 		text-align: center;
-		color: #EB7760;
-	}
-	
-	.signBox {
-		padding-bottom: 0.32rem;
-	}
-	
-	.signBox span {
-		display: inline-block;
+		font-size: 0.32rem;
+		color:#c9141e;
+		letter-spacing: 0;
+		border:0.01rem solid #c9141e;
+		border-radius: .44rem;
 		float: left;
-		width: 1.84rem;
-		margin: 0 0.15rem;
-		height: 0.68rem;
-		line-height: 0.68rem;
-		margin-top: 0.32rem;
-		font-size: 0.28rem;
-		color: #555555;
-		text-align: center;
-		border: solid 0.02rem #54CCC1;
-		border-radius: 0.34rem;
-		margin-right: 0.2rem;
-	}
-	.marR {
-		margin-right: 0.233rem;
-	}
-	.selectedSign {
-		background: #54CCC1;
-		color: #FFFFFF;
+		margin-right: 0.3rem;
 	}
 	
-	.opa1 {
-		z-index: 2;
+	.boxNext {
+		width: 3.12rem;
+		height: 0.88rem;
+		line-height: 0.88rem;
+		text-align: center;
+		font-size: 0.32rem;
+		color:  #c9141e;
+		/*background: #c9141e;*/
+		letter-spacing: 0;
+		border:0.01rem solid #c9141e;
+		border-radius: .44rem;
+		float: right;
 	}
 </style>

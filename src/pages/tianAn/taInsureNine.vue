@@ -42,6 +42,7 @@
 		name: "taInsureNine",
 		data() {
 			return {
+				disabledNext: true,
 				backview: "hui",
 				hei: false,
 				alldata: [{
@@ -143,8 +144,13 @@
 
 			},
 			btnnext() {
-				console.log(this.$store.state.HUS)
+
 				if(this.addData.length == this.alldata.length) {
+					if(this.disabledNext == false) {
+						return;
+					}
+					this.disabledNext = false;
+
 					var data = {
 						"token": this.$route.query.token,
 						"userId": this.$route.query.userId,
@@ -160,9 +166,9 @@
 					Indicator.open();
 					this.$http.post(this.$store.state.link + '/trd/uc/v1/underwrite', data)
 						.then(res => {
-							console.log(res.data)
+							this.disabledNext = true;
+							console.log(JSON.stringify(res.data))
 							Indicator.close();
-							console.log("响应数据2=====" + JSON.stringify(res.data))
 							var stringResult;
 							if(res.data.code == "SYS_S_000") {
 								//								window.localStorage.applNo = res.data.output.applNo;
@@ -176,11 +182,11 @@
 								} else if(res.data.output.uwStatus == this.$store.state.orderState.AUC) { //核保成功
 									this.$router.push('/inforUpload?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&state=" + "3" + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
 								} else if(res.data.output.uwStatus == this.$store.state.orderState.HPUC || res.data.output.uwStatus == this.$store.state.HUS) { //人核保
-//									alert(1)
+									//									alert(1)
 									this.$router.push('/hbresult?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&message=" + stringResult + "&token=" + this.$route.query.token)
 								} else if(res.data.output.uwStatus == this.$store.state.orderState.DECL) { //拒保
 									this.$router.push('/faresult?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token + "&message=" + stringResult)
-								}else{
+								} else {
 									Toast(res.data.output.message)
 								}
 							} else {
@@ -191,6 +197,7 @@
 								this.$router.push('/faresult1?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&message=" + stringResult + "&token=" + this.$route.query.token)
 							}
 						}, res => {
+							this.disabledNext = true;
 							Indicator.close();
 							console.log(res.data);
 						})

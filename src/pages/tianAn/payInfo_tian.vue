@@ -30,14 +30,19 @@
 					<div class="pt_div_item1">
 						<span class="pt_span_itemleft">支付方式</span>
 						<div>
-							<div class="pt_div_select" @click="sexChose2('1')">
+							<div class="pt_div_select" @click="sexChose2()">
 								<img src="/static/img/sexNo.png" class="sexImg" v-show="sexShow2" />
 								<img src="/static/img/sexS.png" class="sexImg" v-show="!sexShow2" />
 								<label class="pt_span_select">实时支付</label>
 								<img src="/static/img/questionMark.png" class="question imgopacity" />
 							</div>
+							<div class="pt_div_select" @click="sexChose1()">
+								<img src="/static/img/sexNo.png" class="sexImg" v-show="sexShow1" />
+								<img src="/static/img/sexS.png" class="sexImg" v-show="!sexShow1" />
+								<label class="pt_span_select">银行转账</label>
+								<img src="/static/img/questionMark.png" class="question imgopacity" />
+							</div>
 						</div>
-
 					</div>
 				</div>
 			</div>
@@ -48,16 +53,17 @@
 					</p>
 					<p class="inputP1 clearFloat">
 						<select class="left inputText1 inputWidth1" v-model="provinceBox" @change="provinceChange">
-							<option :value="[province.cnCode,province.cnName]" v-for="province in provinceList" >{{province.cnName}}</option>
+							<option :value="[province.cnCode,province.cnName]" v-for="province in provinceList">{{province.cnName}}</option>
 						</select>
-						<select class="left inputText1 inputWidth1 inputWidth2" v-model="cityBox" @change="cityChange" >
-							<option :value="[city.cnCode,city.cnName]" v-for="city in cityList" >{{city.cnName}}</option>
+						<select class="left inputText1 inputWidth1 inputWidth2" v-model="cityBox" @change="cityChange">
+							<option :value="[city.cnCode,city.cnName]" v-for="city in cityList">{{city.cnName}}</option>
 						</select>
 					</p>
 				</div>
 				<p class="inputGrop clearFloat">
-					<label class="inputLabel left">付款银行</label>
-					<select class="inputText inputWidth left" v-model="bankCode">
+					<label class="inputLabel2 left">付款银行</label>
+					<label class="inputLabel3 left">(单笔最大限额{{bankDesc}}元)</label>
+					<select class="inputText inputWidth left" v-model="bankCode" @change="bankDescClick">
 						<option :value="coupon.bankCode" v-for="coupon in bankArray">{{coupon.bankName}}</option>
 					</select>
 				</p>
@@ -104,6 +110,7 @@
 				riskName: "",
 				bankNumber2: '',
 				bankCode: '',
+				bankDesc: '',
 				bankNumber: '',
 				bankName: '',
 				content: '',
@@ -111,18 +118,18 @@
 				mark_flag: true,
 				ingflag: true,
 				sexShow: false,
-				sexShow1: false,
-				sexShow2: false,
+				sexShow1: true,
+				sexShow2: true,
 				btnBoxShow: false,
 				sBoxShow: true,
-				provinceBox:[],
-      			provinceType:'',
-      			provinceName:'',
-      			provinceList:[],
-      			cityBox:[],
-      			cityType:'',
-      			cityName:'',
-      			cityList:[],
+				provinceBox: [],
+				provinceType: '',
+				provinceName: '',
+				provinceList: [],
+				cityBox: [],
+				cityType: '',
+				cityName: '',
+				cityList: [],
 				nowTime: '',
 				bankArray: [],
 				allData: [],
@@ -163,6 +170,7 @@
 						console.log(res.data);
 						var dataCode = res.data.code;
 						if(dataCode == "SYS_S_000") {
+							console.log("====" + JSON.stringify(res.data.output))
 							this.allData = res.data.output;
 							this.bankInit(); //银行
 							this.fiskFee = this.allData.mainResp.sumPrem + "元";
@@ -186,6 +194,18 @@
 							if(this.allData.paymentResp.accName != undefined) {
 								this.bankNumber = this.allData.paymentResp.accNo.replace(/[\s]/g, '').replace(/(\d{4})(?=\d)/g, "$1 ")
 							}
+							if(this.allData.paymentResp.payType != undefined) {
+								console.log("====2====1===1==" + this.allData.paymentResp.payType)
+								if(this.allData.paymentResp.payType == "1") {
+									//									this.sexShow1 == true
+									//									this.sexShow2 == true
+									this.sexChose2();
+								} else if(this.allData.paymentResp.payType == "2") {
+									//									this.sexShow1 == false
+									//									this.sexShow2 == true
+									this.sexChose1();
+								}
+							}
 							if(this.allData.paymentResp.accNo != undefined) {
 								this.bankNumber2 = this.allData.paymentResp.accNo.replace(/[\s]/g, '').replace(/(\d{4})(?=\d)/g, "$1 ")
 							}
@@ -195,13 +215,13 @@
 							if(this.allData.paymentResp.provinceName != undefined) {
 								this.provinceType = this.allData.paymentResp.provinceCode
 								this.cityType = this.allData.paymentResp.cityCode
-								for (let i=0;i<this.provinceList.length;i++) {
-				      				if (this.provinceType == this.provinceList[i].cnCode) {
-				      					this.provinceBox = [this.provinceList[i].cnCode,this.provinceList[i].cnName]
-				      					this.provinceType = this.provinceList[i].cnCode
-				      					this.city()
-				      				}
-				      			}
+								for(let i = 0; i < this.provinceList.length; i++) {
+									if(this.provinceType == this.provinceList[i].cnCode) {
+										this.provinceBox = [this.provinceList[i].cnCode, this.provinceList[i].cnName]
+										this.provinceType = this.provinceList[i].cnCode
+										this.city()
+									}
+								}
 							}
 						} else {
 							Toast(res.data.desc);
@@ -212,73 +232,73 @@
 			},
 			pro() {
 				var provinceinfo = {
-  					"code": "0",
-  					"orgCode": this.$route.query.cmpCode
+					"code": "0",
+					"orgCode": this.$route.query.cmpCode
 				}
-//				console.log(provinceinfo)
-				this.$http.post(this.$store.state.link+'/dic/findChinaByOrgCode', provinceinfo)
-				.then(res =>{
-				    console.log(res.data);
-					var dataCode = res.data.code;
-					if (dataCode == "SYS_S_000") {
+				//				console.log(provinceinfo)
+				this.$http.post(this.$store.state.link + '/dic/findChinaByOrgCode', provinceinfo)
+					.then(res => {
+						console.log(res.data);
+						var dataCode = res.data.code;
+						if(dataCode == "SYS_S_000") {
 							this.provinceList = res.data.output
-							this.provinceBox = [this.provinceList[0].cnCode,this.provinceList[0].cnName]
+							this.provinceBox = [this.provinceList[0].cnCode, this.provinceList[0].cnName]
 							this.provinceType = this.provinceList[0].cnCode;
 							this.provinceName = this.provinceList[0].cnName;
 							this.city()
-					}else{
-						Toast(res.data.desc);
-					}
-				},res =>{
-					console.log(res.data);
-				})
+						} else {
+							Toast(res.data.desc);
+						}
+					}, res => {
+						console.log(res.data);
+					})
 			},
 			city() {
 				var cityinfo = {
-    				"code": this.provinceType,
-  					"orgCode": this.$route.query.cmpCode
+					"code": this.provinceType,
+					"orgCode": this.$route.query.cmpCode
 				}
-				this.$http.post(this.$store.state.link+'/dic/findChinaByOrgCode', cityinfo)
-				.then(res =>{
-//				    console.log(res.data);
-					var dataCode = res.data.code;
-					if (dataCode == "SYS_S_000") {
-						this.cityList = res.data.output
-						if(this.allData.paymentResp && this.allData.paymentResp.cityCode){
-							
-						}else{
-							this.cityType = ""
+				this.$http.post(this.$store.state.link + '/dic/findChinaByOrgCode', cityinfo)
+					.then(res => {
+						//				    console.log(res.data);
+						var dataCode = res.data.code;
+						if(dataCode == "SYS_S_000") {
+							this.cityList = res.data.output
+							if(this.allData.paymentResp && this.allData.paymentResp.cityCode) {
+
+							} else {
+								this.cityType = ""
+							}
+							if(this.cityType == "") {
+								this.cityBox = [this.cityList[0].cnCode, this.cityList[0].cnName]
+								this.cityType = this.cityList[0].cnCode;
+								this.cityName = this.cityList[0].cnName;
+							} else {
+								for(let i = 0; i < this.cityList.length; i++) {
+									if(this.cityType == this.cityList[i].cnCode) {
+										this.cityBox = [this.cityList[i].cnCode, this.cityList[i].cnName]
+										this.cityType = this.cityList[i].cnCode;
+										this.cityName = this.cityList[i].cnName;
+									}
+								}
+							}
+
+						} else {
+							Toast(res.data.desc);
 						}
-						if(this.cityType == ""){
-							this.cityBox = [this.cityList[0].cnCode,this.cityList[0].cnName]
-							this.cityType = this.cityList[0].cnCode;
-							this.cityName = this.cityList[0].cnName;
-						}else{
-							for (let i=0;i<this.cityList.length;i++) {
-			      				if (this.cityType == this.cityList[i].cnCode) {
-			      					this.cityBox = [this.cityList[i].cnCode,this.cityList[i].cnName]
-									this.cityType = this.cityList[i].cnCode;
-									this.cityName = this.cityList[i].cnName;
-			      				}
-			      			}
-						}
-							
-					}else{
-						Toast(res.data.desc);
-					}
-				},res =>{
-					console.log(res.data);
-				})
+					}, res => {
+						console.log(res.data);
+					})
 			},
-			provinceChange(){
-    			this.provinceType = this.provinceBox[0]
-    			this.provinceName = this.provinceBox[1]
-    			this.city()
-    		},
-    		cityChange(){
-    			this.cityType = this.cityBox[0]
-    			this.cityName = this.cityBox[1]
-    		},
+			provinceChange() {
+				this.provinceType = this.provinceBox[0]
+				this.provinceName = this.provinceBox[1]
+				this.city()
+			},
+			cityChange() {
+				this.cityType = this.cityBox[0]
+				this.cityName = this.cityBox[1]
+			},
 			bankInit() {
 				var data = {
 					"dicReq": "000034"
@@ -289,12 +309,21 @@
 						var dataCode = res.data.code;
 						if(dataCode == "SYS_S_000") {
 							this.bankArray = res.data.output;
+
 							if(this.allData.paymentResp.bankCode != undefined) {
 								this.bankCode = this.allData.paymentResp.bankCode;
 							} else {
 								this.bankCode = res.data.output[0].bankCode;
+								this.bankDesc = res.data.output[0].bankLimit;
 							}
-
+							//							console.log(JSON.stringify(res.data.output))
+							//							console.log(res.data.output[0].bankLimit)
+							//							console.log(this.bankDesc)
+							for(var i = 0; i < this.bankArray.length; i++) {
+								if(this.bankCode == this.bankArray[i].bankCode) {
+									this.bankDesc = this.bankArray[i].bankLimit;
+								}
+							}
 						} else {
 							Toast(res.data.desc);
 						}
@@ -302,6 +331,13 @@
 						console.log(res.data);
 					})
 
+			},
+			bankDescClick() {
+				for(var i = 0; i < this.bankArray.length; i++) {
+					if(this.bankCode == this.bankArray[i].bankCode) {
+						this.bankDesc = this.bankArray[i].bankLimit;
+					}
+				}
 			},
 			cancel() {
 				var blur_all = document.getElementById("blur_all");
@@ -329,18 +365,22 @@
 				}
 			},
 			sexChose1(index) {
-				if(index == "1") { //实时扣款
-					this.sexShow1 = false;
-				} else { //银行转账
-					this.sexShow1 = true;
-				}
+				//				if(index == "1") { //实时扣款
+				//					this.sexShow1 = false;
+				//				} else { //银行转账
+				//					this.sexShow1 = true;
+				//				}
+				this.sexShow1 = false;
+				this.sexShow2 = true;
 			},
 			sexChose2(index) {
-				if(index == "1") { //实时扣款
-					this.sexShow2 = false;
-				} else { //银行转账
-					this.sexShow2 = true;
-				}
+				//				if(index == "1") { //实时扣款
+				//					this.sexShow2 = false;
+				//				} else { //银行转账
+				//					this.sexShow2 = true;
+				//				}
+				this.sexShow1 = true;
+				this.sexShow2 = false;
 			},
 			sBoxShowHide() {
 				this.sBoxShow = !this.sBoxShow
@@ -352,6 +392,10 @@
 				if(this.sBoxShow) {
 					Toast("请先阅读保险费自动转账授权声明")
 				} else {
+					if(this.sexShow1 == true && this.sexShow2 == true) {
+						Toast("请选择支付方式")
+						return;
+					}
 					if(this.bankNumber == "") {
 						Toast("银行账号不得为空")
 						return;
@@ -366,12 +410,19 @@
 						return;
 					}
 					var bankCodeName; //银行名字
-					
+
 					for(var i = 0; i < this.bankArray.length; i++) {
 						if(this.bankArray[i].bankCode == this.bankCode) {
 							bankCodeName = this.bankArray[i].bankName;
 						}
 					}
+					var payType;
+					if(this.sexShow1 == true) { //实时
+						payType = "1";
+					} else { //银行转账
+						payType = "2";
+					}
+
 					var paymentReqData = {
 						"mark": "1",
 						"accName": this.bankName, //银行账户姓名
@@ -383,7 +434,7 @@
 						"cityName": this.cityName, //开户行所在市 
 						"payMode": "4", //支付方式 9-网银电汇转账 J-网络支付 
 						"payPrem": this.allData.mainResp.initialPremamt, //支付金额 
-						"payType": "1", //支付标识 : 1-实时;2-线下 
+						"payType": payType, //支付标识 : 1-实时;2-线下 
 						//						"policyDeliveryFee": 0, //快递费
 						"provinceCode": this.provinceType, //开户行所在省代码 
 						"provinceName": this.provinceName //开户行所在省
@@ -421,7 +472,7 @@
 			}
 		},
 		watch: {
-			
+
 		}
 	}
 </script>
@@ -818,7 +869,25 @@
 		color: #555555;
 		/*background: #669900;*/
 	}
-		
+	
+	.inputLabel3 {
+		display: block;
+		width: 2.8rem;
+		height: 0.88rem;
+		line-height: 0.88rem;
+		font-weight: bold;
+		color: red;
+		font-size: 0.24rem;
+		/*background: #669900;*/
+	}
+	.inputLabel2 {
+		display: block;
+		width: 1.2rem;
+		height: 0.88rem;
+		line-height: 0.88rem;
+		font-weight: bold;
+		color: #555555;
+	}
 	.inputText {
 		height: 0.88rem;
 		font-size: 0.28rem;
@@ -904,7 +973,7 @@
 	}
 	
 	.inputWidth {
-		width: 4.66rem;
+		width: 2.66rem;
 		padding-left: 0;
 	}
 	
@@ -1028,6 +1097,7 @@
 	.opa0 {
 		z-index: 2;
 	}
+	
 	.inputP1 {
 		position: relative;
 		height: 0.88rem;

@@ -56,7 +56,8 @@
 						}
 						//this.$router.push('/code?phone='+this.phoneNum)
 			        },response => {
-			        	console.log("手机号校验错误");
+			        	console.log(JSON.stringify(response.data))
+//			        	console.log("手机号校验错误");
 			        	//this.$router.push('/code?phone='+this.phoneNum)
 			      	});	
     			}

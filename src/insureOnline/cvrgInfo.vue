@@ -201,14 +201,26 @@
 					var dataCode = res.data.code;
 					if (dataCode == "SYS_S_000") {
 						this.allData = res.data.output
-						this.birthDate = res.data.output.applntResp.birthday
-						this.age = res.data.output.applntResp.age
-						this.sex = res.data.output.applntResp.gender
-			  			if (this.sex == "F") {
-			  				this.sexShow = true
+			  			if (res.data.output.applntResp && res.data.output.applntResp.birthday) {
+			  				this.birthDate = res.data.output.applntResp.birthday
+							this.age = res.data.output.applntResp.age
+							this.sex = res.data.output.applntResp.gender
+				  			if (this.sex == "F") {
+				  				this.sexShow = true
+				  			}else{
+				  				this.sexShow = false
+				  			}
 			  			}else{
-			  				this.sexShow = false
+			  				this.age = this.$store.state.insrntReqInfo.age
+				  			this.birthDate = this.$store.state.insrntReqInfo.birthday
+				  			this.sex = this.$store.state.insrntReqInfo.gender
+				  			if (this.sex == "M") {
+					  			this.sexShow = false
+					  		}else{
+					  			this.sexShow = true
+					  		}
 			  			}
+			  			
 			  			this.provinceType = res.data.output.mainResp.province
 		      			this.cityType = res.data.output.mainResp.city
 		      			this.countyType = res.data.output.mainResp.county
@@ -458,7 +470,7 @@
 //	  				console.log(JSON.stringify(popIfo))
 	  				this.$http.post(this.$store.state.link+'/ppt/count/queryCoverageFee', popIfo)
 					.then(res =>{
-					    console.log(res.data);
+//					    console.log(res.data);
 						var dataCode = res.data.code;
 						if (dataCode == "SYS_S_000") {
 							this.minPrice = res.data.output.coverageFeeList[0].yearFee
@@ -489,7 +501,7 @@
 	  		},
 	  		nextGo(){
 	  			let freqyNo = "B"
-	  			if (this.periodId == "B1") {
+	  			if (this.payNo == "B1") {
 	  				freqyNo = "A"
 	  			}
 	  			var saveinfo = {
@@ -528,6 +540,7 @@
 					    "prem": this.minPrice,
 					    "prodName": this.cvrgName,
 					    "prodCode": this.$route.query.prodCode,
+					    "prodNo": this.$route.query.prodNo,
 					    "province":this.provinceType,
 					    "city": this.cityType,
 					    "county": this.countyType,
@@ -540,12 +553,13 @@
 	  			console.log(JSON.stringify(saveinfo))
 	  			this.$http.post(this.$store.state.link+'/trd/order/v1/saveorder', saveinfo)
 				.then(res =>{
-				    console.log(res.data);
+//				    console.log(res.data);
 					let dataCode = res.data.code;
 					if (dataCode == "SYS_S_000") {
 						this.$router.push('/popupInfo2?prodCode='+this.$route.query.prodCode+'&prodNo='+this.$route.query.prodNo+'&orderNo='+this.$route.query.orderNo+'&cmpCode='+this.$route.query.cmpCode+'&up=cvrgInfo')
 					}else{
 						Toast(res.data.desc);
+						console.log(res.data.desc)
 					}
 				},res =>{
 					console.log(res.data);

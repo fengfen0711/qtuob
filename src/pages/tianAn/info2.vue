@@ -57,10 +57,9 @@
 					<input @input="cardnum" type="text" maxlength="18" class="inputTextCard left" v-model="IDnum" placeholder="请输入证件号码" />
 				</p>
 				<p class="inputGrop clearFloat">
-
 					<label class="inputLabel3 left"><label class="start left">*</label>证件有效期至</label>
-					<span class="brspanbo" :class="{opa0:spanFlag}">请选择证件有效期</span>
-					<input type="date" id="dateTime1" class="inputText dateInput left" :class="{opa0:!spanFlag}" placeholder="请选择证件有效期" v-model="termValidityDate" @click="termValidityDateSel" @change="termValidityDateSel" />
+					<span class="brspanbo " :class="{opa0:spanFlag}">请选择证件有效期</span>
+					<input type="date" id="dateTime1" class="inputText dateInput dateInput1 left" :class="{opa0:!spanFlag}" placeholder="请选择证件有效期" v-model="termValidityDate" @click="termValidityDateSel" @change="termValidityDateSel" />
 					<span class="dateBox" @click="dateSel">
 						<img src="/static/img/sexNo.png" class="selImg" v-show="termValidityDateShow" />
 						<img src="/static/img/selected.png" class="selImg" v-show="!termValidityDateShow" />
@@ -109,12 +108,12 @@
 				<div class="inputGrop1 clearFloat">
 					<p class="inputselectP">
 						<label class="inputLabel3 inputLabel1 left"><label class="start left">*</label>联系地址</label>
-						<select class="inputText inputselect pro inputWidth left" v-model="provinceType" @change="aaa">
+						<select class="inputText inputselect pro inputWidth left" v-model="provinceType" @change="pullProvince">
 							<option :value="[province.cnCode,province.cnName]" v-for="(province,index) in provinceList">{{province.cnName}}</option>
 						</select>
 					</p>
 					<p class="inputselectP">
-						<select class="inputText1 inputWidth" v-model="cityType" @change="bbb">
+						<select class="inputText1 inputWidth" v-model="cityType" @change="pullCity">
 							<option :value="[city.cnCode,city.cnName]" v-for="city in cityList">{{city.cnName}}</option>
 						</select>
 					</p>
@@ -276,7 +275,7 @@
 			this.marryChange();
 			this.nexChange();
 			this.nationalitySelect();
-			this.ccc(); //城市
+			this.pullArea(); //城市
 			var myDate = new Date();
 			var day = myDate.getDate();
 			if(myDate.getMonth() < 10) {
@@ -374,7 +373,7 @@
 						}
 
 						if(res.data.output.insrntResp.province == "" || res.data.output.insrntResp.province == undefined) {} else {
-							this.ccc1();
+							this.pullArea1();
 						}
 
 					} else {
@@ -463,18 +462,18 @@
 				}
 
 				this.$http.post(this.$store.state.link + '/dic/findCustomerTypeForTianAn', data)
-				.then(res => {
-					//					console.log("====" + JSON.stringify(res.data.output));
-					var dataCode = res.data.code;
-					if(dataCode == "SYS_S_000") {
-						this.nexusList = res.data.output;
-						//	            	console.log("====sasa"+JSON.stringify( this.marList));
-					} else {
-						Toast(res.data.desc);
-					}
-				}, res => {
-					console.log(res.data);
-				})
+					.then(res => {
+						//					console.log("====" + JSON.stringify(res.data.output));
+						var dataCode = res.data.code;
+						if(dataCode == "SYS_S_000") {
+							this.nexusList = res.data.output;
+							//	            	console.log("====sasa"+JSON.stringify( this.marList));
+						} else {
+							Toast(res.data.desc);
+						}
+					}, res => {
+						console.log(res.data);
+					})
 			},
 			nationalitySelect() {
 
@@ -495,7 +494,7 @@
 						console.log(res.data);
 					})
 			},
-			ccc() {
+			pullArea() {
 				var data = {
 					"code": "0",
 					"orgCode": "000034"
@@ -508,7 +507,7 @@
 							// this.provinceType = res.data.output.cnName
 							this.provinceList = res.data.output;
 							this.provinceType = [res.data.output[0].cnCode, res.data.output[0].cnName];
-							this.aaa();
+							this.pullProvince();
 						} else {
 							Toast(res.data.desc);
 						}
@@ -517,7 +516,7 @@
 					})
 
 			},
-			ccc1() {
+			pullArea1() {
 				var data = {
 					"code": "0",
 					"orgCode": "000034"
@@ -533,7 +532,7 @@
 									this.provinceType = [this.allData.insrntResp.province, this.provinceList[i].cnName];
 								}
 							}
-							this.aaa1();
+							this.pullProvince1();
 						} else {
 							Toast(res.data.desc);
 						}
@@ -541,7 +540,7 @@
 						console.log(res.data);
 					})
 			},
-			aaa(orgCode) {
+			pullProvince(orgCode) {
 
 				var data = {
 					"code": this.provinceType[0],
@@ -555,7 +554,7 @@
 						if(dataCode == "SYS_S_000") {
 							this.cityList = res.data.output;
 							this.cityType = [res.data.output[0].cnCode, res.data.output[0].cnName];
-							this.bbb();
+							this.pullCity();
 						} else {
 							Toast(res.data.desc);
 						}
@@ -564,7 +563,7 @@
 					})
 
 			},
-			aaa1() {
+			pullProvince1() {
 				//用省调取所有的市
 				var data = {
 					"code": this.provinceType[0],
@@ -580,7 +579,7 @@
 									this.cityType = [this.allData.insrntResp.city, this.cityList[i].cnName];
 								}
 							}
-							this.bbb1();
+							this.pullCity1();
 						} else {
 							Toast(res.data.desc);
 						}
@@ -589,7 +588,7 @@
 					})
 
 			},
-			bbb() {
+			pullCity() {
 				var data = {
 					"code": this.cityType[0],
 					"orgCode": "000034"
@@ -611,7 +610,7 @@
 					})
 
 			},
-			bbb1() {
+			pullCity1() {
 				var data = {
 					"code": this.cityType[0],
 					"orgCode": "000034"
@@ -719,12 +718,24 @@
 
 			},
 			termValidityDateSel() {
+				var pdate = this.termValidityDate;
+				var d = new Date;
+				var today = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+				var reg = /\d+/g;
+				var temp = pdate.match(reg);
+				if(temp) {
+					var foday = new Date(temp[0], parseInt(temp[1]) - 1, temp[2]);
+					if(foday < today) {
+						Toast('证件有效期不可选择今天之前的日期');
+						this.termValidityDate = ""
+					}
+				}
 				if(this.termValidityDate == "") {
 					this.spanFlag = false;
 				} else {
 					this.spanFlag = true;
 				}
-				this.termValidityDateShow = true
+				this.termValidityDateShow = true;
 			},
 			handleClickUp() {
 				//				this.$router.push('/info1?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
@@ -840,10 +851,10 @@
 						return;
 					}
 				}
-//				if(this.email1 == "" || this.email1 == undefined) {
-//					Toast('请输入您的邮箱');
-//					return;
-//				}
+				//				if(this.email1 == "" || this.email1 == undefined) {
+				//					Toast('请输入您的邮箱');
+				//					return;
+				//				}
 				if(this.email1 != "" && this.email1 != undefined && !regEmail.test(this.email1)) {
 					Toast('邮箱格式不正确');
 					return;
@@ -963,6 +974,7 @@
 					"workCompany": this.work_address, //工作单位 ,
 					"zipCode": this.zipCode, //邮编 ,
 					//					"zoneType": "string" //居民类型
+					"custIdentity": "1"
 				}
 				var data = {
 					"token": this.$route.query.token,
@@ -1076,7 +1088,11 @@
 				if(this.allData.insrntResp.maritalStatus == "" || this.allData.insrntResp.maritalStatus == undefined) {} else {
 					this.marType = this.allData.insrntResp.maritalStatus; //婚姻状况
 				}
-				this.reHighs = "37" //国籍  this.allData.insrntResp.nationality
+				if(this.allData.insrntResp.nationality == "" || this.allData.insrntResp.nationality == undefined) {
+					this.reHighs = "37" //国籍  this.allData.insrntResp.nationality
+				} else {
+					this.reHighs = this.allData.insrntResp.nationality; //婚姻状况
+				}
 				this.nexusType = this.allData.applntResp.relationToInsured; //关系  this.allData.insrntResp.relationToInsured
 			},
 			sourceList: function(val) { //主要收入
@@ -1104,9 +1120,9 @@
 				}
 			},
 			nationalityarr: function(val) { //证件类型
-				if(this.allData.length > 0) {
-					this.reHighs = "37" //国籍  this.allData.insrntResp.nationality
-				}
+				//				if(this.allData.length > 0) {
+				//					this.reHighs = "37" //国籍  this.allData.insrntResp.nationality
+				//				}
 			},
 			nexusList: function(val) { //证件类型
 				if(this.allData.length > 0) {
@@ -1192,6 +1208,7 @@
 		height: 0.88rem;
 		line-height: 0.88rem;
 		color: #B2B2B2;
+		/*background: red;*/
 	}
 	
 	.opa0 {
@@ -1500,6 +1517,11 @@
 	
 	.dateInput {
 		width: 2.7rem;
+	}
+	
+	.dateInput1 {
+		/*background: #669900;*/
+		z-index: 1;
 	}
 	
 	.inputWidth {

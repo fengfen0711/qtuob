@@ -12,17 +12,17 @@
 			<div class="code_w">
 				<div class="code">
 					<p class="yao">帐号：</p>
-					<input class="name" type="text" v-model="phone"/>
+					<input class="name" type="text" v-model="phone" disabled="disabled"/>
 				</div>
 			</div>
 			<div class="code_w">
 				<div class="code">
 					<p class="yao">密码：</p>
-					<input class="name" type="text" v-model="password"/>
+					<input class="name" type="text" v-model="password" disabled="disabled"/>
 				</div>
 			</div>
 			<p class="information_reconi">
-				下载趣投保 App<br/>关注趣投保科技官方微信公众号（趣投保科技）<br/>登陆后即可查询申请进度。
+				下载趣投保 App<br/>关注趣投保科技官方微信公众号（趣投保科技）<br/>登录后即可查询申请进度。
 			</p>
 			<a class="information_look" href="/static/img/sign/demo.gif">查看演示</a>
 		</div>

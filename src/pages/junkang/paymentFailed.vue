@@ -1,7 +1,7 @@
 <template>
     <div class="paybox">
         <div class="wrap_img">
-            <img src="../../../static/img/sign/iconerror.png" class="wrap_image"/>
+            <img src="../../../static/icon_false.png" class="wrap_image"/>
         </div>
         <p class="pay">支付失败</p>
         <p class="pay_first">所选银行卡余额不足，请及时充值</p>
@@ -36,14 +36,28 @@
             </p>
         </div>
         <div class="btn">
-            <span class="btn_left">订单详情</span>
-            <span class="btn_left btn_right">返回首页</span>
+            <span class="btn_left" @click="pageClick">订单详情</span>
+            <span class="btn_left btn_right" @click="homeClick">返回首页</span>
         </div>
     </div>
 </template>
 
 <script>
-
+    export default {
+		name: "",
+		data() {
+			return {
+            }
+        },
+        methods:{
+			pageClick() {
+				this.$router.push('/orderDetails');
+			},
+       		homeClick() {
+				this.$router.push('/');
+			}	
+		}
+	}
 </script>
 
 <style scoped>
@@ -62,8 +76,9 @@
         padding-bottom: 0.2rem;
     }
     .wrap_image{
-        width: 1rem;
-        height: auto;
+        width: 1.6rem;
+        height: 1.6rem;
+        margin-top: 0.5rem;
     }
     .pay{
         width: 100%;

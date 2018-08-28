@@ -46,8 +46,9 @@
 					this.aftercontent = response.data.output.temCnt;
 					this.after_time = response.data.output.currentTime.substring(10, 16);
 					this.afetr_data = response.data.output.currentTime.substring(0, 10);
-					this.share_url = window.location.href.split('/')[2] + "/static/router.html?type=afternoon&code=afternoon&temCode=" + this.$route.query.temCode;
-					console.log(window.location.href.split('/')[2])
+					this.share_url = this.$store.state.shareLink+ "/static/router.html?type=afternoon&code=afternoon&temCode=" + this.$route.query.temCode;
+//					console.log(httpLink)
+					console.log(this.share_url)
 					this.weChat()
 				}
 			}, response => {

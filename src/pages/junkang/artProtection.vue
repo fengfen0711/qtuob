@@ -1,11 +1,11 @@
 <template>
 	 <div class="one">
-	 	<img class="human" src="/static/muhaha/Human .png" alt="" />
+	 	<img class="human" src="/static/muhaha/Human.png" alt="" />
 	 	<p class="cont">需要转接人工核保</p>
 	 	<p class="contText">提示需要进行人工核保，人工核保也有可能核保失败，是否需要继续上传证件</p>
 	 	<div  class="btnBox clearFloat" >
 			<div class="boxLast">重新制定投保计划</div>
-			<div class="boxNext">重新制定投保计划</div>
+			<div class="boxNext">继续上传证件</div>
 		</div>
 	 </div>
 </template>

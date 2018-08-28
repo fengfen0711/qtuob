@@ -534,24 +534,35 @@
 				})
 	  		},
 	  		handleClickGoPopInfo(){
-	  			if(this.saleStatus == 1){
-	  				if (this.popShow == false) {
-		  				this.insureruleAjax()
-		  			}else{
-		  				this.handleClickPopup(1)
-		  			}
-	  			}
-	  			else if(this.saleStatus == 0){
-	  				MessageBox.confirm('',{
-					  	title: '温馨提示',
-					  	message: this.unSaleDes,
-					  	confirmButtonText: '确定',
-					  	showCancelButton: false
+	  			if (this.$store.state.loginId == "0") {
+					MessageBox.confirm('',{
+					  	title: '提示',
+					  	message: '请您登陆后再进行查看哦',
+					  	confirmButtonText: '登录', 
+						cancelButtonText: '暂不登录', 
+					  	showCancelButton: true
 					}).then(action => {
-						
+						this.$router.push('/logNew')
 					})
-	  			}
-		  			
+				} else {
+		  			if(this.saleStatus == 1){
+		  				if (this.popShow == false) {
+			  				this.insureruleAjax()
+			  			}else{
+			  				this.handleClickPopup(1)
+			  			}
+		  			}
+		  			else if(this.saleStatus == 0){
+		  				MessageBox.confirm('',{
+						  	title: '温馨提示',
+						  	message: this.unSaleDes,
+						  	confirmButtonText: '确定',
+						  	showCancelButton: false
+						}).then(action => {
+							
+						})
+		  			}
+			  	}
 	  		},
 	  		saveInfoAjax(){
 	  			let freqyNo = "B"
@@ -594,6 +605,7 @@
 					    "prem": this.minPrice,
 					    "prodName": this.cvrgName,
 					    "prodCode": this.prodCode,
+					    "prodNo": this.prodNo,
 					    "province":this.provinceType,
 					    "city": this.cityType,
 					    "county": this.countyType,
@@ -626,7 +638,7 @@
 	  	},
 	  	watch:{
 	  		prodNo:function(val){
-//	  			console.log(val)
+	  			console.log(val)
 		    	this.prodNo = val
 //		    	console.log(this.prodNo)
 		    }

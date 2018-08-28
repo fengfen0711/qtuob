@@ -91,6 +91,7 @@
 			}
 		},
 		created() {
+		this.creatsign()
 			var signdata = [{
 				"tmId": "TM0004"
 			}, {
@@ -126,8 +127,37 @@
 			this.canvasTxt = canvas.getContext("2d");
 		},
 		methods: {
+			
 			pdfClose(...data) {
 				this.pdfFlag = data[0]
+			},
+			creatsign(){
+				if(this.$route.query.status == "2") {
+					var data = {
+						"brokerId": this.$route.query.brokerId
+
+					}
+					Indicator.open();
+				this.$http.post(this.$store.state.link + '/core/broker/findBrokerByBrokId', data)
+				.then(res => {
+					console.log("==="+JSON.stringify(res.data))
+					if(res.data.code == "SYS_S_000") {						
+						this.signPhoto=res.data.output.brokerImg.sign;						
+						this.sign = true
+						this.mask = false
+						this.falg = true;
+						this.falg1 = true;
+						this.falg2 = true;
+						this.code=res.data.output.brokerImg.sign
+					}
+
+					Indicator.close();
+				}, res => {
+					Indicator.close();
+
+				})
+				}
+
 			},
 			siginclick() {
 				this.pdfFlag = false
@@ -157,7 +187,7 @@
 
 					}
 					this.$store.dispatch("changeSign", data)
-					this.$router.push('/confirmation')
+					this.$router.push('/confirmation?brokerId=' + this.$route.query.brokerId)
 				}
 
 			},

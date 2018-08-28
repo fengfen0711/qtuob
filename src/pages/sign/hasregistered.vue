@@ -9,7 +9,7 @@
 			<p class="informaton_descrip">
 				您已经注册过趣投保 App 账号
 				为方便查询申请进度，请前往趣投保 App 或
-				趣投保科技官方微信公众号（qutoubaokj），登陆查
+				趣投保科技官方微信公众号（qutoubaokj）登录查
 				询申请进度。
 			</p>
 			

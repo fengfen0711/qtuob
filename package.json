@@ -1,8 +1,8 @@
 {
-  "name": "qtb",
+  "name": "first9 newApp",
   "version": "1.0.0",
   "description": "A Vue.js project",
-  "author": "liupengfei001 <786620470@qq.com>",
+  "author": "fengfen0711 <fengfen0711@qq.com>",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",

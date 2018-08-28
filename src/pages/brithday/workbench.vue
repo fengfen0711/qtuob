@@ -22,13 +22,13 @@
 		<div class="about_list">
 			<div class="about_text">
 				<span class="about_gol">当前版本</span>
-				<span class="about_tel" >1.0.0</span>
+				<span class="about_tel" >1.1.8</span>
 			</div>
 		</div>
 		<div class="about_list" v-on:click="qtb_detail">
 			<div class="about_text">
 				<span class="about_gol">趣投保介绍</span>
-				<img class="work_img" src="/static/qijianwei/btn_next.png" />
+				<img class="work_img" src="/static/imgNew/icon_next3.png" />
 			</div>
 		</div>
 		<div class="about_botto_div">
@@ -46,6 +46,9 @@
       			phoneNum:"010-86220865",
       		}
     	},
+    	created(){
+    		this.common.noShare();
+		},
     	methods:{
     		qtb_detail(){
  				this.$router.push("/about_qtb")

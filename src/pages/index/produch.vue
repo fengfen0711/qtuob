@@ -67,6 +67,7 @@
 			Indicator.open();
 			this.$http.post(this.$store.state.link + "/prd/prod/taglist", data).then(res => {
 				Indicator.close();
+				console.log(res.data);
 				if(res.data.code == "SYS_S_000") {
 					this.sortMenu = res.data.output;
 					console.log(this.sortMenu);
@@ -94,7 +95,20 @@
 			handleClickDetail(e) {
 				var code = e.currentTarget.getAttribute('code')
 				var prodSaleCode = e.currentTarget.getAttribute('coder')
-				this.$router.push('/detail?prodCode=' + code + '&prodSaleCode=' + prodSaleCode + "&userId=" + localStorage.userId)
+				console.log(this.$route.query.prodCode)
+				if(this.tagCode == "TAG001001"){
+					if(code == "P000303010194") {
+						this.$router.push('/shopLineDe?prodCode=' + code + '&prodSaleCode=' + prodSaleCode + "&userId=" + localStorage.userId)
+					} else if(code == "P000304010207"){
+						this.$router.push('/yin?prodCode=' + code + '&prodSaleCode=' + prodSaleCode + "&userId=" + localStorage.userId)
+					}else{
+						this.$router.push('/detail?prodCode=' + code + '&prodSaleCode=' + prodSaleCode + "&userId=" + localStorage.userId)
+					}
+				}else{
+					this.$router.push('/detail?prodCode=' + code + '&prodSaleCode=' + prodSaleCode + "&userId=" + localStorage.userId)
+				}
+				
+
 			},
 			select_lab(ev, code) {
 				this.tagCode = code;
@@ -185,9 +199,12 @@
 						}
 						this.tagCode = this.sortMenu[0].tagCode;
 						this.$http.post(this.$store.state.link + "/prd/prod/tagprodsalelist", data).then(res => {
+
+							//							console.log("111"+JSON.stringify(res.data))
+
 							if(res.data.code == "SYS_S_000") {
 								this.itemall = res.data.output;
-								//								console.log("测试===" + JSON.stringify(this.itemall))
+																//console.log("测试===" + JSON.stringify(this.itemall))
 								this.data_flag = true;
 							} else {
 								this.data_flag = false;

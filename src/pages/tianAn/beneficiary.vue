@@ -8,7 +8,6 @@
 			<p class="inputGrop clearFloat">
 				<label class="inputLabel left">姓名</label>
 				<input type="text" class="inputText inputWidth left" placeholder="请输入真实姓名" v-model="name" maxlength="10" />
-				<!--<span class="sumBtn">+</span>-->
 			</p>
 			<p class="inputGrop clearFloat">
 				<label class="inputLabel left">证件类型</label>
@@ -18,7 +17,7 @@
 			</p>
 			<p class="inputGrop clearFloat">
 				<label class="inputLabel left">证件号码</label>
-				<input type="text" @input="cardnum" maxlength="19" class="inputTextCard inputWidth left" placeholder="请输入证件号码" v-model="IDnum" />
+				<input type="text" @input="cardnum" maxlength="19" class="inputTextCard inputWidth left" placeholder="请输入证件号码" v-model="IDnum" v-on:input="Idcard"/>
 			</p>
 			<p class="inputGrop clearFloat">
 				<label class="inputLabel left">证件有效期至</label>
@@ -33,10 +32,6 @@
 					<img src="/static/upDown.png" class="upDownImg3" />
 				</label>
 			</p>
-			<!--<p class="inputGrop clearFloat">
-				<label class="inputLabel left">性别</label>
-				<label class="inputLabel left">{{custGender}}</label>
-			</p>-->
 			<p class="inputGrop clearFloat">
 				<label class="inputLabel left">受益人性别</label>
 				<span class="inputText inputSpan left">
@@ -52,10 +47,6 @@
 						</span>
 				</span>
 			</p>
-			<!--<p class="inputGrop clearFloat">
-				<label class="inputLabel left">出生日期</label>
-				<label class="inputLabel left">{{birthDate}}</label>
-			</p>-->
 			<p class="inputGrop clearFloat">
 				<label class="inputLabel left">出生日期</label>
 				<span class="brspanbo" :class="{opa0:birthSpanFlag}">请选择出生日期</span>
@@ -168,12 +159,20 @@
 			},
 		},
 		methods: {
+			Idcard(){
+				if(this.IDnum.length>=18){
+					if(this.cardType=="A"||this.cardType=="B"||this.cardType=="C"){
+						
+					}
+				}
+			},
 			disableclick() {
 				if(this.cardType == "0" || this.cardType == "4" || this.cardType == "C") {
 					return true;
 				} else {
 					return false;
 				}
+			
 			},
 			birthDateSel(){
 				var pdate = this.birthDate;
@@ -414,6 +413,7 @@
 				return returnAge;
 			},
 			cardnum() {
+			
 				if(this.cardType == "0" || this.cardType == "4" || this.cardType == "C") {
 					if(this.IDnum.length == 18) {
 						Indicator.open();

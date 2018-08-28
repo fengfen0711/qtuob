@@ -43,7 +43,7 @@
 	}
 	
 	.pdf_btn {
-		position: fixed;
+		position: absolute;
 		bottom: .2rem;
 		left: .5rem;
 		width: 6.5rem;

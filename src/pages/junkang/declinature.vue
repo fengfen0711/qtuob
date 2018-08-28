@@ -6,14 +6,28 @@
         <p class="pay">核保失败</p>
         <p class="pay_first">被拒保的理由</p>
         <div class="btn">
-            <span class="btn_left">重新制定投保计划</span>
-            <span class="btn_left btn_right">返回首页</span>
+            <span class="btn_left" @click="againClick">重新制定投保计划</span>
+            <span class="btn_left btn_right" @click="homeClick">返回首页</span>
         </div>
     </div>
 </template>
 
 <script>
-
+    export default {
+		name: "",
+		data() {
+			return {
+            }
+        },
+        methods:{
+			againClick() {
+				this.$router.push('/trialCalculation');
+			},
+       		homeClick() {
+				this.$router.push('/');
+			}	
+		}
+	}
 </script>
 
 <style scoped>
@@ -32,8 +46,9 @@
         padding-bottom: 0.2rem;
     }
     .wrap_image{
-        width: 1rem;
-        height: auto;
+        width: 1.6rem;
+        height: 1.6rem;
+        margin-top: 0.5rem;
     }
     .pay{
         width: 100%;
@@ -50,7 +65,7 @@
     }
     .btn{
         width: 100%;
-        margin-top: 2rem;
+        margin-top: 7rem;
         padding-top: 0.7rem;
         padding-bottom: 0.5rem;
         display: flex;

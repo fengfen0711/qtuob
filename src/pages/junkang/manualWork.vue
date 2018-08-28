@@ -1,7 +1,7 @@
 <template>
     <div class="paybox">
         <div class="wrap_img">
-            <img src="../../../static/qijianwei/icon_select1_focus1.png" class="wrap_image"/>
+            <img src="../../../static/state_success.png" class="wrap_image"/>
         </div>
         <p class="pay">提交成功</p>
         <p class="pay_first">您的投保信息已提交保险公司进行<span style="color:#c9141e;">人工核保</span>请耐心</p>
@@ -37,14 +37,28 @@
             </p>
         </div>
         <div class="btn">
-            <span class="btn_left">订单详情</span>
-            <span class="btn_left btn_right">返回首页</span>
+            <span class="btn_left" @click="pageClick">订单详情</span>
+            <span class="btn_left btn_right" @click="homeClick">返回首页</span>
         </div>
     </div>
 </template>
 
 <script>
-
+    export default {
+		name: "",
+		data() {
+			return {
+            }
+        },
+        methods:{
+			pageClick() {
+				this.$router.push('/orderDetails');
+			},
+       		homeClick() {
+				this.$router.push('/');
+			}	
+		}
+	}
 </script>
 
 <style scoped>
@@ -59,12 +73,12 @@
     .wrap_img{
         width: 100%;
         text-align: center;
-        padding-top: 0.2rem;
-        padding-bottom: 0.2rem;
+        padding-top: 0.1rem;
     }
     .wrap_image{
-        width: 1.5rem;
-        height: auto;
+        width: 1.6rem;
+        height: 1.6rem;
+        margin-top: 0.5rem;
     }
     .pay{
         width: 100%;

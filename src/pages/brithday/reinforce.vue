@@ -119,7 +119,7 @@
 					"shareUrl": window.location.href.split('#')[0]
 				}
 				//				var share_URL = "http://h5.qtoubao.cn/work/signingAgent/index.html?brokerCode=" + localStorage.brokerCode;
-				var share_URL = window.location.href.split('/')[2] + "/static/router.html?type=reinforce&code=reinforce&brokerCode=" + localStorage.brokerCode;
+				var share_URL = this.$store.state.shareLink + "/static/router.html?type=reinforce&code=reinforce&brokerCode=" + localStorage.brokerCode;
 				console.log("share_URL===" + share_URL);
 				console.log(data)
 				Indicator.open();

@@ -11,7 +11,7 @@
 				<p @click="handleClikClose" class="mask_button">关闭</p>
 			</div>
 		</div>
-		<div class="content">
+		<div class="content" ref="bg">
 			<img class="banner" :src="banner" />
 			<div class="plan">
 				<p class="form_title">保障计划</p>
@@ -49,17 +49,14 @@
 		</div>
 		<!--v-bind:peopledetail="prodInfo"-->
 		<ShangHai v-show="shangHaiShow" :prodNo="prodNo,saleStatus,unSaleDes"></ShangHai>
-		<!--
-        	作者：786620470@qq.com
-        	时间：2018-07-13
-        	描述：干掉
-        -->
 		<TianAn v-show="tianAnShow" :prodNo="prodNo,prodInfo,saleStatus,unSaleDes,cmpCode"></TianAn>
+		<ZhongHua v-show="zhongHuaShow" :prodNo="prodNo,saleStatus,unSaleDes,cmpCode" ></ZhongHua>
 	</div>
 </template>
 
 <script>
 	import ShangHai from './buy/shangHai.vue'
+	import ZhongHua from './buy/zhongHua.vue'
 	import TianAn from './buy/tianAn.vue'
 	import { Indicator } from 'mint-ui';
 	import { Swipe, SwipeItem } from 'mint-ui';
@@ -78,6 +75,7 @@
 				prodSaleCode: "",
 				shangHaiShow: false,
 				tianAnShow: false,
+				zhongHuaShow: false,
 				cmpCode: "",
 				prodNo: '',
 				prodInfo: [],
@@ -90,6 +88,7 @@
 			this.prodSaleCode = this.$route.query.prodSaleCode
 			this.getData()
 			this.getClause()
+			this.common.noShare()
 		},
 		methods: {
 			getData() {
@@ -194,6 +193,7 @@
 			},
 			handleClikClose() {
 				this.$refs.mask.style.display = "none"
+				this.$refs.bg.style.position = "relative"
 
 			},
 			handleClickList(e) {
@@ -201,26 +201,34 @@
 					window.location.href = e.currentTarget.getAttribute('code')
 				} else {
 					this.$refs.mask.style.display = "block"
+					this.$refs.bg.style.position = "fixed"
 				}
 			}
 		},
 		components: {
 			TianAn: TianAn,
-			ShangHai: ShangHai
+			ShangHai: ShangHai,
+			ZhongHua: ZhongHua
 		},
 		watch: {
 			cmpCode: function(val) {
-				if(this.cmpCode == "000034") {
-					this.tianAnShow = true
-				} else {
-					this.tianAnShow = false
-				}
-
-				if(this.prodCode == "P000303010194") {
-					this.shangHaiShow = true
-				} else {
-					this.shangHaiShow = false
-				}
+//				if(this.cmpCode == "000034") {
+//					this.tianAnShow = true
+//				} else {
+//					this.tianAnShow = false
+//				}
+//				
+//				if(this.cmpCode == "000300") {
+//					this.zhongHuaShow = true
+//				} else {
+//					this.zhongHuaShow = false
+//				}
+//
+//				if(this.cmpCode == "000303" && this.prodCode == "P000303010194") {
+//					this.shangHaiShow = true
+//				} else {
+//					this.shangHaiShow = false
+//				}
 			},
 			prodNo: function(val) {
 				this.prodNo = val
@@ -585,8 +593,8 @@
 	}
 	
 	.mask_content {
-		height: 7.6rem;
-		overflow: hidden;
+		height: 8rem;
+		overflow: scroll;
 	}
 	
 	.mask_button {

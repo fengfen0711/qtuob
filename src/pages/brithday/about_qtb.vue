@@ -19,7 +19,10 @@
       		return {
       			
       		}
-    	}
+    	},
+    	created(){
+    		this.common.noShare();
+		},
    }
 </script>
 

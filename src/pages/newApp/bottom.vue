@@ -1,39 +1,42 @@
 <template>
 	<div class="box">
-		<Home :homeShow="homeShow"></Home>
-		<Product :productShow="productShow"></Product>
-		<Descover :descoverShow="descoverShow"></Descover>
-		<Mine :mineShow="mineShow"></Mine>
-		<div class="footer">
-			<div class="footerDiv" @click="handleClickFirst(1)">
-				<img class="tag_img" src="/static/imgNew/icon_home_default3.png">
-			    <img class="tag_img tag_img1" :class="{roundZ1:homeShow,roundZ:!homeShow}" src="/static/imgNew/icon_home_focus3.png">	
-			    <span class="spanText" :class="{spanTextSelected:homeShow}">趣投保</span>
+		<div class="content">
+	      	<router-view></router-view>
+	    </div>
+		<div class="footer" ref="styles">
+			<div class="footerDiv">
+				<router-link :to="{name: 'home'}" tag="div">
+					<img class="tag_img" src="/static/imgNew/icon_home_default3.png">
+				    <img class="tag_img tag_img1" :class="{roundZ1:homeShow,roundZ:!homeShow}" src="/static/imgNew/icon_home_focus3.png">	
+				    <span class="spanText" :class="{spanTextSelected:homeShow}">趣投保</span>
+			    </router-link>
 			</div>
-			<div class="footerDiv" @click="handleClickFirst(2)">
-				<img class="tag_img" src="/static/imgNew/icon_product_default3.png">
-			    <img class="tag_img tag_img1" :class="{line1:productShow,line2:!productShow}" src="/static/imgNew/icon_product_focus3.png">	
-			    <span class="spanText" :class="{spanTextSelected:productShow}">产品</span>
+			<div class="footerDiv">
+				<router-link :to="{name: 'product'}" tag="div">
+					<img class="tag_img" src="/static/imgNew/icon_product_default3.png">
+				    <img class="tag_img tag_img1" :class="{line1:productShow,line2:!productShow}" src="/static/imgNew/icon_product_focus3.png">	
+				    <span class="spanText" :class="{spanTextSelected:productShow}">产品</span>
+			    </router-link>
 			</div>
-			<div class="footerDiv" @click="handleClickFirst(3)">
-				<img class="tag_img" src="/static/imgNew/icon_descover_unfocus3.png">
-			    <img class="tag_img tag_img1" :class="{disblock:descoverShow,disnone:!descoverShow}" src="/static/imgNew/icon_descover_focus3.png">	
-			    <span class="spanText" :class="{spanTextSelected:descoverShow}">发现</span>
+			<div class="footerDiv">
+				<router-link :to="{name: 'descover'}" tag="div">
+					<img class="tag_img" src="/static/imgNew/icon_descover_unfocus3.png">
+				    <img class="tag_img tag_img1" :class="{disblock:descoverShow,disnone:!descoverShow}" src="/static/imgNew/icon_descover_focus3.png">	
+				    <span class="spanText" :class="{spanTextSelected:descoverShow}">发现</span>
+			    </router-link>
 			</div>
-			<div class="footerDiv" @click="handleClickFirst(4)">
-				<img class="tag_img" src="/static/imgNew/Icon_my_default3.png">
-				<img class="tag_img tag_img1" :class="{line3:mineShow,line4:!mineShow}" src="/static/imgNew/Icon_my_focus3.png">
-			    <span class="spanText" :class="{spanTextSelected:mineShow}">我的</span>
+			<div class="footerDiv" @click="toMine">
+				<router-link :to="{name: minePath}" tag="div">
+					<img class="tag_img" src="/static/imgNew/Icon_my_default3.png">
+					<img class="tag_img tag_img1" :class="{line3:mineShow,line4:!mineShow}" src="/static/imgNew/Icon_my_focus3.png">
+				    <span class="spanText" :class="{spanTextSelected:mineShow}">我的</span>
+			    </router-link>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
-	import Home from "./index.vue"
-	import Product from "./product.vue"
-	import Descover from "./descover.vue"
-	import Mine from "./mine.vue"
 	export default {
 	  	name: 'newIndex',
 	  	data(){
@@ -42,55 +45,98 @@
 	  			productShow:false,
 	  			descoverShow:false,
 	  			mineShow:false,
-	  			index:this.$route.query.index
+	  			path:this.$route.path,
+	  			pathMain:'',
+	  			minePath:'',
+	  			titleList:[],
+	  			question: 0,
+				size: 0,
 	  		}
 	  	},
-	  	components:{
-    		Home : Home,
-    		Product : Product,
-    		Descover : Descover,
-    		Mine : Mine
-    	},
     	created(){
-//  		console.log(this.index)
-    		if (this.index == "") {
-    			this.index = 1
-    		}
-			this.handleClickFirst(this.index)
+    		this.size = document.documentElement.clientHeight;
+    		this.pathMain = this.path.split('newIndex/')
+			this.handleClickFirst(this.pathMain[this.pathMain.length-1])
+			this.titleAjax()
     	},
+    	updated(){
+    		this.pathMain = this.path.split('newIndex/')
+			this.handleClickFirst(this.pathMain[this.pathMain.length-1])
+    	},
+		mounted() {
+			const that = this
+			window.onresize = function temp() {
+				that.question = document.documentElement.clientHeight;
+				that.styleSet()
+			}
+		},
 	  	methods:{
 	  		handleClickFirst(index){
-	  			if (index == 1) {
-	  				this.$router.push('/newIndex?index=1')
+	  			if (index.indexOf("home") != -1) {
 	  				this.homeShow = true;
 	  				this.productShow = false;
 	  				this.descoverShow = false;
 	  				this.mineShow = false;
 	  			}
-	  			else if (index == 2) {
-	  				this.$router.push('/newIndex?index=2')
+	  			else if (index.indexOf("product") != -1) {
 	  				this.productShow = true;
 	  				this.homeShow = false;
 	  				this.descoverShow = false;
 	  				this.mineShow = false;
 	  			}
-	  			else if (index == 3) {
-	  				this.$router.push('/newIndex?index=3')
+	  			else if (index.indexOf("descover") != -1) {
 	  				this.descoverShow = true;
 	  				this.homeShow = false;
 	  				this.productShow = false;
 	  				this.mineShow = false;
 	  			}
-	  			else if (index == 4) {
-	  				this.$router.push('/newIndex?index=4')
+	  			else if (index.indexOf("mine") != -1) {
 	  				this.mineShow = true;
 	  				this.homeShow = false;
 	  				this.descoverShow = false;
 	  				this.productShow = false;
+	  			}else{
+	  				if(index.indexOf("newIndex") != -1){
+	  					this.$router.push('/newIndex/home')
+	  				}
 	  			}
 	  		},
-	  	}
-	  }
+	  		toMine () {
+	  			if (this.$store.state.loginId == "0") {
+					this.$router.push('/logNew')
+				}else{
+					this.minePath = 'mine'
+					this.$router.push('/newIndex/mine')
+				}
+	  		},
+	  		titleAjax(){
+				var titleInfo = {
+					"parTypeId": "0-1"
+				}
+				this.$http.post(this.$store.state.link + "/cnt/atc/queryArticleType", titleInfo)
+				.then(res => {
+//					console.log(res.data)
+					if(res.data.code == "SYS_S_000") {
+						this.titleList = res.data.output.articleTypeRespList;
+					}
+				}, res => {
+					console.log(res.data)
+				})
+			},
+			styleSet() {
+				if(parseInt(this.size) <= parseInt(this.question)) {
+					this.$refs.styles.style.display = "block"
+				} else {
+					this.$refs.styles.style.display = "none"
+				}
+			},
+	  	},
+	  	watch:{
+    		$route () {
+    			this.path = this.$route.path
+		    }
+    	}
+	}
 </script>
 
 <style scoped="scoped">
@@ -102,21 +148,20 @@
 	.footer{
 		position: fixed;
 		bottom: 0;
+		z-index: 3;
 		width: 6.8rem;
 		padding: 0 0.35rem;
 		height: 1.16rem;
 		background: #fff;
 	}
-	.footer div{
+	.footerDiv{
+		position: relative;
 		width: 1.7rem;
 		padding-top: .16rem;
 		float: left;
 		font-size: 0.2rem;
 		color: #8A8A8F;
 		text-align: center;
-	}
-	.footerDiv {
-		position: relative;
 	}
 	.tag_img{
 		width: .48rem;

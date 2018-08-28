@@ -1,59 +1,33 @@
 <template>
-	<div class="my_body" v-show="mineShow">
-		<div v-if="!cust_status" class="custseven_sattus" @touchmove.prevent>
-			<div class="cs_div_centen">
-				<div class="cs_div_opentitle">温馨提示</div>
-				<div class="cs_div_openiput1">
-					<p class="cust_p">
-						非保险从业人员，无法通过本平台做产品推广，请联系我们的客服马上办理从业资格认证。
-					</p>
-				</div>
-				<div class="cs_btn_bootom">
-					<div class="cs_btn_cancer1" @click="notopen">取&nbsp;消</div>
-					<div class="cs_btn_bg"></div>
-					<a class="cs_btn_cancer2" @click="notopenknow" :href="'tel:' +  phoneNum1 ">马上联系</a>
-				</div>
-			</div>
-		</div>
-		<div v-if="!indexstatus" class="custseven_sattus" @touchmove.prevent>
-			<div class="cs_div_centen">
-				<div class="cs_div_opentitle">温馨提示</div>
-				<div class="cs_div_openiput1">
-					<p class="cust_p cust_p1">
-						您还没有提交上岗申请
-					</p>
-				</div>
-				<div class="cs_btn_bootom">
-					<div class="cs_btn_cancer1" @click="notcan">取&nbsp;消</div>
-					<div class="cs_btn_bg"></div>
-					<a class="cs_btn_cancer2" @click="notopenknow" :href="'tel:' +  phoneNum1 ">马上联系</a>
-				</div>
-			</div>
-		</div>
 		<div class="blur_all" :class="{blur_all1:!cust_status,blur_all2:!indexstatus}">
-			<div class="my_div_icon clearFloat">
-				<div class="my_div_icontop left" @click="userinfo">
-					<img class="my_img_icon" :src="headImg" />
+			<div class="my_div_icon">
+				<div class="clearFloat">
+					<div class="my_div_icontop left" @click="userinfo">
+						<img class="my_img_icon" :src="headImg" />
+					</div>
+					<div class="headNameBox left" @click="userinfo">
+						<p class="headName1">{{nickName}}</p>
+					</div>
 				</div>
-				<div class="headNameBox left">
-					<p class="headName1">{{nickName}}</p>
-					<p class="headName2" v-model="phoneNum">{{phoneNum}}</p>
+				<div class="signBox">
+					<img :src="signImg" class="signImg" />
+					<!--<span class="signTxt">{{signText}}</span>-->
 				</div>
 			</div>
 			<div class="index_top">
 				<div class="my_div_itemall" @click="mylifeorder">
 					<img class="my_img_itemicon" src="/static/imgNew/icon_order3.png" />
-					<div class="my_img_itemname">订单中心</div>
+					<div class="my_img_itemname">我的投保单</div>
 					<img class="my_img_itemnext" src="/static/imgNew/icon_next3.png" />
 				</div>
 				<div class="my_div_itemall" @click="myConfirmation">
-					<img class="my_img_itemicon" src="/static/imgNew/icon_planbook_243.png" />
-					<div class="my_img_itemname">我的计划书</div>
+					<img class="my_img_itemicon" src="/static/imgNew/icon_Commission3.png" />
+					<div class="my_img_itemname">客户委托书</div>
 					<img class="my_img_itemnext" src="/static/imgNew/icon_next3.png" />
 				</div>
-				<div class="my_div_itemall" @click="myConfirmation">
-					<img class="my_img_itemicon" src="/static/imgNew/icon_seal3.png" />
-					<div class="my_img_itemname">客户确认书</div>
+				<div class="my_div_itemall" @click="lookAhead">
+					<img class="my_img_itemicon" src="/static/imgNew/icon_assist3.png" />
+					<div class="my_img_itemname">展业辅助</div>
 					<img class="my_img_itemnext" src="/static/imgNew/icon_next3.png" />
 				</div>
 				<div class="my_div_itemall" @click="proginquiry">
@@ -61,7 +35,7 @@
 					<div class="my_img_itemname">审批进度查询</div>
 					<img class="my_img_itemnext" src="/static/imgNew/icon_next3.png" />
 				</div>
-				<div class="my_div_itemall set" @click="proginquiry">
+				<div class="my_div_itemall set" @click="mySet">
 					<img class="my_img_itemicon" src="/static/imgNew/icon_setting3.png" />
 					<div class="my_img_itemname">设置</div>
 					<img class="my_img_itemnext" src="/static/imgNew/icon_next3.png" />
@@ -74,11 +48,12 @@
 <script>
 	import { Toast } from 'mint-ui';
 	import { Indicator } from 'mint-ui';
+	import { MessageBox } from 'mint-ui';
 	export default {
 		name: 'mine',
-		props: ['mineShow'],
 		data() {
 			return {
+				mineShow:true,
 				headImg: "/static/img/userImg.png",
 				nickName: "",
 				phoneNum: "",
@@ -87,110 +62,40 @@
 				indexstatus: true,
 				phoneNum1: "010-86220865",
 				failure: "",
+				signText:"立即申请",
+				signStatus:'',
+				signImg:'/static/imgNew/label13.png'
 			}
 		},
 		created() {
-			if(localStorage.getItem("phoneNum") != -"") {
-				this.phoneNum = localStorage.getItem("phoneNum").slice(0, 3) + "****" + localStorage.getItem("phoneNum").slice(7, 11);
-			}
-			var data = {
-				"userId": localStorage.getItem("userId"),
-				"token": localStorage.getItem("token")
-			};
-			Indicator.open();
-			this.$http.post(this.$store.state.link + "/pct/seloneselfinfo", data).then(res => {
-				Indicator.close();
-				console.log(res.data)
-				if(res.data.code == "SYS_S_000") {
-					if(res.data.output.headImg && res.data.output.headImg != "") {
-						this.headImg = res.data.output.headImg;
-					}
-					if (res.data.output.absName && res.data.output.absName != "") {
-						this.nickName = res.data.output.absName;
-					}
-					window.localStorage.BrokerId = res.data.output.brokerId;
-				} else {
-					if(res.data.desc != undefined) {
-						Toast(res.data.desc);
-					} else {
-						console.log("登录接口undefined");
-					}
-				}
-			}, res => {
-				Indicator.close();
-				console.log(res.data)
-			})
+			this.getBroInfo()
+			this.old();
+			this.common.noShare()
 		},
 		methods: { //方法
-			notcan() {
-				this.indexstatus = true;
-			},
-			proginquiry() {
-				var progdata = {
-					"brokerId": localStorage.BrokerId
-				}
-				Indicator.open();
-				this.$http.post(this.$store.state.link + "/core/broker/brokerRegStatus", progdata).then(res => {
-					Indicator.close();
-					console.log(res.data)
-					if(res.data.code == "SYS_S_000") {
-						if(typeof(res.data.output.tblBrokerRegHis) == "undefined") {
-							if(res.data.output.brokerReg.regStatus == "TN" ) {
-								this.$router.push('/waitindex')
-							}
-						} else {
-							this.indexstatus = false;
-							if(typeof(res.data.output.brokerReg) != "undefined") {
-								if(res.data.output.brokerReg.regStatus == "NE" || res.data.output.brokerReg.regStatus == "ZE" || res.data.output.brokerReg.regStatus == "CE") {
-									this.failure = res.data.output.tblBrokerRegHis.regRemarks;
-									this.$router.push('/failindex?failure=' + this.failure + "&brokerId=" + localStorage.BrokerId)
-								}else if(res.data.output.brokerReg.regStatus == "CN" || res.data.output.brokerReg.regStatus == "ZN"){
-									this.$router.push('/waitindex')
-								}else if(res.data.output.brokerReg.regStatus == "ZS") {
-									this.$router.push('/step?brokerId=' + localStorage.BrokerId)
-								}
-							}
-						}
-					}
-				}, res => {
-					Indicator.close();
-					console.log(res.data)
-				})
-			},
-			notopenknow() {
-				this.cust_status = true;
-			},
-			notopen() {
-				this.cust_status = true;
-			},
-			userinfo() {
-				//个人中心
-				this.$router.push('/userInfo')
-			},
-			mylifeorder() {
-				//订单中心
-				this.$router.push('/mylifeOrder')
-			},
-			myConfirmation() {
-				//客户确认书
+			old(){
+//				if(localStorage.getItem("phoneNum") && (localStorage.getItem("phoneNum") != -"")) {
+//					this.phoneNum = localStorage.getItem("phoneNum").slice(0, 3) + "****" + localStorage.getItem("phoneNum").slice(7, 11);
+//				}
 				var data = {
-					"brokerId": localStorage.BrokerId
+					"userId": localStorage.getItem("userId"),
+					"token": localStorage.getItem("token")
 				};
 				Indicator.open();
-				this.$http.post(this.$store.state.link + "/core/broker/findBrokerByBrokId", data).then(res => {
+				this.$http.post(this.$store.state.link + "/pct/seloneselfinfo", data).then(res => {
 					Indicator.close();
-					console.log(res.data)
+//					console.log(res.data)
 					if(res.data.code == "SYS_S_000") {
-						var brokerCodehas = res.data.output.tblBroker.hasOwnProperty("brokerCode");
-						if(brokerCodehas == true) {
-							this.$router.push('/custConfirmation')
-						} else {
-							this.cust_status = false;
+						if(res.data.output.headImg && res.data.output.headImg != "") {
+							this.headImg = res.data.output.headImg;
 						}
+						if (res.data.output.absName && res.data.output.absName != "") {
+							this.nickName = res.data.output.absName;
+						}
+						window.localStorage.BrokerId = res.data.output.brokerId;
 					} else {
 						if(res.data.desc != undefined) {
-							Toast(res.data.desc);
-							console.log(res.data.desc);
+							console.log(res.data.desc)
 						} else {
 							console.log("登录接口undefined");
 						}
@@ -200,9 +105,156 @@
 					console.log(res.data)
 				})
 			},
+	  		path(pathAdd){
+	  			if (this.signStatus == "ZS") {
+					this.$router.push(pathAdd)
+				} else  if (this.signStatus == "") {
+					MessageBox.confirm('',{
+					  	title: '提示',
+					  	message: '您尚未与上海明大保险经纪有限公司签约，无法使用此功能。',
+					  	confirmButtonText: '签约', 
+						cancelButtonText: '暂不签约', 
+					  	showCancelButton: true
+					}).then(action => {
+						this.$router.push('/guader')
+						this.quit()
+					})
+				} else  if (this.signStatus == "NE" || this.signStatus == "CE" || this.signStatus == "ZE") {
+					MessageBox.confirm('',{
+					  	title: '提示',
+					  	message: '您的签约审核失败，是否修改信息',
+					  	confirmButtonText: '修改', 
+						cancelButtonText: '暂不修改', 
+					  	showCancelButton: true
+					}).then(action => {
+						this.$router.push('/failindex?brokerId='+ this.$store.state.brokerInfo.brokerId+'&failure=' + this.failure)//审核失败
+					})
+				} else  if (this.signStatus == "TN" || this.signStatus == "CN" || this.signStatus == "ZN") {
+					MessageBox.confirm('',{
+					  	title: '提示',
+					  	message: '您的签约合伙人正在审核中，不要着急哦',
+					  	confirmButtonText: '查看进度', 
+						cancelButtonText: '暂不查看', 
+					  	showCancelButton: true
+					}).then(action => {
+						this.$router.push('/waitindex?regStatus='+ this.signStatus)//审核中
+					})
+				}
+	  		},
+	  		getBroInfo(){
+	  			if (this.$store.state.brokerInfo.isSignEnum == 'Y' && this.$store.state.brokerInfo.brokerCode != '') {
+					this.signImg = '/static/imgNew/label43.png';
+				}else{
+		  			var broInfo = {
+						"brokerId": this.$store.state.brokerInfo.brokerId,
+					}
+	//	  			console.log(this.$store.state.brokerInfo.brokerId)
+					this.$http.post(this.$store.state.link + "/core/broker/brokerRegStatus", broInfo)
+					.then(res => {
+						console.log(res.data)
+						if(res.data.code == "SYS_S_000") {
+							if (res.data.output.brokerReg && res.data.output.brokerReg.regStatus) {
+								if (res.data.output.brokerReg.status == 'Y') {
+									this.signStatus = res.data.output.brokerReg.regStatus
+									this.failure = res.data.output.tblBrokerRegHis.regRemarks;
+									this.signClick();
+								}
+							}else{
+								this.signStatus = ""
+							}
+						}
+					}, res => {
+						console.log(res.data)
+					})
+				}
+	  		},
+			proginquiry() {
+				if (this.$store.state.brokerInfo.isSignEnum == 'Y' && this.$store.state.brokerInfo.brokerCode != '') {
+					this.$router.push('/step?brokerId='+ this.$store.state.brokerInfo.brokerId)
+				}else{
+					if (this.signStatus == "ZS") {
+						this.$router.push('/step?brokerId='+ this.$store.state.brokerInfo.brokerId)//已签约并审核成功
+					} else  if (this.signStatus == "") {
+						this.$router.push('/guader')
+						this.quit()
+					} else  if (this.signStatus == "NE" || this.signStatus == "CE" || this.signStatus == "ZE") {
+						this.$router.push('/failindex?brokerId='+ this.$store.state.brokerInfo.brokerId+'&failure=' + this.failure)//审核失败
+					} else  if (this.signStatus == "TN" || this.signStatus == "CN" || this.signStatus == "ZN") {
+						this.$router.push('/waitindex?regStatus='+ this.signStatus)//审核中
+					}
+				}
+			},
+			userinfo() {
+				this.$router.push('/userNew')
+			},
+			mylifeorder() {
+				this.$router.push('/mylifeOrder')
+//				MessageBox.confirm('',{
+//				  	title: '温馨提示',
+//				  	message: '我们正在努力中，敬请期待~',
+//				  	confirmButtonText: '确定',
+//				  	showCancelButton: false
+//				}).then(action => {
+//					
+//				})
+			},
+			myConfirmation() {
+				if (this.$store.state.brokerInfo.isSignEnum == 'Y' && this.$store.state.brokerInfo.brokerCode != '') {
+					this.$router.push('/custConfirmation')
+				}else{
+					this.path('/custConfirmation')
+				}
+			},
+			lookAhead(){
+				this.$router.push('/tool')
+			},
 			mySet() {
-				//设置
-				this.$router.push('/mine-set')
+				this.$router.push('/mineSet')
+			},
+			signClick(){
+				if (this.$store.state.brokerInfo.isSignEnum == 'Y' && this.$store.state.brokerInfo.brokerCode != '') {
+					this.signImg = '/static/imgNew/label43.png';
+				}else{
+					if (this.signStatus == "ZS") {
+						this.signImg = '/static/imgNew/label43.png';
+					} else  if (this.signStatus == "") {
+						this.signImg = '/static/imgNew/label13.png';
+					} else  if (this.signStatus == "NE" || this.signStatus == "CE" || this.signStatus == "ZE") {
+						this.signImg = '/static/imgNew/label33.png';
+					} else  if (this.signStatus == "TN" || this.signStatus == "CN" || this.signStatus == "ZN") {
+						this.signImg = '/static/imgNew/label23.png';
+					}
+				}
+			},
+			quit() {
+				var data = {
+					"loginNme": this.$store.state.userInfo.userPhone,
+					"loginType": "A",
+					"token": this.$store.state.token,
+					"userId": this.$store.state.userId
+				};
+				this.$http.post(this.$store.state.link + "/sso/dologout", data).then(res => {
+					Indicator.close();
+//					console.log(res.data)
+					if(res.data.code == "SYS_S_000") {
+						window.localStorage.removeItem("phoneNum");
+						window.localStorage.removeItem("token");
+						this.$store.dispatch("changeToken", '')
+						this.$store.dispatch("changeUserId", '')
+						this.$store.dispatch("changeUserInfoData", {})
+						this.$store.dispatch("changeBrokerInfoData", {})
+					} else {
+						window.localStorage.removeItem("phoneNum");
+						window.localStorage.removeItem("token");
+						this.$store.dispatch("changeToken", '')
+						this.$store.dispatch("changeUserId", '')
+						this.$store.dispatch("changeUserInfoData", {})
+						this.$store.dispatch("changeBrokerInfoData", {})
+					}
+				}, res => {
+					Indicator.close();
+					console.log(res.data)
+				})
 			},
 		}
 	}
@@ -222,12 +274,6 @@
 		visibility: hidden;
 		clear: both;
 		content: "";
-	}
-	.my_body {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		background: #FFFFFF;
 	}
 	.blur_all {
 		width: 100%;
@@ -249,43 +295,53 @@
 		background-image: url(/static/imgNew/bg_head3.png);
 		background-size: cover;
 	}
-	
 	.my_div_icontop {
-		width: 0.96rem;
-		height: 0.96rem;
+		width: 0.8rem;
+		height: 0.8rem;
 		margin: 1.02rem 0.16rem 0 0.4rem;
 	}
-	
 	.my_img_icon {
 		display: block;
-		width: 0.96rem;
-		height: 0.96rem;
+		width: 0.8rem;
+		height: 0.8rem;
+		border: solid #FFFFFF 0.04rem;
 		border-radius: 50%;
 	}
 	.headNameBox {
-		margin-top: 1.08rem;
+		margin-top: 1.02rem;
 		margin-right: 0.4rem;
 		font-size: 0.32rem;
 		color: #222222;
 		font-weight: bold;
 	}
 	.headName1 {
-		margin-bottom: 0.16rem;
+		height: 0.88rem;
+		line-height: 0.88rem;
 		font-size: 0.36rem;
 	}
-	.my_div_name {
-		margin-top: 0.32rem;
-		font-size: 0.48rem;
-		color: #222222;
+	.signBox {
+		height: 0.28rem;
+		padding-left: 0.4rem;
+		line-height: 0.28rem;
+		margin-top: 0.08rem;
 	}
-	
+	.signImg {
+		display: inline-block;
+		width: 0.88rem;
+	}
+	.signTxt {
+		margin-left: 0.12rem;
+		line-height: 0.28rem;
+		font-size: 0.2rem;
+		color: #E73748;
+		text-decoration: underline;
+	}
 	.my_div_itemall {
 		width: 100%;
 		height: 0.96rem;
 		background: #ffffff;
 		border-bottom: 0.01rem solid #D8D8D8;
 	}
-	
 	.my_img_itemicon {
 		display: block;
 		float: left;
@@ -293,15 +349,13 @@
 		width: 0.48rem;
 		height: 0.48rem;
 	}
-	
 	.my_img_itemname {
 		display: block;
 		float: left;
-		font-size: 0.24rem;
+		font-size: 0.28rem;
 		line-height: 0.96rem;
 		margin-left: 0.24rem;
 	}
-	
 	.my_img_itemnext {
 		display: block;
 		margin-top: 0.24rem;
@@ -310,247 +364,11 @@
 		position: absolute;
 		right: 0.4rem;
 	}
-	
-	.my_bg {
-		width: 100%;
-		height: 0.02rem;
-		background: #eeeeee;
-	}
-	
-	.my_bigbg {
-		width: 100%;
-		height: 0.48rem;
-		background: #eeeeee;
-	}
-	
-	.my_div_out {
-		display: block;
-		width: 6.04rem;
-		height: 1rem;
-		margin: 0 auto;
-		border-radius: 1rem;
-		background-image: linear-gradient(90deg, #FF8B62 0%, #FF7CA4 100%);
-		box-shadow: inset 0 0.01rem 0.03rem 0 rgba(255, 255, 255, 0.50);
-		text-align: center;
-		margin-top: 0.8rem;
-		color: #ffffff;
-		line-height: 1rem;
-		font-size: 0.32rem;
-	}
-	
-	.ctc_div_mask {
-		position: fixed;
-		top: 0;
-		bottom: 0;
-		right: 0;
-		left: 0;
-		background: #000000;
-		background: rgba(0, 0, 0, 0.40);
-		z-index: 100;
-	}
-	
-	.ctc_div_maskitem {
-		width: 5.44rem;
-		height: 3.6rem;
-		background: #ffffff;
-		margin: 0 auto;
-		margin-top: 50%;
-		border-radius: 0.16rem;
-		padding-top: 0.28rem;
-	}
-	
-	.ctc_div_labtitle {
-		width: 100%;
-		margin: 0 auto;
-		font-size: 0.32rem;
-		text-align: center;
-		color: #555555;
-	}
-	
-	.ctc_div_labtitle1 {
-		width: 100%;
-		margin: 0 auto;
-		font-size: 0.4rem;
-		text-align: center;
-		color: #555555;
-		margin-top: 0.5rem;
-	}
-	
-	.ctc_div_labcontent {
-		width: 90%;
-		margin: 0 auto;
-		font-size: 0.32rem;
-		line-height: 0.4rem;
-		text-align: left;
-		color: #555555;
-		margin-top: 0.18rem;
-	}
-	
-	.ctc_div_labbottom {
-		width: 100%;
-		height: 1.28rem;
-		margin-top: 0.5rem;
-	}
-	
-	.ctc_div_ok {
-		width: 2rem;
-		height: 0.8rem;
-		margin: 0 auto;
-		margin-top: 0.8rem;
-		font-size: 0.4rem;
-		text-align: center;
-		color: #FFFFFF;
-		line-height: 0.8rem;
-		border-radius: 0.5rem;
-		background: #EB7760;
-	}
-	
-	.index_con {
-		width: 2rem;
-		height: 0.8rem;
-		font-size: 0.4rem;
-		text-align: center;
-		color: #FFFFFF;
-		line-height: 0.8rem;
-		border-radius: 0.5rem;
-		background: #EB7760;
-		float: left;
-		margin-top: 0.8rem;
-	}
-	
-	.index_canel {
-		width: 2rem;
-		height: 0.8rem;
-		font-size: 0.4rem;
-		text-align: center;
-		color: #FFFFFF;
-		line-height: 0.8rem;
-		border-radius: 0.5rem;
-		background: #EB7760;
-		float: right;
-		margin-top: 0.8rem;
-	}
-	
-	.index_bottom {
-		padding: 0 0.4rem;
-	}
-	
 	.index_top {
 		margin-top: -0.1rem;
 		padding-left: 0.4rem;
 	}
-	
-	.custseven_sattus {
-		position: fixed;
-		top: 0;
-		bottom: 0;
-		right: 0;
-		left: 0;
-		background: #000000;
-		z-index: 100;
-		background: rgba(0, 0, 0, 0.20);
-	}
-	
-	.cs_div_centen {
-		overflow: hidden;
-		width: 5.42rem;
-		height: 3.56rem;
-		margin: 0 auto;
-		margin-top: 50%;
-		border-radius: 0.16rem;
-		background: rgba(248, 248, 248, 0.91);
-		border-radius: 0.26rem;
-		position: relative;
-	}
-	
-	
-	.cs_div_openiput {
-		width: 4.76rem;
-		height: 1.23rem;
-		margin: 0 auto;
-		margin-top: 0.38rem;
-		border: 0.01rem solid #8E8E93;
-	}
-	
-	.cs_btn_bootom {
-		width: 5.42rem;
-		height: 0.89rem;
-		position: absolute;
-		bottom: 0;
-		border-top: 0.01rem solid #CCCCCC;
-	}
-	
-	.cs_btn_cancercust {
-		display: block;
-		font-size: 0.32rem;
-		color: #EB6067;
-		line-height: 0.88rem;
-		text-align: center;
-		border-right: 0.01rem solid #CCCCCC;
-	}
-	
-	
-	.cust_p {
-		line-height: 0.4rem;
-		text-align: justify;
-	}
-	
-	.cs_div_opentitle {
-		width: 100%;
-		height: 0.36rem;
-		text-align: center;
-		font-size: 0.32rem;
-		color: #222222;
-		font-weight: bold;
-		margin-top: 0.32rem;
-	}
-	
-	.cs_div_openiput1 {
-		width: 4.76rem;
-		height: 1.23rem;
-		margin: 0 auto;
-		margin-top: 0.24rem;
-		padding: 0 0.3rem 0 0.3rem;
-	}
-	
-	.cust_p1 {
-		padding-top: 0.1rem;
-		text-align: center;
-	}
-	
-	
-	.cs_btn_cancer1 {
-		display: block;
-		float: left;
-		width: 2.69rem;
-		height: 0.88rem;
-		font-size: 0.32rem;
-		color: #EB6067;
-		line-height: 0.88rem;
-		text-align: center;
-		border-right: 0.01rem solid #CCCCCC;
-	}
-	
-	.cs_btn_bg {
-		display: block;
-		float: left;
-		height: 0.88rem;
-		width: 0.01rem;
-		background: #CCCCCC;
-	}
-	
-	.cs_btn_cancer2 {
-		display: block;
-		float: left;
-		width: 2.69rem;
-		height: 0.88rem;
-		font-size: 0.3rem;
-		color: #EB6067;
-		line-height: 0.88rem;
-		text-align: center;
-		font-weight: bold;
-	}
 	.set {
-		margin-top: 0.48rem;
+		padding-top: 0.48rem;
 	}
 </style>

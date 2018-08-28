@@ -14,7 +14,7 @@
 			<img class="ctc_img_query" src="/static/qijianwei/SearchGlyph.png" @click="changeCount" />
 			<input v-model="input_value" class="ctc_input_query" type="text" placeholder="搜索" v-on:blur="changeCount()" />
 		</div>
-		<div @click="nextadd()" class="ctc_div_nextadd">新增确认书</div>
+		<div @click="nextadd()" class="ctc_div_nextadd">新增委托书</div>
 		<div v-if="data_flag">
 			<div class="ctc_div_itemleft" @click="details(item.beforeOrderStatus,item.pkInsureId,item.h5Url)" v-for="item in itemall">
 				<div class="ctc_div_itemconfirm">{{item.beforeOrderStatus | capitalize}}</div>
@@ -43,7 +43,7 @@
 					<div class="ctc_div_itemnametitle">{{item.mobileNo}}</div>
 				</div>
 			</div>
-			<div class="ctc_div_introduce">投保单信息已经转发给客户，无法进行修改删除等操作，请知悉！</div>
+			<!--<div class="ctc_div_introduce">投保单信息已经转发给客户，无法进行修改删除等操作，请知悉！</div>-->
 		</div>
 		<div v-if="!data_flag">
 			<img class="ctc_img_null" src="/static/qijianwei/my_tbd.png" />
@@ -162,7 +162,7 @@
 			details(beforeOrderStatus, pkInsureId, h5Url) {
 				//				详情
 				if(beforeOrderStatus == "Y") {
-					this.share_url = h5Url + "?pkInsureId=" + pkInsureId + "&beforeOrderStatus=" + beforeOrderStatus + "&userId=" + localStorage.getItem("userId") + "&token=" + localStorage.getItem("token");
+					this.share_url = h5Url + "/index.html?pkInsureId=" + pkInsureId + "&beforeOrderStatus=" + beforeOrderStatus + "&userId=" + localStorage.getItem("userId") + "&token=" + localStorage.getItem("token");
 					console.log("连接详情的URL" + this.share_url);
 					window.location.href = this.share_url;
 				} else {

@@ -129,8 +129,8 @@
 						var dataCode = res.data.code;
 						if(dataCode == "SYS_S_000") {
 							//银行卡img
-							this.headerImage="http://outer.qtoubao.cn:9900/"+res.data.output.tblBrokerImg.bankImgSerial
-							this.code=res.data.output.tblBrokerImg.bankImgSerial
+							this.headerImage=res.data.output.brokerImg.bankImgSerial
+							this.code=res.data.output.brokerImg.bankImgSerial
 							this.bankcode=res.data.output.tblBrokerBank.fkBankType
 							this.addbank();
 							this.codebanka=res.data.output.tblBrokerBank.bankAccount;//银行卡账号

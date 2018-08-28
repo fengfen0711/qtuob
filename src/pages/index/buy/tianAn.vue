@@ -64,18 +64,30 @@
 					})
 			},
 			insureruleAjax() { //规则
-				if(this.saleStatus == 1) {
-//					this.checkAgent(); //校验
-										this.tianAnisOrderAjax() //规则
-				} else if(this.saleStatus == 0) {
-					MessageBox.confirm('', {
-						title: '温馨提示',
-						message: this.unSaleDes,
-						confirmButtonText: '确定',
-						showCancelButton: false
+				if (this.$store.state.loginId == "0") {
+					MessageBox.confirm('',{
+					  	title: '提示',
+					  	message: '请您登陆后再进行查看哦',
+					  	confirmButtonText: '登录', 
+						cancelButtonText: '暂不登录', 
+					  	showCancelButton: true
 					}).then(action => {
-
+						this.$router.push('/logNew')
 					})
+				} else {
+					if(this.saleStatus == 1) {
+						//this.checkAgent(); //校验
+						this.tianAnisOrderAjax() //规则
+					} else if(this.saleStatus == 0) {
+						MessageBox.confirm('', {
+							title: '温馨提示',
+							message: this.unSaleDes,
+							confirmButtonText: '确定',
+							showCancelButton: false
+						}).then(action => {
+	
+						})
+					}
 				}
 				//订单号
 				//				var insureruleInfo = {

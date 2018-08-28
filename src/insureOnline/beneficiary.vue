@@ -27,7 +27,7 @@
 			<p class="inputGrop inputGrop2 clearFloat">
 				<label class="inputLabel left">证件有效期至</label>
 				<span class="inputText dateInput left inputSpan2" :class="{opa0:dateInput}">请选择证件有效期</span>
-				<input type="date" id="dateTimeBen" class="inputText dateInput left" :class="{opa0:!dateInput}" placeholder="请选择证件有效期" v-model="termValidityDate" @click="termValidityDateSel" @change="termValidityDateSel" />
+				<input type="date" id="dateTimeBen" class="inputText dateInput left" :class="{opa0:!dateInput}" placeholder="请选择证件有效期" v-model="termValidityDate" @change="termValidityDateSel" />
 				<span class="dateBox" @click="dateSel">
 					<img src="/static/sexNo.png" class="selImg" v-show="termValidityDateShow" />
 					<img src="/static/selected.png" class="selImg" v-show="!termValidityDateShow" />
@@ -62,7 +62,7 @@
 			</p>
 			<p class="inputGrop clearFloat">
 				<label class="inputLabel left">受益比例</label>
-				<select v-model="scaleType" class="inputText inputWidth left" @change="scaleChange">
+				<select v-model="scaleType" class="inputText inputWidth left">
 					<option :value="scale.code" v-for="scale in scaleList">{{scale.name}}</option>
 				</select>
 			</p>
@@ -106,7 +106,7 @@
 	  			scaleList:[],
 			    sexShow:true,
 			    sex:'',
-			    certfEnduringFlag:'N',
+			    certfEnduringFlag:'',
 			  	dateInput:false,
 			  	dateInputBirth:false,
 			  	dateInputBirth1:false,
@@ -121,14 +121,10 @@
     	},
     	watch:{
     		beneficiaryList:function(val){
-//  			console.log(this.beneficiaryList[2])
     			if (this.beneficiaryList[2]) {
     				this.insureAjax()
     			}
-    		},
-    		termValidityDate:function(val){
-    			this.termValidityDate1 = val
-    		},
+    		}
     	},
     	methods:{
     		benInfo(){
@@ -137,7 +133,7 @@
     			this.policyHolderName = this.beneficiaryList[2].bnfName
     			this.IDnum = this.beneficiaryList[2].certfCode
     			this.IDtrue = true
-    			this.certfEnduringFlag == this.beneficiaryList[2].certfEnduringFlag
+    			this.certfEnduringFlag = this.beneficiaryList[2].certfEnduringFlag
     			if (this.certfEnduringFlag == "N") {
       				this.termValidityDateShow = true
     				this.termValidityDate = this.beneficiaryList[2].certfEndTime
@@ -221,7 +217,7 @@
 			    return returnAge;
 	  		},
     		delet(data){
-    			console.log(data)
+//  			console.log(data)
     			this.$emit('deletId',data);
     		},
     		isCardID(sId) {
@@ -311,7 +307,7 @@
 				}
 			},
     		insureAjax(){
-    			//收益比例
+    			//受益比例
     			var insureinfo = {
   					"orgCode": "QTBSYBLSH",
 					"type": "1"
@@ -335,8 +331,7 @@
 				})
     		},
     		childSay(){
-    			let isA = ""
-    			//收益人
+    			//受益人
     			if (this.nexusType == "111") {
     				Toast("请选择受益人与被保人的关系~")
     				return
@@ -347,7 +342,7 @@
     			}else{
     				var myReg = /^([\u4E00-\u9FA5]{2,})+$/;
 				 	if (!myReg.test(this.policyHolderName)) {
-						Toast("收益人姓名必须为汉字，且最少两个汉字~")
+						Toast("受益人姓名必须为汉字，且最少两个汉字~")
 						return
 				 	}
     			}
@@ -365,13 +360,13 @@
 					}
     			}
     			if (this.termValidityDateShow == true) {
-    				isA = "N"
+    				this.certfEnduringFlag = "N"
     				if (this.termValidityDate == "") {
 	    				Toast("受益人证件有效期不能为空~")
 	    				return
 	    			}
     			}else{
-    				isA = "Y"
+    				this.certfEnduringFlag = "Y"
     				this.termValidityDate = ""
     				this.termValidityDate1 = "9999-01-01"
     			}
@@ -391,20 +386,18 @@
 			      	"bnfType": "4",
 			      	"certfCode": this.IDnum,
 			      	"certfEndTime": this.termValidityDate1,
-			      	"certfEnduringFlag": isA,
+			      	"certfEnduringFlag": this.certfEnduringFlag,
 			      	"certfType": this.cardType,
 			      	"gender": this.sex,
 			      	"relatoInsured": this.nexusType
     			}    			
     			this.$emit('child_saya',benData);
     		},
-          	scaleChange(){
-          		console.log(this.scaleType)
-          	},
     		dateSel(){
     			if(this.age >=46){
     				this.termValidityDateShow = false
     				this.termValidityDate = ""
+    				this.termValidityDate1 = "9999-01-01"
     				this.dateInput = false
     			}
     		},
@@ -420,13 +413,16 @@
 			        if (foday < today){
 			            Toast ('受益人证件有效期不可选择今天之前的日期');
 			            this.termValidityDate = ""
+			            this.termValidityDate1 = ""
 			        }
 		        }
 			        
     			if(this.termValidityDate == ""){
     				this.dateInput = false
+    				this.termValidityDate1 = ""
     			}else{
     				this.dateInput = true
+    				this.termValidityDate1 = this.termValidityDate
     			}
     		},
     		birthDateSel(){

@@ -65,19 +65,17 @@
 				signPhoto1: "",
 				index: "",
 				photo: "",
-				alldata: [
-					{
-						"name": '银行卡信息修改授权说明',
-						"msg": ""
-					}
-				],
+				alldata: [{
+					"name": '银行卡信息修改授权说明',
+					"msg": ""
+				}],
 				addData: [],
 				code: "",
 				code1: "",
 				cardPDFArray: [],
 				pdfFlag: true,
 				pdf: "",
-				paymentReqData:{}
+				paymentReqData: {}
 
 			}
 		},
@@ -104,11 +102,9 @@
 				this.$refs.bg.style.position = "absolute"
 			},
 			init() {
-				var data = [
-					{
-						"tmId": "TM0003"
-					}
-				]
+				var data = [{
+					"tmId": "TM0003"
+				}]
 				Indicator.open();
 				this.$http.post(this.$store.state.link + '/css/css/queryTemplateByTmIdList', data)
 					.then(res => {
@@ -258,7 +254,7 @@
 					Toast("请依次阅读投保文件")
 				} else {
 					this.payAjax()
-					Indicator.open()
+
 				}
 			},
 			handleClickSign(a) {
@@ -475,7 +471,7 @@
 					})
 
 			},
-			getPay(){
+			getPay() {
 				var data = {
 					"token": this.$route.query.token,
 					"userId": this.$route.query.userId,
@@ -491,20 +487,26 @@
 				}
 				//回显数据
 				this.$http.post(this.$store.state.link + '/trd/order/v1/queryorder', data)
-				.then(res => {
-					console.log(res.data)
-					var dataCode = res.data.code;
-					if(dataCode == "SYS_S_000") {
-						this.paymentReqData = res.data.output.paymentResp
-						console.log(this.paymentReqData)
-					}
-				}, res => {
-					Indicator.close();
-					console.log(res.data);
-				})
+					.then(res => {
+						console.log(res.data)
+						var dataCode = res.data.code;
+						if(dataCode == "SYS_S_000") {
+							this.paymentReqData = res.data.output.paymentResp
+							console.log(this.paymentReqData)
+						}
+					}, res => {
+						Indicator.close();
+						console.log(res.data);
+					})
 			},
-			payAjax(){
-				console.log(this.paymentReqData)
+			payAjax() {
+				//				this.$route.query.bankCode
+				if(this.$route.query.bankCode == "" || this.$route.query.bankCode == undefined) {
+
+				} else {
+					this.paymentReqData.accNo = this.$route.query.bankCode;
+				}
+				Indicator.open()
 				var data = {
 					"token": this.$route.query.token,
 					"userId": this.$route.query.userId,
@@ -518,20 +520,21 @@
 					"paymentReq": this.paymentReqData
 				}
 				this.$http.post(this.$store.state.link + '/trd/pay/v1/payment', data)
-				.then(res => {
-					Indicator.close();
-					console.log(res.data)
-					if(res.data.code == "SYS_S_000") {
-						if (res.data.output.code == "PAY") {
-							this.$router.push('/bankCardsucess?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
-						}else{
-							this.$router.push('/resultf?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode+ "&message=" + res.data.output.message + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
-						}
-					};
-				}, res => {
-					Indicator.close();
-					console.log(res.data);
-				})
+					.then(res => {
+						Indicator.close();
+						console.log(res.data)
+						if(res.data.code == "SYS_S_000") {
+							if(res.data.output.code == this.$store.state.orderState.PAY) {
+								this.$router.push('/payResult?message=Y')
+							} else {
+								this.$router.push('/payResult?message=N&mesesult=' + res.data.output.message)
+							}
+						};
+					}, res => {
+						Indicator.close();
+						console.log(res.data);
+						this.$router.push('/payResult?message=N')
+					})
 			}
 
 		},
@@ -770,6 +773,7 @@
 		/*float: right;
 		margin-right: .3rem;*/
 	}
+	
 	.next1 {
 		width: 3.12rem;
 		height: 0.88rem;

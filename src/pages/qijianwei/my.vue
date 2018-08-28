@@ -20,7 +20,7 @@
 		</div>
 		<div class="my_div_itemall" @click="myConfirmation">
 			<img class="my_img_itemicon" src="/static/qijianwei/my_Insurance_icon.png" />
-			<div class="my_img_itemname">我的客户确认书</div>
+			<div class="my_img_itemname">我的客户委托书</div>
 			<img class="my_img_itemnext" src="/static/qijianwei/btn_next.png" />
 		</div>
 		<div class="my_bg"></div>

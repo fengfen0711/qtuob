@@ -584,7 +584,7 @@
 					console.log("回来的数据1" + JSON.stringify(res.data))
 					if(res.data.code == "SYS_S_000") {
 						this.initCreatCust();
-						this.btnok_br();
+//						this.btnok_br();
 						this.mark_flag = true;
 						var blur_all = document.getElementById("blur_all");
 						blur_all.setAttribute("class", "blur_all");

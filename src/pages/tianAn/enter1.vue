@@ -257,7 +257,7 @@
 					Toast("请输入正确短信验证码");
 				}
 				else {
-					this.mark_flag = true;
+					
 					var receiptdata = {
 						"head": {
 							"channelCode": "qtb_h5",
@@ -268,7 +268,8 @@
 						"userId": this.$store.state.userId,
 						"token": this.$store.state.token,
 						"pkgNo": this.$route.query.pkgNo,
-						"plcyNo": this.$route.query.applNo
+						"plcyNo": this.$route.query.policyno
+						
 					}
 					console.log(receiptdata);
 					Indicator.open();
@@ -278,7 +279,10 @@
 							console.log(res.data);
 							var dataCode = res.data.code;
 							if(dataCode == "SYS_S_000") {
-								
+								Toast(res.data.desc);
+								this.mark_flag = true;
+							}else{
+								Toast(res.data.desc);
 							}
 						}, res => {
 							Indicator.close();

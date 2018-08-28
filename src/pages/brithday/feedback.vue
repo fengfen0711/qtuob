@@ -28,6 +28,9 @@
 				phone: ''
 			}
 		},
+		created(){
+    		this.common.noShare();
+		},
 		watch: {
 			items: {
 				handler: function() {
@@ -64,42 +67,34 @@
 				}
 				if(this.phone != "") {
 					if(this.check_email_address(this.phone) || this.isPoneAvailable(this.phone)) {
-						var data = {
-							"backCont": this.items.text,
-							"contactWay": this.phone,
-							"userId":localStorage.getItem("userId"),
-							"token":localStorage.getItem("token"),
-							
-						}
-						this.$http.post(this.$store.state.link + '/pct/propose', data).then(response => {
-							if(response.data.code=="SYS_S_000"){
-								Toast("提交成功");
-								this.$router.push('/my')
-							}
-						}, response => {
-							console.log("ajax error");
-						});
+						this.subAjax()
 					}else{
 						Toast("格式不正确");
 					}
 				}else{
 					Indicator.open()
-					var data = {
-							"backCont": this.items.text,
-							"contactWay": this.phone,
-							"userId":localStorage.getItem("userId"),
-							"token":localStorage.getItem("token"),
-					}
-						this.$http.post(this.$store.state.link + '/pct/propose', data).then(response => {
-							if(response.data.code=="SYS_S_000"){
-								Toast("提交成功");
-								this.$router.push('/my')
-							}
-						}, response => {
-							console.log("ajax error");
-							Toast("提交失败，请稍后再试");
-						});
+					this.subAjax()
 				}
+			},
+			subAjax(){
+				var data = {
+					"backCont": this.items.text,
+					"contactWay": this.phone,
+					"userId":localStorage.getItem("userId"),
+					"token":localStorage.getItem("token"),
+					
+				}
+				this.$http.post(this.$store.state.link + '/pct/propose', data).then(response => {
+					if(response.data.code=="SYS_S_000"){
+						Indicator.close();
+						Toast("提交成功");
+						this.$router.push('/newIndex/mine')
+					}
+				}, response => {
+					Indicator.close()
+					console.log("ajax error");
+					Toast("提交失败，请稍后再试");
+				});
 			}
 		}
 	}
@@ -154,10 +149,10 @@
 	}
 	
 	.feedback_div {
-		background-image: url(/static/img/btn_div.png);
 		width: 6.04rem;
 		height: 1rem;
-		background-size: cover;
+		border: solid 0.01rem #E73748;
+		border-radius: 1rem;
 		margin: 2.77rem auto;
 		font-size: 0.32rem;
 		color: #EB7760;

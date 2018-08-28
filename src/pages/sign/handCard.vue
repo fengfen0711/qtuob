@@ -50,7 +50,6 @@
 			
 				var data={
 					"brokerId":this.$route.query.brokerId
-//					"brokerId":"1475362"
 				}
 				this.$http.post(this.$store.state.link + '/core/broker/findBrokerByBrokId', data)
 
@@ -59,9 +58,9 @@
 						var dataCode = res.data.code;
 						if(dataCode == "SYS_S_000") {
 							
-							if(res.data.output.tblBrokerImg.cidInHandImg!="null"){
-								this.headerImage="http://outer.qtoubao.cn:9900/"+res.data.output.tblBrokerImg.cidInHandImg
-								this.code=res.data.output.tblBrokerImg.cidInHandImg;
+							if(res.data.output.brokerImg.cidInHandImg!="null"){
+								this.headerImage=res.data.output.brokerImg.cidInHandImg
+								this.code=res.data.output.brokerImg.cidInHandImg;
 								console.log(this.headerImage)
 							}else{
 								this.code="";
@@ -271,8 +270,14 @@
 					"cidInHandImg":this.code
 					}
 					console.log(handdata)
-					this.$store.dispatch("changeInformation",handdata);				
-					this.$router.push('/confirm_message')
+					this.$store.dispatch("changeInformation",handdata);
+					if(this.$route.query.brokerId != "undefined"){
+						this.$router.push('/confirm_message?brokerId='+this.$route.query.brokerId)
+					}else{
+						this.$router.push('/confirm_message')
+					}
+								
+					
 				}
 			},
 		}

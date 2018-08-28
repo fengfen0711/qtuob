@@ -110,7 +110,7 @@
 					"shareUrl": window.location.href.split('#')[0]
 				}
 				console.log(data)
-				var share_url = window.location.href.split('/')[2] + "/static/router.html?type=preview&code=preview&celId=" + this.$route.query.celId + "&custId=" + this.$route.query.custId + "&userId=" + this.$route.query.userId;
+				var share_url = this.$store.state.shareLink + "/static/router.html?type=preview&code=preview&celId=" + this.$route.query.celId + "&custId=" + this.$route.query.custId + "&userId=" + this.$route.query.userId;
 
 				Indicator.open();
 				this.$http.post(this.$store.state.wx_share, data).then(res => {
@@ -243,12 +243,20 @@
 	
 	.rd_div_proall {
 		width: 6.34rem;
-		height: 6.438rem;
+		height: 10.22rem;
 		background: url(/static/qijianwei/product_bg.png) no-repeat;
 		background-size: contain;
 		margin-left: 0.5rem;
 		margin-bottom: 0.332rem;
 		padding-top: 1.45rem;
+		
+		
+		/*width: 6.32rem;
+		height: 10.22rem;
+		background: url(/static/qijianwei/product_bg.png);
+		background-size: cover;
+		margin: 0 auto;
+		margin-bottom: 0.332rem;*/
 	}
 	
 	.rd_div_iconname {

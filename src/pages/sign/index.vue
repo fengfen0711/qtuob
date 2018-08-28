@@ -52,7 +52,7 @@
 					<div class="yao">
 						手机号：
 					</div>
-					<input class="name" type="number" maxlength="11" v-model="phone" readonly="readonly"/>
+					<input class="name" type="text" maxlength="11" v-model="phone" readonly="readonly" />
 				</div>
 			</div>
 
@@ -82,36 +82,48 @@
 				index_invitenum: "",
 				index_invitephone: "",
 				indexerror: true,
-				flagstatus: false
+				flagstatus: false,
+				phone: "",
+				name: "",
+				naarry: ""
 
 			}
 		},
 		created() {
 			this.size = document.documentElement.clientHeight
-			//		if(localStorage.getItem("brokerCode")!=""&&localStorage.getItem("brokerCode")!=null){
-			//			this.index_invitecode=localStorage.getItem("brokerCode");
-			//			//this.code="10000012";
-			//			var data={
-			//			"brokerCode":localStorage.getItem("brokerCode");
-			//			}
-			//			Indicator.open();
-			//			this.$http.post(this.$store.state.link + "/core/broker/findByBrokerCode", data).then(res => {
-			//						Indicator.close();
-			//						console.log(res.data);
-			//						if(res.data.code == "SYS_S_000") {
-			//						this.index_phone=false;
-			//						this.name=res.data.output.brokerName;
-			//						this.phone=res.data.output.mobile;
-			//
-			//						} else if(res.data.code =="CORE_E_206") {
-			////							this.indexerror=false
-			//							Toast(res.data.desc)
-			//						}
-			//					}, res => {
-			//						Indicator.close();
-			//						console.log("2===失败1" + res.data)
-			//					});
-			//		}
+
+			if(this.$route.query.brokerCode != "" && this.$route.query.brokerCode != null) {
+
+				this.index_invitecode = this.$route.query.brokerCode;
+				var data = {
+					"brokerCode": this.$route.query.brokerCode
+				}
+				Indicator.open();
+				this.$http.post(this.$store.state.link + "/core/broker/findByBrokerCode", data).then(res => {
+					Indicator.close();
+					console.log(res.data);
+					if(res.data.code == "SYS_S_000") {
+						this.index_phone = true;
+						this.code = this.$route.query.brokerCode
+						this.name=res.data.output.brokerName;
+						if(this.name.length >= 3) {
+
+							this.name = res.data.output.brokerName.replace(/^(.+).(.)$/, "$1**");
+						} else {
+
+							this.name = res.data.output.brokerName.replace(/^(.+)./, "$1*");
+						}
+						this.name = res.data.output.brokerName
+
+						this.phone = res.data.output.mobile.replace(/^(\d{3})\d{4}(\d+)/, "$1****$2");
+					} else if(res.data.code == "CORE_E_206") {
+						Toast(res.data.desc)
+					}
+				}, res => {
+					Indicator.close();
+					console.log("2===失败1" + res.data)
+				});
+			}
 
 		},
 
@@ -133,6 +145,7 @@
 						"brokerCode": this.code
 					}
 					this.$store.dispatch("changeinviteCode", indexdata)
+					console.log(indexdata)
 					this.$router.push('/mast')
 				}
 
@@ -166,8 +179,16 @@
 						console.log(res.data);
 						if(res.data.code == "SYS_S_000") {
 							this.index_phone = true;
-							this.name = res.data.output.brokerName;
-							this.phone = res.data.output.mobile;
+							this.name = res.data.output.brokerName
+							if(this.name.length >= 3) {
+
+								this.name = res.data.output.brokerName.replace(/^(.+).(.)$/, "$1**");
+							} else {
+
+								this.name = res.data.output.brokerName.replace(/^(.+)./, "$1*");
+							}
+							this.phone = res.data.output.mobile.replace(/^(\d{3})\d{4}(\d+)/, "$1****$2");
+							console.log(this.phone)
 						} else if(res.data.code == "CORE_E_206") {
 							this.indexerror = false
 

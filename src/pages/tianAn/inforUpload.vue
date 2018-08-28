@@ -7,9 +7,9 @@
 					<div class="inforUpload_img">
 						<div id="" class="inforUpload_up">
 							<img :src="a" class="inforUpload_up_img" />
-							<input class="file" type="file" accept="image/*" name="file" @change="upload" code="1">
+							<input class="file" type="file" accept="image/*" name="file" @change="upload" code="1" >
 						</div>
-						<div id="" class="inforUpload_up inforUpload_right">
+						<div id="" class="inforUpload_up inforUpload_right" v-if="Tf">
 							<img :src="b" class="inforUpload_up_img" />
 							<input class="file" type="file" accept="image/*" name="file" @change="upload" code="2">
 						</div>
@@ -32,7 +32,7 @@
 							<img :src="d" class="inforUpload_up_img" />
 							<input class="file" type="file" accept="image/*" name="file" @change="upload" code="4">
 						</div>
-						<div id="" class="inforUpload_up inforUpload_right">
+						<div id="" class="inforUpload_up inforUpload_right" v-if="Bf">
 							<img :src="e" class="inforUpload_up_img" />
 							<input class="file" type="file" accept="image/*" name="file" @change="upload" code="5">
 						</div>
@@ -73,7 +73,9 @@
 				d1: "",
 				e1: "",
 				allData: {},
-				shou: ""
+				shou: "",
+				Tf:true,
+				Bf:true
 
 			}
 		},
@@ -103,10 +105,24 @@
 						//						console.log("data==" + JSON.stringify(res.data))
 						var dataCode = res.data.code;
 						if(dataCode == "SYS_S_000") {
+							
 							this.allData = res.data.output;
+							console.log(this.allData.insrntResp.certfType)
 							this.shou = this.allData.bnfResp.length
 							this.aName = this.allData.applntResp.applName;
 							this.iName = this.allData.insrntResp.insrntName;
+							var showT=this.allData.applntResp.certfType;
+							var showB=this.allData.insrntResp.certfType;
+							if(showT==0||showT=='C'||showT=='E'){
+								this.Tf=true
+							}else{
+								this.Tf=false
+							}
+							if(showB==0||showB=='C'||showB=='E'){
+								this.Bf=true
+							}else{
+								this.Bf=false
+							}
 							if(this.allData.applntResp.relationToInsured == "00") {
 								this.relationshipFlag = false;
 							} else {
@@ -422,8 +438,9 @@
 					this.d1 = this.a1;
 					this.e1 = this.b1;
 				}
-				if(this.a1 != "" && this.b1 != "" && this.c1 != "" && this.d1 != "" && this.e1 != "") {
-					var docReq = [];
+				var docReq = [];
+				if(this.a1 != "" && this.c1 != "" && this.d1 != "") {
+					
 					var obj1 = {
 						"docFileName": "投保人身份证正面", //单证文件名 
 						"docType": "014", //单证类型
@@ -431,13 +448,24 @@
 						"remark": "", //备注 
 						"showOrder": 1 //显示顺序
 					}
-					var obj2 = {
-						"docFileName": "投保人身份证反面", //单证文件名 
-						"docType": "014", //单证类型
-						"fileSerialNo": this.b1, //文件序列号 : 文件在影像系统唯一标识 
-						"remark": "", //备注 
-						"showOrder": 2 //显示顺序
+					docReq.push(obj1);
+					if(this.Tf){
+						if(this.b1!=""){
+							var obj2 = {
+								"docFileName": "投保人身份证反面", //单证文件名 
+								"docType": "014", //单证类型
+								"fileSerialNo": this.b1, //文件序列号 : 文件在影像系统唯一标识 
+								"remark": "", //备注 
+								"showOrder": 2 //显示顺序
+							}
+							docReq.push(obj2);
+						}else{
+							Toast("请完善影像资料")
+							return
+						}
+						
 					}
+					
 					var obj3 = {
 						"docFileName": "投保人银行卡正面", //单证文件名 
 						"docType": "014", //单证类型
@@ -445,6 +473,7 @@
 						"remark": "", //备注 
 						"showOrder": 3 //显示顺序
 					}
+					docReq.push(obj3);
 					var obj4 = {
 						"docFileName": "被保人身份证正面", //单证文件名 
 						"docType": "014", //单证类型
@@ -452,18 +481,29 @@
 						"remark": "", //备注 
 						"showOrder": 4 //显示顺序
 					}
-					var obj5 = {
-						"docFileName": "被保人身份证反面", //单证文件名 
-						"docType": "014", //单证类型
-						"fileSerialNo": this.e1, //文件序列号 : 文件在影像系统唯一标识 
-						"remark": "", //备注 
-						"showOrder": 5 //显示顺序
-					}
-					docReq.push(obj1);
-					docReq.push(obj2);
-					docReq.push(obj3);
 					docReq.push(obj4);
-					docReq.push(obj5);
+					if(this.Bf){
+						if(this.e1!=""){
+							var obj5 = {
+								"docFileName": "被保人身份证反面", //单证文件名 
+								"docType": "014", //单证类型
+								"fileSerialNo": this.e1, //文件序列号 : 文件在影像系统唯一标识 
+								"remark": "", //备注 
+								"showOrder": 5 //显示顺序
+							}
+							docReq.push(obj5);
+						}else{
+							Toast("请完善影像资料")
+							return
+						}
+						
+					}
+					
+//					docReq.push(obj1);
+//					docReq.push(obj2);
+//					docReq.push(obj3);
+//					docReq.push(obj4);
+//					docReq.push(obj5);
 					var data = {
 						"token": this.$route.query.token,
 						"userId": this.$route.query.userId,

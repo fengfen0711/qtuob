@@ -8,7 +8,7 @@
 						<img ref="img" src="/static/img/ida.png" class="inforUpload_up_img" />
 						<input class="file" type="file" accept="image/*" name="file" @change="upload" :code=[index,0]|statu>
 					</div>
-					<div class="inforUpload_up inforUpload_right">
+					<div class="inforUpload_up inforUpload_right" ref="show">
 						<img ref="img" src="/static/img/IdCard.png" class="inforUpload_up_img" />
 						<input class="file" type="file" accept="image/*" name="file" @change="upload" :code=[index,1]|statu>
 					</div>
@@ -43,6 +43,12 @@
 				d: "",
 				e: "",
 				f:"",
+				g:"",
+				h:"",
+				i:"",
+				j:"",
+				k:"",
+				l:"",
 				allData: {},
 				tables:[]
 			}
@@ -52,7 +58,15 @@
 			this.init();
 		},
 		updated(){
-			console.log(this.tables)
+			console.log(this.$refs.show)
+			for(var i=0,j=this.tables.length;i<j;i++){
+				if(this.tables[i].certfType==0||this.tables[i].certfType=="C"||this.tables[i].certfType=="E"){
+					this.$refs.show[i].setAttribute('show','Y')
+				}else{
+					this.$refs.show[i].setAttribute('show','N')
+					this.$refs.show[i].style.display="none"
+				}
+			}
 			this.backView()
 		},
 		methods: {
@@ -79,7 +93,7 @@
 						if(dataCode == "SYS_S_000") {
 							this.allData = res.data.output;
 							this.tables=this.allData.bnfResp;
-							
+							console.log(this.tables)
 //							this.backView(this.tables)
 //							this.tables.length=6
 							if(this.tables.length<=2){
@@ -134,6 +148,31 @@
 						if(this.allData.docResp[i].showOrder == 11) {
 							this.$refs.img[5].setAttribute('src',this.$store.state.echoImgUrl + this.allData.docResp[i].fileSerialNo) 
 							this.f = this.allData.docResp[i].fileSerialNo;
+						}
+						if(this.allData.docResp[i].showOrder == 20) {
+							this.$refs.img[6].setAttribute('src',this.$store.state.echoImgUrl + this.allData.docResp[i].fileSerialNo) 
+							this.g = this.allData.docResp[i].fileSerialNo;
+							
+						}
+						if(this.allData.docResp[i].showOrder == 21) {
+							this.$refs.img[7].setAttribute('src',this.$store.state.echoImgUrl + this.allData.docResp[i].fileSerialNo) 
+							this.h = this.allData.docResp[i].fileSerialNo;
+						}
+						if(this.allData.docResp[i].showOrder == 22) {
+							this.$refs.img[8].setAttribute('src',this.$store.state.echoImgUrl + this.allData.docResp[i].fileSerialNo) 
+							this.i = this.allData.docResp[i].fileSerialNo;
+						}
+						if(this.allData.docResp[i].showOrder == 23) {
+							this.$refs.img[9].setAttribute('src',this.$store.state.echoImgUrl + this.allData.docResp[i].fileSerialNo) 
+							this.j = this.allData.docResp[i].fileSerialNo;
+						}
+						if(this.allData.docResp[i].showOrder == 24) {
+							this.$refs.img[10].setAttribute('src',this.$store.state.echoImgUrl + this.allData.docResp[i].fileSerialNo) 
+							this.k = this.allData.docResp[i].fileSerialNo;
+						}
+						if(this.allData.docResp[i].showOrder == 25) {
+							this.$refs.img[11].setAttribute('src',this.$store.state.echoImgUrl + this.allData.docResp[i].fileSerialNo) 
+							this.l = this.allData.docResp[i].fileSerialNo;
 						}
 					}
 				}
@@ -206,6 +245,18 @@
 								self.$refs.img[4].setAttribute('src',this.result)
 							} else if(code == 5) {
 								self.$refs.img[5].setAttribute('src',this.result)
+							}else if(code == 6) {
+								self.$refs.img[6].setAttribute('src',this.result)
+							} else if(code == 7) {
+								self.$refs.img[7].setAttribute('src',this.result)
+							} else if(code == 8) {
+								self.$refs.img[8].setAttribute('src',this.result)
+							} else if(code == 9) {
+								self.$refs.img[9].setAttribute('src',this.result)
+							} else if(code == 10) {
+								self.$refs.img[10].setAttribute('src',this.result)
+							}else if(code == 11) {
+								self.$refs.img[11].setAttribute('src',this.result)
 							}
 
 							self.postImg(this.result, code);
@@ -225,6 +276,18 @@
 									self.$refs.img[4].setAttribute('src',data)
 								} else if(code == 5) {
 									self.$refs.img[5].setAttribute('src',data)
+								}else if(code == 6) {
+									self.$refs.img[6].setAttribute('src',data)
+								} else if(code == 7) {
+									self.$refs.img[7].setAttribute('src',data)
+								} else if(code == 8) {
+									self.$refs.img[8].setAttribute('src',data)
+								} else if(code == 9) {
+									self.$refs.img[9].setAttribute('src',data)
+								} else if(code == 10) {
+									self.$refs.img[10].setAttribute('src',data)
+								}else if(code == 11) {
+									self.$refs.img[11].setAttribute('src',data)
 								}
 								self.postImg(data, code);
 							}
@@ -235,55 +298,14 @@
 			postImg(data, code) {
 				//这里写接口  
 				var a = data.split(";")[0].split("/")[1];
-				if(code == 0) {
-					var base64Info = {
+				var base64Info = {
 						"fileType": a,
 						"imgList": [
 							data
 						],
 						"uploadType": "2026"
 					}
-				} else if(code == 1) {
-					var base64Info = {
-						"fileType": a,
-						"imgList": [
-							data
-						],
-						"uploadType": "2027"
-					}
-				} else if(code == 2) {
-					var base64Info = {
-						"fileType": a,
-						"imgList": [
-							data
-						],
-						"uploadType": "2026"
-					}
-				} else if(code == 3) {
-					var base64Info = {
-						"fileType": a,
-						"imgList": [
-							data
-						],
-						"uploadType": "2027"
-					}
-				} else if(code == 4) {
-					var base64Info = {
-						"fileType": a,
-						"imgList": [
-							data
-						],
-						"uploadType": "2026"
-					}
-				}else if(code == 5) {
-					var base64Info = {
-						"fileType": a,
-						"imgList": [
-							data
-						],
-						"uploadType": "2027"
-					}
-				}
+				
 				
 				console.log(base64Info)
 				this.$http.post(this.$store.state.link2 + '/fastdfs/filebase64', base64Info)
@@ -303,6 +325,18 @@
 								this.e = res.data.output[0].fileSerialNo
 							} else if(code == 5) {
 								this.f = res.data.output[0].fileSerialNo
+							} else if(code == 6) {
+								this.g = res.data.output[0].fileSerialNo
+							} else if(code == 7) {
+								this.h = res.data.output[0].fileSerialNo
+							} else if(code == 8) {
+								this.i = res.data.output[0].fileSerialNo
+							} else if(code == 9) {
+								this.j = res.data.output[0].fileSerialNo
+							} else if(code == 10) {
+								this.k = res.data.output[0].fileSerialNo
+							} else if(code == 11) {
+								this.l = res.data.output[0].fileSerialNo
 							}
 							console.log(this.a)
 							console.log(this.b)
@@ -443,62 +477,187 @@
 					}
 					docReq.push(obj1);
 				}else{
-					Toast("请完善受益人影像资料")
+					Toast("请完善受益人信息")
+					return
 				}
-				if(this.b != "") {
-					var obj2 = {
-						"docFileName": "受益人身份证反面", //单证文件名 
-						"docType": "014", //单证类型
-						"fileSerialNo": this.b, //文件序列号 : 文件在影像系统唯一标识 
-						"remark": "", //备注 
-						"showOrder": 7 //显示顺序
+				console.log(this.$refs.show[0].getAttribute('show'))
+				if(this.$refs.show[0].getAttribute('show')=='Y') {
+					if(this.b!=""){
+						var obj2 = {
+							"docFileName": "受益人身份证反面", //单证文件名 
+							"docType": "014", //单证类型
+							"fileSerialNo": this.b, //文件序列号 : 文件在影像系统唯一标识 
+							"remark": "", //备注 
+							"showOrder": 7 //显示顺序
+						}	
+						docReq.push(obj2);
+					}else{
+						Toast("请完善受益人信息")
+						return
 					}
-					docReq.push(obj2);
-				}else{
-					Toast("请完善受益人影像资料")
+					
+					
 				}
-				if(this.c != "") {
-					var obj3 = {
-						"docFileName": "受益人身份证反面", //单证文件名 
-						"docType": "014", //单证类型
-						"fileSerialNo": this.c, //文件序列号 : 文件在影像系统唯一标识 
-						"remark": "", //备注 
-						"showOrder": 8 //显示顺序
+				if(this.tables.length>=2) {
+					if(this.c != ""){
+						var obj3 = {
+							"docFileName": "受益人身份证正面", //单证文件名 
+							"docType": "014", //单证类型
+							"fileSerialNo": this.c, //文件序列号 : 文件在影像系统唯一标识 
+							"remark": "", //备注 
+							"showOrder": 8 //显示顺序
+						}
+						docReq.push(obj3);	
+					}else{
+						Toast("请完善受益人信息")
+						return
 					}
-					docReq.push(obj3);
+					
 				}
-				if(this.d != "") {
-					var obj4 = {
-						"docFileName": "受益人身份证反面", //单证文件名 
-						"docType": "014", //单证类型
-						"fileSerialNo": this.d, //文件序列号 : 文件在影像系统唯一标识 
-						"remark": "", //备注 
-						"showOrder": 9 //显示顺序
+				if(this.tables.length>=2&&this.$refs.show[1].getAttribute('show')=='Y') {
+					if(this.d != ""){
+						var obj4 = {
+							"docFileName": "受益人身份证反面", //单证文件名 
+							"docType": "014", //单证类型
+							"fileSerialNo": this.d, //文件序列号 : 文件在影像系统唯一标识 
+							"remark": "", //备注 
+							"showOrder": 9 //显示顺序
+						}
+						docReq.push(obj4);
+					}else{
+						Toast("请完善受益人信息")
+						return
 					}
-					docReq.push(obj4);
+					
+					
 				}
-				if(this.e != "") {
-					var obj5 = {
-						"docFileName": "受益人身份证反面", //单证文件名 
-						"docType": "014", //单证类型
-						"fileSerialNo": this.e, //文件序列号 : 文件在影像系统唯一标识 
-						"remark": "", //备注 
-						"showOrder": 10 //显示顺序
+				if(this.tables.length>=3) {
+					if(this.e != ""){
+						var obj5 = {
+							"docFileName": "受益人身份证正面", //单证文件名 
+							"docType": "014", //单证类型
+							"fileSerialNo": this.e, //文件序列号 : 文件在影像系统唯一标识 
+							"remark": "", //备注 
+							"showOrder": 10 //显示顺序
+						}
+						docReq.push(obj5);	
 					}
-					docReq.push(obj5);
+					
 				}
-				if(this.f != "") {
-					var obj6 = {
-						"docFileName": "受益人身份证反面", //单证文件名 
-						"docType": "014", //单证类型
-						"fileSerialNo": this.f, //文件序列号 : 文件在影像系统唯一标识 
-						"remark": "", //备注 
-						"showOrder": 11 //显示顺序
+				if(this.tables.length>=3&&this.$refs.show[2].getAttribute('show')=='Y') {
+					if(this.f != ""){
+						var obj6 = {
+							"docFileName": "受益人身份证反面", //单证文件名 
+							"docType": "014", //单证类型
+							"fileSerialNo": this.f, //文件序列号 : 文件在影像系统唯一标识 
+							"remark": "", //备注 
+							"showOrder": 11 //显示顺序
+						}
+						docReq.push(obj6);	
+					}else{
+						Toast("请完善受益人信息")
+						return
 					}
-					docReq.push(obj6);
+					
 				}
-//				console.log(this.tables.length*2)
-					if(this.tables.length*2==docReq.length){
+				if(this.tables.length>=4) {
+					if(this.g != ""){
+						var obj7 = {
+							"docFileName": "受益人身份证正面", //单证文件名 
+							"docType": "014", //单证类型
+							"fileSerialNo": this.g, //文件序列号 : 文件在影像系统唯一标识 
+							"remark": "", //备注 
+							"showOrder": 20 //显示顺序
+						}
+						docReq.push(obj7);	
+					}else{
+						Toast("请完善受益人信息")
+						return
+					}
+					
+				}
+				if(this.tables.length>=4&&this.$refs.show[3].getAttribute('show')=='Y') {
+					if(this.h != ""){
+						var obj8 = {
+							"docFileName": "受益人身份证反面", //单证文件名 
+							"docType": "014", //单证类型
+							"fileSerialNo": this.h, //文件序列号 : 文件在影像系统唯一标识
+							"remark": "", //备注 
+							"showOrder": 21 //显示顺序
+						}
+						docReq.push(obj8);	
+					}else{
+						Toast("请完善受益人信息")
+						return
+					}
+					
+				}
+				if(this.tables.length>=5) {
+					if(this.i != ""){
+						var obj9 = {
+							"docFileName": "受益人身份证正面", //单证文件名 
+							"docType": "014", //单证类型
+							"fileSerialNo": this.i, //文件序列号 : 文件在影像系统唯一标识 
+							"remark": "", //备注 
+							"showOrder": 22 //显示顺序
+						}
+						docReq.push(obj9);	
+					}else{
+						Toast("请完善受益人信息")
+						return
+					}
+					
+				}
+				if(this.tables.length>=5&&this.$refs.show[4].getAttribute('show')=='Y') {
+					if(this.j != ""){
+						var obj10 = {
+							"docFileName": "受益人身份证反面", //单证文件名 
+							"docType": "014", //单证类型
+							"fileSerialNo": this.j, //文件序列号 : 文件在影像系统唯一标识
+							"remark": "", //备注 
+							"showOrder": 23 //显示顺序
+						}
+						docReq.push(obj10);	
+					}else{
+						Toast("请完善受益人信息")
+						return
+					}
+					
+				}
+				if(this.tables.length>=6) {
+					if(this.k != ""){
+						var obj11 = {
+							"docFileName": "受益人身份证正面", //单证文件名 
+							"docType": "014", //单证类型
+							"fileSerialNo": this.k, //文件序列号 : 文件在影像系统唯一标识 
+							"remark": "", //备注 
+							"showOrder": 24 //显示顺序
+						}
+						docReq.push(obj11);
+					}else{
+						Toast("请完善受益人信息")
+						return
+					}
+					
+				}
+				if(this.tables.length>=6&&this.$refs.show[5].getAttribute('show')=='Y') {
+					if(this.l != ""){
+						var obj12 = {
+							"docFileName": "受益人身份证反面", //单证文件名 
+							"docType": "014", //单证类型
+							"fileSerialNo": this.l, //文件序列号 : 文件在影像系统唯一标识
+							"remark": "", //备注 
+							"showOrder": 25 //显示顺序
+						}
+						docReq.push(obj12);
+					}else{
+						Toast("请完善受益人信息")
+						return
+					}
+					
+				}
+				console.log(docReq)
+//					if(this.tables.length*2==docReq.length){
 					var data = {
 						"token": this.$route.query.token,
 						"userId": this.$route.query.userId,
@@ -527,9 +686,9 @@
 							console.log(res.data);
 						})
 
-				} else {
-					Toast("请完善影像资料")
-				}
+//				} else {
+//					Toast("请完善影像资料")
+//				}
 				//				//				this.$router.push("/enter")
 			}
 		},
@@ -556,6 +715,30 @@
 						return 4
 					}else{
 						return 5
+					}
+					
+				}
+				if(a==3){
+					if(b==0){
+						return 6
+					}else{
+						return 7
+					}
+					
+				}
+				if(a==4){
+					if(b==0){
+						return 8
+					}else{
+						return 9
+					}
+					
+				}
+				if(a==5){
+					if(b==0){
+						return 10
+					}else{
+						return 11
 					}
 					
 				}

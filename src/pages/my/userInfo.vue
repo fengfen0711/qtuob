@@ -145,6 +145,7 @@
 	  		}
 	  	},
 	  	created(){
+	  		this.common.noShare();
 	  		this.cardType = this.couponList[0].id;
 	  		//show
 	  		var userShow = {
@@ -449,7 +450,7 @@
                	}
            	},
 			handleClickKeep(){
-				if (this.IDcodeNum == "") {
+				if (this.IDcode == "") {
 					
 				}else{
 					if (this.cardType == "A") {
@@ -540,11 +541,9 @@
 	}
 	textarea::-webkit-input-placeholder, input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	.clearFloat:after {
 		height: 0;
@@ -563,7 +562,7 @@
 		width: 6.7rem;
 		padding: 0 0.4rem;
 		background: #FFFFFF;		
-		font-size: 0.36rem;
+		font-size: 0.32rem;
 		color: #222222;
 		overflow: hidden;
 	}
@@ -633,7 +632,7 @@
 		padding: 0 0.4rem;
 		margin-top: 0.56rem;
 		background: #FFFFFF;		
-		font-size: 0.36rem;
+		font-size: 0.32rem;
 		color: #222222;
 		overflow: hidden;
 	}
@@ -645,7 +644,7 @@
 		padding: 0 0.4rem;
 		margin-top: 0.56rem;
 		background: #FFFFFF;		
-		font-size: 0.36rem;
+		font-size: 0.32rem;
 		color: #222222;
 		overflow: hidden;
 	}

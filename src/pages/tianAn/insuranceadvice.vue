@@ -425,7 +425,7 @@
 										"noticeAnswer1": item[i].getElementsByClassName('inputAn')[0].value,
 										"noticeAnswer2": item[i].getElementsByClassName('inputAn')[1].value,
 										"noticeSubject": "1",
-										"optNo": "Y",
+										"optNo": "N",
 										"showOrder":item[i].getAttribute('showOrder'),
 										"quesNo": item[i].getAttribute('code')
 									}

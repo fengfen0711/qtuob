@@ -19,12 +19,12 @@
 			    }
 			})(jQuery);
 			//生产
-//			var link='http://mp.qtoubao.cn/#/'
-//			var link1="http://h5.qtoubao.cn"
+			var link='http://mp.qtoubao.cn/#/'
+			var link1="http://h5.qtoubao.cn"
 			
 			//uat
-			var link='http://outer.qtoubao.cn/#/'
-			var link1="http://outer.qtoubao.cn"
+//			var link='http://outer.qtoubao.cn/#/'
+//			var link1="http://outer.qtoubao.cn"
 			if($.getUrlParam('type')=="afternoon"){
 				window.location.href=link+$.getUrlParam('code')+"?temCode="+$.getUrlParam('temCode')
 			}
@@ -35,7 +35,10 @@
 				window.location.href=link+$.getUrlParam('code')+"?celId="+$.getUrlParam('celId')+"&custId="+$.getUrlParam('custId')+"&userId="+$.getUrlParam('userId')
 			}
 			if($.getUrlParam('type')=="reinforce"){
-				window.location.href=link1+"/work/signingAgent/index.html?brokerCode="+$.getUrlParam('brokerCode')
+				window.location.href=link+"guader?brokerCode="+$.getUrlParam('brokerCode')
+			}
+			if($.getUrlParam('type')=="confirm"){
+				window.location.href=link1+"/work/sign/index1.html?pkInsureId="+$.getUrlParam('pkInsureId')+"&userId="+$.getUrlParam('userId')+"&beforeOrderStatus="+$.getUrlParam('beforeOrderStatus')+"&token="+$.getUrlParam('token')            
 			}
 			
 		})

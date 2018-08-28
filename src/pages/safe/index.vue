@@ -2,11 +2,11 @@
 	<div>
 		<p class="reset" @click="handleClickPass">
 			<span class="left">修改手机号码</span>
-			<img class="my_img_itemnext" src="/static/qijianwei/btn_next.png" />
+			<img class="my_img_itemnext" src="/static/imgNew/icon_next3.png" />
 		</p>
 		<p class="reset" @click="handleClickPhone">
 			<span class="left">修改登录密码</span>
-			<img class="my_img_itemnext" src="/static/qijianwei/btn_next.png" />
+			<img class="my_img_itemnext" src="/static/imgNew/icon_next3.png" />
 		</p>
 	</div>
 </template>

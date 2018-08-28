@@ -212,11 +212,10 @@
 	.name{
 		position: absolute;
 		top:5.06rem;
-		left:3.02rem;
+		left:3.3rem;
 		font-size: 0.36rem;
-		line-height:0.5rem;
-		text-align: center;
-		color: #3F464C;		
+		line-height:0.5rem;		
+		color: #3F464C;	
 	}
 	.hr3{
 		position: absolute;
@@ -236,7 +235,10 @@
 	.sm_it1{
 		position: absolute;
 		top:6.38rem;
-		left:2.52rem;
+		/*left:1.25rem;*/
+		left: 0;
+		right: 0;
+		text-align: center;
 		font-size: 0.2rem;
 		color: #3F464C;
 	}
@@ -261,16 +263,20 @@
 	.day{
 		position: absolute;
 		top:8.32rem;
-		left:1.44rem;
+		left:1.34rem;
 		font-size:0.16rem;
 		color: #3F464C;
+		width: 1rem;
+		text-align: center;
 	}
 	.day1{
 		position: absolute;
 		top:8.32rem;
-		right:1.44rem;
+		right:1.38rem;
 		font-size:0.16rem;
 		color: #3F464C;
+		text-align: center;
+		width: 1.1rem;
 	}
 	 .ht{
   	 	float: left;

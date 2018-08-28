@@ -4,7 +4,7 @@
         <div class="picture" :style="'backgroundImage:url('+headerImage+')'"></div>
         <div class="picture" :style="'backgroundImage:url('+s+')'"></div>
       <div style="margin-top:20px;">  
-        <input type="file" id="upload" accept="image/*" @change="upload" code="1">
+        <input type="file" id="upload" accept="image/*" capture='camera' @change="upload" code="1">
         <input type="file" accept="image/*" name="file" @change="upload" code="2">
         <label for="upload"></label>  
       </div>  

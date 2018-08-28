@@ -35,9 +35,15 @@
 				window.history.go(-1)
 			},
 			perfectin(){
-				this.$router.push("/confirmation?brokerId="+this.$route.query.brokerId+"&status="+"2")
+				this.$router.push("/sign?brokerId="+this.$route.query.brokerId+"&status="+"2")
 			},
 		},
+//		mounted() {
+//			let canvas = this.$refs.canvasF;
+//			canvas.height = this.$refs.canvasHW.offsetHeight
+//			canvas.width = this.$refs.canvasHW.offsetWidth
+//			this.canvasTxt = canvas.getContext("2d");
+//		},
 		created() {
 			this.failreason=this.$route.query.failure
 			this.failarr=this.failreason.split(",")
@@ -64,8 +70,9 @@
 		  	height: 100%;
 		  	position: fixed;
 		  	/*background: url(../../../static/img8/body_bg@2x.png) no-repeat;*/
-		  	background-size:cover ;
-		  	overflow: hidden;
+		  	/*background-size:cover ;
+		  	overflow: hidden;*/
+		  	
   	}
   	.cover{
   		margin: 1.44rem auto 0.36rem;
@@ -107,13 +114,15 @@
   		line-height: 0.4rem;
   	}
   	.btn{
-  		margin: 6.42rem auto;
+  		margin: 0 auto;
   		width:6.54rem;
   		height:0.88rem;
   		font-size: 0.32rem;
   		line-height: 0.88rem;
   		text-align: center;
-  		/*border: 0.01rem solid #EB7760;*/
+  		position: fixed;
+  		bottom: 1.2rem;
+  		left: 0.48rem;
 		
   	}
   	.btn .last{

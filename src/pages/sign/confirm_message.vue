@@ -1,6 +1,19 @@
 <template>
 	<div class="confirmation_all">
 		<div class="bg"></div>
+		<div v-if="!cust_Seven" class="custseven_sattus" @touchmove.prevent>
+			<div class="cs_div_centen">
+				<div class="cs_div_opentitle">提示</div>
+				<div class="cs_div_openiput1">
+					<p class="cust_p">
+						您已经是我们的签约经纪人，无需再次申请。
+					</p>
+				</div>
+				<div class="cs_btn_bootom">
+					<div class="cs_btn_cancercust" @click="index_know">确定</div>
+				</div>
+			</div>
+		</div>
 		<div class="top">
 			<img class="logo" src="/static/img/sign/mdlogo.png" alt="" />
 		</div>
@@ -57,6 +70,7 @@
 		name: "handCard",
 		data() {
 			return {
+				cust_Seven: true,
 				realname: "",
 				cardnum: "",
 				phone: "",
@@ -80,21 +94,27 @@
 			this.province11();
 			this.procity11();
 			this.procounty11();
+			
 		},
 
 		methods: {
+			index_know() {
+				WeixinJSBridge.call('closeWindow');
+				this.cust_Seven = true;
+			},
 			confirm_message_up() {
 				window.history.go(-1);
 			},
 			confirm_message_next() {
-				var broker = Object.assign(this.$store.state.sign, this.$store.state.invitecode, this.$store.state.mobile, this.$store.state.card, this.$store.state.record,this.$store.state.bank,this.$store.state.information)
+				var broker = Object.assign({"brokerId":this.$route.query.brokerId},this.$store.state.sign, this.$store.state.invitecode, this.$store.state.mobile, this.$store.state.card, this.$store.state.record,this.$store.state.bank,this.$store.state.information)
+				console.log(broker)
 				var confirmdata = {
 					broker,
 					"brokerSurety": {
-
+					
 					}
 				}
-				console.log(confirmdata);
+				console.log("111"+JSON.stringify(confirmdata));
 				Indicator.open();
 				this.$http.post(this.$store.state.link + '/core/broker/weChatbrokerRegister', confirmdata)
 					.then(res => {
@@ -102,19 +122,20 @@
 						var dataCode = res.data.code;
 						Indicator.close();
 						if(dataCode == "SYS_S_000") {
+							
 							this.phone=res.data.output.loginName;
 							this.password=res.data.output.loginPwd;
 							this.$router.push('/informaReconfirm?phone='+this.phone+"&password="+this.password);
 						} else if(dataCode=="CORE_E_005") {
 							this.$router.push('/hasregistered');
 						}else if(dataCode=="CORE_E_204"){
-							this.$router.push('/hasregistered');
+							this.cust_Seven=false;
 						}else if(dataCode=="SYS_E_998"){
 							Toast(res.data.desc);
 						}else if(dataCode=="SYS_E_000"){
 							Toast(res.data.desc);
 						}else if(dataCode=="CORE_E_207"){
-							Toast(res.data.desc);
+							this.$router.push('/hasregistered');
 						}
 						else{
 							Toast(res.data.desc);
@@ -380,4 +401,90 @@
 		color: transparent;
 		
 	}
+	.custseven_sattus {
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		right: 0;
+		left: 0;
+		background: #000000;
+		z-index: 100;
+		background: rgba(0, 0, 0, 0.20);
+	}
+	
+	.custseven_sattus1 {
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		right: 0;
+		left: 0;
+		background: #000000;
+		z-index: 100;
+		background: rgba(0, 0, 0, 0.20);
+	}
+	
+	.cs_div_centen {
+		overflow: hidden;
+		width: 5.42rem;
+		height: 3.56rem;
+		margin: 0 auto;
+		margin-top: 50%;
+		border-radius: 0.16rem;
+		background: rgba(248, 248, 248, 0.95);
+		border-radius: 0.26rem;
+		position: relative;
+	}
+	
+	.cs_div_centen1 {
+		overflow: hidden;
+		width: 5.42rem;
+		height: 3rem;
+		margin: 0 auto;
+		margin-top: 50%;
+		border-radius: 0.16rem;
+		background: rgba(248, 248, 248, 0.95);
+		border-radius: 0.26rem;
+		position: relative;
+	}
+	
+	.cs_div_opentitle {
+		width: 100%;
+		height: 0.36rem;
+		text-align: center;
+		font-size: 0.32rem;
+		color: #222222;
+		font-weight: bold;
+		margin-top: 0.32rem;
+	}
+	
+	.cs_div_openiput1 {
+		width: 4.76rem;
+		height: 1.23rem;
+		margin: 0 auto;
+		margin-top: 0.38rem;
+		padding: 0 0.3rem 0 0.3rem;
+	}
+	
+	.cust_p {
+		text-align: justify;
+		text-align: center;
+		line-height: 0.5rem;
+	}
+	
+	.cs_btn_bootom {
+		width: 5.42rem;
+		height: 0.89rem;
+		position: absolute;
+		bottom: 0;
+		border-top: 0.01rem solid #CCCCCC;
+	}
+	.cs_btn_cancercust {
+		display: block;
+		font-size: 0.32rem;
+		color: #EB6067;
+		line-height: 0.88rem;
+		text-align: center;
+		border-right: 0.01rem solid #CCCCCC;
+	}
+	
 </style>

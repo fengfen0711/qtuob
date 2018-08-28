@@ -69,7 +69,7 @@
 	    			).then(response => {
 						console.log(response.data)
 						if(response.data.code=="SYS_S_000"){
-							this.$router.push('/login?phoneNum='+this.newPhoneNum)
+							this.$router.push('/logNew?phoneNum='+this.newPhoneNum)
 						}else{
 							Toast(response.data.desc);
 						}
@@ -123,6 +123,30 @@
 </script>
 
 <style scoped="scoped">
+	input, button {
+		background: none;
+		border: none;
+	}
+	input, button {
+		outline: none;
+	}
+	input {
+		font-weight: 100;
+	}
+	input::-ms-clear {
+		display: none;
+		width: 0;
+		height: 0;
+	}
+	input::-ms-reveal {
+		display: none;
+	}
+	textarea::-webkit-input-placeholder, input::-webkit-input-placeholder {
+		color: #B2B2B2;
+	}
+	input:-ms-input-placeholder {
+		color: #B2B2B2;
+	}
 	.reset{
 		width: 6.94rem;
 		height: 1.2rem;
@@ -169,7 +193,7 @@
 	.btn{
 		width: 6.04rem;
 		height: 1rem;
-		border: .001rem solid #EB7760;
+		border: .01rem solid #EB7760;
 		box-shadow: inset 0 .01rem .3rem 0 rgba(255,255,255,0.50);
 		border-radius: .5rem;
 		text-align: center;

@@ -13,7 +13,7 @@
 				</div>
 			</div>
 		</div>
-		<div id="blur_all" >
+		<div id="blur_all">
 			<div class="confirm_text">
 				<div class="confirm_div">
 					<span class="confirm_name">真实姓名</span>
@@ -226,14 +226,14 @@
 				});
 
 			},
-			changeCounttt(){
+			changeCounttt() {
 				console.log(this.card);
 			},
 			changeCount() {
-//				console.log(this.card);
-				if(this.confirm_cardnum.length>=18){
+				//				console.log(this.card);
+				if(this.confirm_cardnum.length >= 18) {
 					if(this.card == "A" || this.card == "B" || this.card == "C") {
-//					if(this.card != ""&&this.card !=0) {
+						//					if(this.card != ""&&this.card !=0) {
 						var data = {
 							"idcard": this.confirm_cardnum,
 							"idtype": this.card,
@@ -244,81 +244,110 @@
 							console.log(response.data);
 							if(response.data.code == "SYS_S_000") {
 								if(response.data.output.valid == true) {
-
 								} else {
-									
 									Toast("证件号码不合法");
 								}
 							} else {
-								Toast("身份不合法");
+
 							}
 						}, response => {
 							console.log("ajax error");
 						});
-//					}
+						//					}
+					}
 				}
-				}
-				
+
 			},
 			sharenext() {
-//				if(this.name == "") {
-//					Toast("真实姓名不能为空");
-//					return;
-//				} else if(this.confirm_tel == "") {
-//					Toast("联系电话不能为空");
-//					return;
-//				} else 
-				if(this.confirm_tel!=""){
+				//				if(this.name == "") {
+				//					Toast("真实姓名不能为空");
+				//					return;
+				//				} else if(this.confirm_tel == "") {
+				//					Toast("联系电话不能为空");
+				//					return;
+				//				} else 
+				if(this.confirm_tel != "") {
 					if(!this.isPoneAvailable(this.confirm_tel)) {
 						Toast("手机号格式不正确");
 						return;
 					}
 				}
-					
-				if(this.card!=""&&this.card!="0"){
-					if(this.confirm_cardnum==""){
+
+				if(this.card != "" && this.card != "0") {
+					if(this.confirm_cardnum == "") {
 						Toast("请输入证件号码");
 						return;
-					}else if(this.confirm_cardnum.length<18){
-						Toast("请输入正确的证件号码");
-						return;
 					}
-					else{
+//					else if(this.confirm_cardnum.length < 18) {
+//						Toast("请输入正确的证件号码");
+//						return;
+//					} 
+					else {
 						this.changeCount();
-						
+						var data = {
+										"applicantName": this.name, //真实姓名
+										"certiCode": this.confirm_cardnum, //证件号码
+										"certiType": this.card, //证件类型
+										"mobileNo": this.confirm_tel, //联系电话
+										"fkBrokerId": this.$store.state.brokerInfo.brokerId, //BrokerId
+										"pkInsureId": pkInsureId, //主键ID
+										"token": localStorage.token,
+										"userId": localStorage.userId
+									}
+									console.log("1111" + JSON.stringify(data))
+									document.getElementById("confirm_id").style.disabled = "true";
+									this.$http.post(this.$store.state.link + '/core/order/addInsureInput', data).then(response => {
+										console.log(response.data);
+										document.getElementById("confirm_id").style.disabled = "false";
+										if(response.data.code == "SYS_S_000") {
+											pkInsureId = response.data.output.pkInsureId;
+											//							shareURL1=response.data.output.h5Url+"?pkInsureId="+response.data.output.pkInsureId+"&beforeOrderStatus="+response.data.output.beforeOrderStatus+"&userId="+localStorage.getItem("userId")+"&token="+localStorage.getItem("token");
+											//	 						this.shareclick();
+											this.$router.push('/custConfirmationdetails?beforeOrderStatus=' + response.data.output.beforeOrderStatus + "&pkInsureId=" + response.data.output.pkInsureId + "&h5Url=" + response.data.output.h5Url)
+											console.log("1111" + shareURL);
+										} else {
+											Toast("保存失败");
+										}
+									}, response => {
+										console.log("ajax error");
+										Toast("网络错误");
+										document.getElementById("confirm_id").style.disabled = "false";
+									});
+
 					}
-				}else{
+				} else {
+					var data = {
+										"applicantName": this.name, //真实姓名
+										"certiCode": this.confirm_cardnum, //证件号码
+										"certiType": this.card, //证件类型
+										"mobileNo": this.confirm_tel, //联系电话
+										"fkBrokerId": localStorage.getItem("BrokerId"), //BrokerId
+										"pkInsureId": pkInsureId, //主键ID
+										"token": localStorage.token,
+										"userId": localStorage.userId
+									}
+									console.log("1111" + JSON.stringify(data))
+									document.getElementById("confirm_id").style.disabled = "true";
+									this.$http.post(this.$store.state.link + '/core/order/addInsureInput', data).then(response => {
+										console.log(response.data);
+										document.getElementById("confirm_id").style.disabled = "false";
+										if(response.data.code == "SYS_S_000") {
+											pkInsureId = response.data.output.pkInsureId;
+											//							shareURL1=response.data.output.h5Url+"?pkInsureId="+response.data.output.pkInsureId+"&beforeOrderStatus="+response.data.output.beforeOrderStatus+"&userId="+localStorage.getItem("userId")+"&token="+localStorage.getItem("token");
+											//	 						this.shareclick();
+											this.$router.push('/custConfirmationdetails?beforeOrderStatus=' + response.data.output.beforeOrderStatus + "&pkInsureId=" + response.data.output.pkInsureId + "&h5Url=" + response.data.output.h5Url)
+											console.log("1111" + shareURL);
+										} else {
+											Toast("保存失败");
+										}
+									}, response => {
+										console.log("ajax error");
+										Toast("网络错误");
+										document.getElementById("confirm_id").style.disabled = "false";
+									});
 				}
-//					this.changeCount();
-				var data = {
-					"applicantName": this.name, //真实姓名
-					"certiCode": this.confirm_cardnum, //证件号码
-					"certiType": this.card, //证件类型
-					"mobileNo": this.confirm_tel, //联系电话
-					"fkBrokerId": localStorage.getItem("BrokerId"), //BrokerId
-					"pkInsureId": pkInsureId, //主键ID
-					"token": localStorage.token,
-					"userId": localStorage.userId
-				}
-				console.log("1111"+JSON.stringify(data))
-				document.getElementById("confirm_id").style.disabled = "true";
-				this.$http.post(this.$store.state.link + '/core/order/addInsureInput', data).then(response => {
-					console.log(response.data);
-					document.getElementById("confirm_id").style.disabled = "false";
-					if(response.data.code == "SYS_S_000") {
-						pkInsureId = response.data.output.pkInsureId;
-						//							shareURL1=response.data.output.h5Url+"?pkInsureId="+response.data.output.pkInsureId+"&beforeOrderStatus="+response.data.output.beforeOrderStatus+"&userId="+localStorage.getItem("userId")+"&token="+localStorage.getItem("token");
-						//	 						this.shareclick();
-						this.$router.push('/custConfirmationdetails?beforeOrderStatus=' + response.data.output.beforeOrderStatus + "&pkInsureId=" + response.data.output.pkInsureId + "&h5Url=" + response.data.output.h5Url)
-						console.log("1111" + shareURL);
-					} else {
-						Toast("保存失败");
-					}
-				}, response => {
-					console.log("ajax error");
-					Toast("网络错误");
-					document.getElementById("confirm_id").style.disabled = "false";
-				});
+				//					this.changeCount();
+
 			},
 			shareclick() {
 				var data1 = {
@@ -345,9 +374,10 @@
 </script>
 
 <style scoped="scoped">
-	.confirm_all{
+	.confirm_all {
 		background: #FFFFFF;
 	}
+	
 	.ctc_div_listitemleft {
 		width: 3.2rem;
 		display: block;
@@ -465,7 +495,6 @@
 		line-height: 0.88rem;
 		float: right;
 		margin-top: 0.2rem;
-	
 	}
 	
 	.confirm_card {

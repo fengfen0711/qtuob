@@ -14,6 +14,10 @@ import IScroll from "iscroll"
 import AlloyFinger from 'alloyfinger'
 import AlloyFingerPlugin from 'alloyfinger/vue/alloy_finger.vue'
 import wx from 'weixin-js-sdk'
+import common from '../static/js/commonFunction/common.js'
+
+Vue.prototype.common = common
+
 
 fastClick.attach(document.body)
 Vue.config.productionTip = false

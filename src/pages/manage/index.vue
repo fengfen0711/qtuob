@@ -163,7 +163,7 @@
 					</li>
 					<li class="assistant_item" @click="handleClickconfirm">
 						<img class="assistant_img" src="/static/img/manage_customer.png" alt="" />
-						<p class="assistant_p">客户确认书</p>
+						<p class="assistant_p">客户委托书</p>
 					</li>
 					<li class="assistant_item" @click="handleClickPlan">
 						<img class="assistant_img" src="/static/img/manage_ai.png" alt="" />
@@ -285,37 +285,12 @@
 				this.$router.push('/produch')
 			},
 			handleClickconfirm() {
-					var data = {
-						"brokerId": localStorage.BrokerId
-					};
-//				console.log(data)
-				this.$http.post(this.$store.state.link + "/core/broker/findBrokerByBrokId", data).then(res => {
-					Indicator.close();
-//					console.log("总数据111111==" + JSON.stringify(res.data))
-					if(res.data.code == "SYS_S_000") {
-						var brokerCodehas = res.data.output.hasOwnProperty("brokerCode");
-						
-						if(brokerCodehas == true) {
-							window.localStorage.custName=this.list.custName
-							this.$router.push('/custConfirmation?custId='+this.$route.query.custId)
-						} else {
-//							Toast("尚未获得经纪人资格，快去申请经纪人资格吧");
-						this.cust_status=false;
-						}
-
-					} else {
-						if(res.data.desc != undefined) {
-							Toast(res.data.desc);
-						} else {
-							console.log("登录接口undefined");
-						}
-					}
-				}, res => {
-					Indicator.close();
-//					Toast('222')
-					console.log("2===" + res.data)
-				})
-				
+				if (this.$store.state.brokerInfo.isSignEnum == 'Y' && this.$store.state.brokerInfo.brokerCode != '') {
+					window.localStorage.custName=this.list.custName
+					this.$router.push('/custConfirmation?custId='+this.$route.query.custId)
+				}else{
+					this.cust_status=false;
+				}
 			},
 			handleClickXiang() {
 				this.$router.push('/information?custId=' + this.custId)
@@ -340,15 +315,18 @@
 					"token":  localStorage.token,
 					"userId": localStorage.userId
 				}
+				console.log(data)
 				this.$http.post(this.$store.state.link + '/cut/cut/queryProdList', data).then(response => {
-//					console.log("121212=="+JSON.stringify(response.data))
+					console.log(response.data)
 					if(response.data.code == "SYS_S_000") {
 						if(response.data.output.length >= 3) {
 							response.data.output.length = 3
 						}
 						this.discount = response.data.output
-						//console.log(this.discount[0].coverageFeesList != undefined && this.discount[0].coverageFeesList != "")
-						if(this.discount[0].coverageFeesList != undefined && this.discount[0].coverageFeesList != "") {
+
+//						console.log(this.discount[0].coverageFeesList != undefined && this.discount[0].coverageFeesList != "")
+						if(this.discount.length > 0 && (this.discount[0].coverageFeesList != undefined && this.discount[0].coverageFeesList != "")) {
+
 							this.mark_flag1 = false;
 						}else{
 							this.mark_flag1 = true;

@@ -1,20 +1,5 @@
 <template>
 	<div class="first" v-show="homeShow">
-		<div v-if="!cust_status" class="custseven_sattus" @touchmove.prevent>
-			<div class="cs_div_centen">
-				<div class="cs_div_opentitle">温馨提示</div>
-				<div class="cs_div_openiput1">
-					<p class="cust_p">
-						非保险从业人员，无法通过本平台做产品推广，请联系我们的客服马上办理从业资格认证。
-					</p>
-				</div>
-				<div class="cs_btn_bootom">
-					<div class="cs_btn_cancer1" @click="notopen">取&nbsp;消</div>
-					<div class="cs_btn_bg"></div>
-					<a class="cs_btn_cancer2" @click="notopenknow" :href="'tel:' +  phoneNum ">马上联系</a>
-				</div>
-			</div>
-		</div>
 		<div class="blur_all" :class="{blur_all1:!cust_status}">
 			<div class="banner">
 				<mt-swipe :auto="5000" :show-indicators="false">
@@ -24,55 +9,68 @@
 				</mt-swipe>
 			</div>
 			<div class="btnBox clearFloat" id="btnBox">
-				<dl class="btnDl" @click="handleClickConfirmation">
-					<img src="/static/imgNew/icon_planbook3.png" class="btnImg" />
-					<dt class="btnDt">计划书</dt>
-				</dl>
 				<dl class="btnDl" @click="handleCustManagement">
 					<img src="/static/imgNew/icon_management3.png" class="btnImg" />
 					<dt class="btnDt">客户管理</dt>
 				</dl>
-				<dl class="btnDl" @click="handleClickZhao">
-					<img src="/static/imgNew/icon_getwork3.png" class="btnImg" />
-					<dt class="btnDt">签约上岗</dt>
-				</dl>
 				<dl class="btnDl" @click="handleClickMore">
-					<img src="/static/imgNew/icon_workdesktop3.png" class="btnImg" />
-					<dt class="btnDt">工作台</dt>
+					<img src="/static/imgNew/icon_assist3.png" class="btnImg" />
+					<dt class="btnDt">展业辅助</dt>
+				</dl>
+				<dl class="btnDl" @click="handleClickSign">
+					<img src="/static/imgNew/icon_partner3.png" class="btnImg" />
+					<dt class="btnDt">{{signText}}</dt>
+				</dl>
+				<dl class="btnDl" @click="handleClickConfirmation">
+					<img src="/static/imgNew/icon_planbook3.png" class="btnImg" />
+					<dt class="btnDt">客户委托书</dt>
 				</dl>
 			</div>
 			<div class="products">
 				<p class="productsTitle clearFloat">
 					<span class="proTitText">热销爆款</span>
-					<span class="moreBtn right proMore" @click="handleClickMore">查看全部 <b class="triangle_right"></b></span>
+					<span class="moreBtn right proMore" @click="handlePro(2)">查看更多 <b class="triangle_right"></b></span>
 				</p>
-				<div class="clearFloat proContent">
-					<div class="left proLeft" :code="[code1,salecode1]" @click="handleClickDetail"></div>
-					<div class="right proRight">
-						<div class="proRight1" :code="[code2,salecode2]" @click="handleClickDetail"></div>
-						<div class="proRight2" :code="[code3,salecode3]" @click="handleClickDetail"></div>
+				<div class="proBox">
+					<div class="clearFloat proContent">
+						<div class="left proLeft" :code="[code1,salecode1]" @click="handleClickDetail">
+							<!--<p class="proLP1">{{pro01}}</p>
+							<p class="proLP2">{{pro02}}</p>
+							<p class="proLp3P" v-if="pro03!=undefined">
+								<span class="proLp3">¥<span class="big">{{pro03}}</span>起</span>
+							</p>-->
+						</div>
+						<div class="right proRight">
+							<div class="proRight1" :code="[code2,salecode2]" @click="handleClickDetail">
+								<!--<p class="proR1P1">{{pro11}}</p>
+								<p class="proR1P2">{{pro12}}</p>
+								<p class="proR1P3P" v-if="pro13!=undefined">
+									<span class="proR1P3">¥<span class="big">{{pro13}}</span>起</span>
+								</p>-->
+							</div>
+							<div class="proRight2" :code="[code3,salecode3]" @click="handleClickDetail">
+								<!--<p class="proR1P1 proR2P1">{{pro21}}</p>
+								<p class="proR1P2 proR2P2">{{pro22}}</p>
+								<p class="proR1P3P proR2P3P" v-if="pro23!=undefined">
+									<span class="proR1P3 proR2P3">¥<span class="big">{{pro23}}</span>起</span>
+								</p>-->
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 			<div class="products">
 				<p class="productsTitle clearFloat">
 					<span class="proTitText">保险看一看</span>
-					<span class="moreBtn right proMore" @click="handleClickMore">查看全部 <b class="triangle_right"></b></span>
+					<span class="moreBtn right proMore" @click="handlePro(3)">查看更多 <b class="triangle_right"></b></span>
 				</p>
-				<div class="clearFloat proContent">
-					<img src="/static/imgNew/dis3.png" class="disImg" />
-					<p class="disTitle">标题标题标题</p>
-					<p class="disTitleDes">描述描述描述描述描述描述</p>
-				</div>
-				<div class="clearFloat proContent">
-					<img src="/static/imgNew/dis3.png" class="disImg" />
-					<p class="disTitle">标题标题标题</p>
-					<p class="disTitleDes">描述描述描述描述描述描述</p>
-				</div>
-				<div class="clearFloat proContent">
-					<img src="/static/imgNew/dis3.png" class="disImg" />
-					<p class="disTitle">标题标题标题</p>
-					<p class="disTitleDes">描述描述描述描述描述描述</p>
+				<div class="clearFloat proContent" :class="art.atcStyle | layout" v-for="art in artList" @click="godetail(art.articleId)">
+					<img :src="art.picRul" class="disImg" />
+					<div class="disText">
+						<p class="disTitle">{{art.title}}</p>
+						<p class="disTitleDes">{{art.atcDesc}}</p>
+						<p class="disTitleDes"><span>{{art.createDatetime}}</span><span class="sign" v-for="tag in art.tagList">{{tag.name}}</span></p>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -85,53 +83,68 @@
 	import { Swipe, SwipeItem } from 'mint-ui';
 	import { Tabbar, TabItem } from 'mint-ui';
 	import { Indicator } from 'mint-ui';
+	import { MessageBox } from 'mint-ui';
 	export default {
-	  	name: 'newIndex',
-	  	props: ['homeShow'],
+	  	name: 'home',
 	  	data(){
 	  		return {
-//	  			homeShow:this.$route.query.homeShow,
+	  			homeShow:true,
 	  			seen:true,
+	  			pro01:"",
+	  			pro02:"",
+	  			pro03:"",
+	  			pro11:"",
+	  			pro12:"",
+	  			pro13:"",
+	  			pro21:"",
+	  			pro22:"",
+	  			pro23:"",
 	  			code1:"",
 	  			code2:"",
 	  			code3:"",
 	  			salecode1:"",
 	  			salecode2:"",
 	  			salecode3:"",
-			    adImgUrls:[{
-						"adImgUrl":'/static/imgNew/banner3.png',
-						"adCode":'1'
-					}],
+			    adImgUrls:[],
 			    proLists:[],
 			    temCode:"",
 			    cust_status:true,
 			    phoneNum:"010-86220865",
-			    test:false
+			    test:false,
+			    artList:[],
+			    signText:'成为合伙人',
+			    signStatus:'',
+			    failure:''
 	  		}
 	  	},
 	  	beforeCreate() {
-			Indicator.open()
-			var data = {
+			var userInfo = {
 				"userId": localStorage.getItem("userId"),
 				"token": localStorage.getItem("token")
-			};
-			this.$http.post(this.$store.state.link + '/sso/dovltoken', data)
-			.then(data => {
-				Indicator.close()
-				var dataCode = data.data.code;
+			}
+			this.$http.post(this.$store.state.link + '/sso/dovltoken', userInfo)
+			.then(res => {
+//				console.log(res.data);
+				var dataCode = res.data.code;
 				if(dataCode == "SYS_S_000") {
-					if(data.data.output.flag == "Y") {
-						//留在当前页面
+					if(res.data.output.flag == "Y") {
+						this.$store.dispatch("changeLoginId", "1")
 					} else {
-						this.$router.push('/login')
+						this.$store.dispatch("changeLoginId", "0")
 					}
 				} else {
-					this.$router.push('/login')
+					this.$store.dispatch("changeLoginId", "0")
+					window.localStorage.removeItem("phoneNum");
+					window.localStorage.removeItem("token");
+					window.localStorage.removeItem("userId");
+					this.$store.dispatch("changeToken", '')
+					this.$store.dispatch("changeUserId", '')
+					this.$store.dispatch("changeUserInfoData", {})
+					this.$store.dispatch("changeBrokerInfoData", {})
 				}
-			}, data => {
-				Indicator.close()
-				this.$router.push('/login')
-				console.log(data.data);
+			}, res => {
+				this.$store.dispatch("changeLoginId", "0")
+				console.log(res.data);
 			})
 		},
 	  	created(){
@@ -146,13 +159,10 @@
 			    //console.log(data.data);
 				var dataCode = data.data.code;
 				if (dataCode == "SYS_S_000") {
-//					this.adImgUrls = data.data.output
-//					this.adImgUrls = [{
-//						"adImgUrl":'/static/imgNew/banner3.png',
-//						"adCode":'1'
-//					}]
+					this.adImgUrls = data.data.output;
 				}else{
 					Toast(data.data.desc);
+					console.log(data.data.desc)
 				}
 			},data =>{
 				Indicator.close()
@@ -170,10 +180,19 @@
 	  		this.$http.post(this.$store.state.link+'/prd/prod/prodsalelist', dataprop)
 			.then(data =>{
 				Indicator.close()
-//			    console.log(data.data);
+			    console.log(data.data);
 				var dataCode = data.data.code;
 				if (dataCode == "SYS_S_000") {					
 					this.proLists = data.data.output;
+					this.pro01 = this.proLists[0].prodSaleName;
+					this.pro02 = this.proLists[0].prodRecmd;
+					this.pro03 = this.proLists[0].minPrice;
+					this.pro11 = this.proLists[1].prodSaleName;
+					this.pro12 = this.proLists[1].prodRecmd;
+					this.pro13 = this.proLists[1].minPrice;
+					this.pro21 = this.proLists[2].prodSaleName;
+					this.pro22 = this.proLists[2].prodRecmd;
+					this.pro23 = this.proLists[2].minPrice;
 					this.code1 = this.proLists[0].prodCodeList[0].prodCode;
 					this.code2 = this.proLists[1].prodCodeList[0].prodCode;
 					this.code3 = this.proLists[2].prodCodeList[0].prodCode;
@@ -182,133 +201,228 @@
 					this.salecode3 = this.proLists[2].prodSaleCode;
 				}else{
 					Toast(data.data.desc);
-				}
-			},data =>{
-				Indicator.close()
-				console.log(data.data);
-			})
-			var databroker={
-				"userId": localStorage.getItem("userId"),
-				"token": localStorage.getItem("token")
-				
-			}
-			Indicator.open();
-			this.$http.post(this.$store.state.link+'/pct/seloneselfinfo', databroker)
-			.then(data =>{
-				Indicator.close()
-				var dataCode = data.data.code;
-				if (dataCode == "SYS_S_000") {
-					window.localStorage.BrokerId = data.data.output.brokerId;
-					window.localStorage.userName = data.data.output.userName;
-					window.localStorage.remind_read=data.data.output.remind_read;
-				}else{
-					Toast(data.data.desc);
 					console.log(data.data.desc);
 				}
 			},data =>{
 				Indicator.close()
 				console.log(data.data);
 			})
+			
+			this.recommendAjax()
+			this.getBroInfo()
 	  	},
 	  	methods:{
-	  		notopenknow(){
-	  			this.cust_status=true;
-	  		},
-	  		notopen(){
-	  			this.cust_status=true;
-	  		},
 	  		handleClickMore(){
-	  			var data = {
-					"brokerId": localStorage.BrokerId
-				};
-				console.log(data)
-				this.$http.post(this.$store.state.link + "/core/broker/findBrokerByBrokId", data).then(res => {
-					Indicator.close();
-					if(res.data.code == "SYS_S_000") {
-						var brokerCodehas = res.data.output.hasOwnProperty("brokerCode");					
-						if(brokerCodehas == true) {
-							this.$router.push('/custConfirmation')
-						} else {
-							this.cust_status=false;
-						}
-
-					} else {
-						if(res.data.desc != undefined) {
-							Toast(res.data.desc);
-						} else {
-							Toast("登录接口undefined");
-							console.log("登录接口undefined");
-						}
-					}
-				}, res => {
-					Indicator.close();
-					console.log(res.data)
-				})
+	  			if (this.$store.state.loginId == "0") {
+					MessageBox.confirm('',{
+					  	title: '提示',
+					  	message: '请您登录后再进行查看哦',
+					  	confirmButtonText: '登录', 
+						cancelButtonText: '暂不登录', 
+					  	showCancelButton: true
+					}).then(action => {
+						this.$router.push('/logNew')
+					})
+				} else {
+					this.$router.push('/tool?status='+this.signStatus)
+				}
 	  		},
 	  		handleClickConfirmation(){
-	  			//我的客户确认书
+	  			if (this.$store.state.loginId == "0") {
+					MessageBox.confirm('',{
+					  	title: '提示',
+					  	message: '请您登录后再进行查看哦',
+					  	confirmButtonText: '登录', 
+						cancelButtonText: '暂不登录', 
+					  	showCancelButton: true
+					}).then(action => {
+						this.$router.push('/logNew')
+					})
+				} else {
+					if (this.$store.state.brokerInfo.isSignEnum == 'Y' && this.$store.state.brokerInfo.brokerCode != '') {
+						this.$router.push('/custConfirmation')
+					}else{
+						this.path('/custConfirmation')
+					}
+				}
+	  		},
+	  		path(pathAdd){
+	  			if (this.signStatus == "ZS") {
+					this.$router.push(pathAdd)
+				} else  if (this.signStatus == "") {
+					MessageBox.confirm('',{
+					  	title: '提示',
+					  	message: '您尚未与上海明大保险经纪有限公司签约，无法使用此功能。',
+					  	confirmButtonText: '签约', 
+						cancelButtonText: '暂不签约', 
+					  	showCancelButton: true
+					}).then(action => {
+						this.$router.push('/guader')
+						this.quit()
+					})
+				} else  if (this.signStatus == "NE" || this.signStatus == "CE" || this.signStatus == "ZE") {
+					MessageBox.confirm('',{
+					  	title: '提示',
+					  	message: '您的签约审核失败，是否修改信息',
+					  	confirmButtonText: '修改', 
+						cancelButtonText: '暂不修改', 
+					  	showCancelButton: true
+					}).then(action => {
+						this.$router.push('/failindex?brokerId='+ this.$store.state.brokerInfo.brokerId+'&failure=' + this.failure)//审核失败
+					})
+				} else  if (this.signStatus == "TN" || this.signStatus == "CN" || this.signStatus == "ZN") {
+					MessageBox.confirm('',{
+					  	title: '提示',
+					  	message: '您的签约合伙人正在审核中，不要着急哦',
+					  	confirmButtonText: '查看进度', 
+						cancelButtonText: '暂不查看', 
+					  	showCancelButton: true
+					}).then(action => {
+						this.$router.push('/waitindex?regStatus='+ this.signStatus)//审核中
+					})
+				}
+	  		},
+	  		getBroInfo(){
+	  			if (this.$store.state.brokerInfo.brokerId) {
+	  				var broInfo = {
+						"brokerId": this.$store.state.brokerInfo.brokerId,
+					}
+					this.$http.post(this.$store.state.link + "/core/broker/brokerRegStatus", broInfo)
+					.then(res => {
+//						console.log(res.data)
+						if(res.data.code == "SYS_S_000") {
+							if (res.data.output.brokerReg && res.data.output.brokerReg.regStatus) {
+								if (res.data.output.brokerReg.status == 'Y') {
+									this.signStatus = res.data.output.brokerReg.regStatus
+									this.failure = res.data.output.tblBrokerRegHis.regRemarks;
+								}
+							}else{
+								this.signStatus = ""
+							}
+						}
+					}, res => {
+						console.log(res.data)
+					})
+	  			}else{
+	  				this.signStatus = ""
+	  			}
+	  		},
+			quit() {
 				var data = {
-					"brokerId": localStorage.BrokerId
+					"loginNme": this.$store.state.userInfo.userPhone,
+					"loginType": "A",
+					"token": this.$store.state.token,
+					"userId": this.$store.state.userId
 				};
-				console.log(data)
-				this.$http.post(this.$store.state.link + "/core/broker/findBrokerByBrokId", data).then(res => {
+				this.$http.post(this.$store.state.link + "/sso/dologout", data).then(res => {
 					Indicator.close();
+//					console.log(res.data)
 					if(res.data.code == "SYS_S_000") {
-						var brokerCodehas = res.data.output.hasOwnProperty("brokerCode");					
-						if(brokerCodehas == true) {
-							this.$router.push('/custConfirmation')
-						} else {
-							this.cust_status=false;
-						}
+						window.localStorage.removeItem("phoneNum");
+						window.localStorage.removeItem("token");
+						this.$store.dispatch("changeToken", '')
+						this.$store.dispatch("changeUserId", '')
+						this.$store.dispatch("changeUserInfoData", {})
+						this.$store.dispatch("changeBrokerInfoData", {})
 					} else {
-						if(res.data.desc != undefined) {
-							Toast(res.data.desc);
-						} else {
-							Toast("登录接口undefined");
-							console.log("登录接口undefined");
-						}
+						window.localStorage.removeItem("phoneNum");
+						window.localStorage.removeItem("token");
+						this.$store.dispatch("changeToken", '')
+						this.$store.dispatch("changeUserId", '')
+						this.$store.dispatch("changeUserInfoData", {})
+						this.$store.dispatch("changeBrokerInfoData", {})
 					}
 				}, res => {
 					Indicator.close();
 					console.log(res.data)
 				})
-	  		},
-	  		handleClickZhao(){
-				var data={
-					 "brokerId":localStorage.getItem("BrokerId"),
-					 "userId":""
-				}
-				Indicator.close();
-				this.$http.post(this.$store.state.link+'/core/broker/findBrokerByBrokId', data)
-				.then(data =>{
-					console.log(data.data)
-					Indicator.close()
-					var dataCode = data.data.code;
-					if (dataCode == "SYS_S_000") {
-						if(data.data.output.brokerCode!=undefined){
-							window.localStorage.brokerCode=data.data.output.brokerCode;
-							this.$router.push('/reinforce');
-						}else{
-							this.cust_status=false;
-						}
+			},
+	  		handleClickSign(){
+	  			if (this.$store.state.loginId == "0") {
+					this.$router.push('/guader')
+				} else {
+					if (this.$store.state.brokerInfo.isSignEnum == 'Y' && this.$store.state.brokerInfo.brokerCode != '') {
+						this.$router.push('/step?brokerId='+ this.$store.state.brokerInfo.brokerId)
 					}else{
-						Toast(data.data.desc);
-						console.log(data.data.desc);
+						if (this.signStatus == "ZS") {
+							this.$router.push('/step?brokerId='+ this.$store.state.brokerInfo.brokerId)//已签约并审核成功
+						} else  if (this.signStatus == "") {
+							this.$router.push('/guader')
+							this.quit()
+						} else  if (this.signStatus == "NE" || this.signStatus == "CE" || this.signStatus == "ZE") {
+							this.$router.push('/failindex?brokerId='+ this.$store.state.brokerInfo.brokerId+'&failure=' + this.failure)//审核失败
+						} else  if (this.signStatus == "TN" || this.signStatus == "CN" || this.signStatus == "ZN") {
+							this.$router.push('/waitindex?regStatus='+ this.signStatus)//审核中
+						}
 					}
-				},data =>{
-					Indicator.close()
-					console.log(data.data);
-				})
+				}
 	  		},
 	  		handleClickDetail(e){
 	  			var code=e.currentTarget.getAttribute('code').split(',')
 	  			this.$router.push('/detail?prodCode='+code[0]+'&prodSaleCode='+code[1])
 	  		},
 	  		handleCustManagement(){
-	  			this.$router.push('/custSeven')
-	  		}
-	  	}
-	  }
+	  			if (this.$store.state.loginId == "0") {
+					MessageBox.confirm('',{
+					  	title: '提示',
+					  	message: '请您登录后再进行查看哦',
+					  	confirmButtonText: '登录', 
+						cancelButtonText: '暂不登录', 
+					  	showCancelButton: true
+					}).then(action => {
+						this.$router.push('/logNew')
+					})
+				} else {
+					this.$router.push('/custSeven')
+				}
+	  		},
+	  		handlePro(index){
+	  			if (index == 2) {
+	  				this.$router.push('/newIndex/product')
+	  			}
+	  			else if (index == 3) {
+	  				this.$router.push('/newIndex/descover')
+	  			}
+	  		},
+	  		recommendAjax(){
+				var artInfo = {
+					"isStick": "y",
+					"sence": "s0001",
+					"length":0,
+					"start": 0
+				}
+				this.$http.post(this.$store.state.link + "/cnt/atc/queryAtcShow", artInfo)
+				.then(res => {
+//					console.log(res.data)
+					if(res.data.code == "SYS_S_000") {
+						this.artList = res.data.output.data;
+					}
+				}, res => {
+					console.log(res.data)
+				})
+			},
+			godetail(id){
+				console.log(id)
+				this.$router.push('/artDetail?detailId='+id)
+			},
+	  	},
+		filters:{
+			layout : function (value){
+				if(value == "U"){
+					return value = 'imgUpTextDown' 
+				}
+				else if(value == "D"){
+					return value = 'textUpImgDown' 
+				}
+				else if(value == "L"){
+					return value = 'imgLeftTextRight' 
+				}
+				else if(value == "R"){
+					return value = 'textLeftImgRight' 
+				}
+			}
+		},
+	}
 </script>
 
 <style scoped="scoped">
@@ -317,32 +431,6 @@
 	}
 	.right{
 		float: right;
-	}
-	input, button {
-		background: none;
-		border: none;
-	}
-	input, button {
-		outline: none;
-	}
-	input {
-		font-weight: 100;
-	}
-	input::-ms-clear {
-		display: none;
-		width: 0;
-		height: 0;
-	}
-	input::-ms-reveal {
-		display: none;
-	}
-	textarea::-webkit-input-placeholder, input::-webkit-input-placeholder {
-		color: #B2B2B2;
-		font-weight: 100;
-	}
-	input:-ms-input-placeholder {
-		color: #B2B2B2;
-		font-weight: 100;
 	}
 	.clearFloat:after {
 		height: 0;
@@ -395,8 +483,146 @@
         transform: rotate(-45deg);
 	}
 	.products {
-		padding-left: 0.3rem;
+		width: 7.18rem;
+		padding-left: 0.32rem;
 		padding-top: 0.48rem;
+	}
+	.proBox {
+		width: 6.86rem;
+		padding-right: 0.32rem;
+	}
+	.proContent{
+		position: relative;
+		margin-top: 0.32rem;
+		overflow: hidden;
+	}
+	.imgUpTextDown {
+		height: 4.62rem;
+	}
+	.imgUpTextDown .disImg {
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 1;
+		display: block;
+		width: 6.86rem;
+		height: 3.2rem;
+		margin: 0 auto;
+	}
+	.imgUpTextDown .disText{
+		position: absolute;
+		top: 3.32rem;
+		left: 0;
+		z-index: 1;
+	}
+	.textUpImgDown {
+		height: 4.62rem;
+	}
+	.textUpImgDown .disImg {
+		position: absolute;
+		top: 1.4rem;
+		left: 0;
+		z-index: 1;
+		display: block;
+		width: 6.86rem;
+		height: 3.2rem;
+		margin: 0 auto;
+	}
+	.textUpImgDown .disText{
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 1;
+	}
+	.imgUpTextDown .disTitle, .textUpImgDown .disTitle {
+		width: 6.86rem;
+		height: 0.48rem;
+		line-height: 0.48rem;
+		margin-top: 0.02rem;
+		font-size: 0.32rem;
+		font-weight: bold;
+		color: #000000;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.imgUpTextDown .disTitleDes, .textUpImgDown .disTitleDes {
+		width: 6.86rem;
+		height: 0.4rem;
+		line-height: 0.4rem;
+		font-size: 0.24rem;
+		color: #555555;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.sign {
+		margin-left: 0.2rem;
+		color: #E73748;
+	}
+	.imgLeftTextRight {
+		height: 2.14rem;
+	}
+	.imgLeftTextRight .disImg {
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 1;
+		display: block;
+		width: 2.14rem;
+		margin: 0 auto;
+	}
+	.imgLeftTextRight .disText{
+		position: absolute;
+		top: 0;
+		left: 2.76rem;
+		z-index: 1;
+	}
+	.textLeftImgRight {
+		height: 2.14rem;
+	}
+	.textLeftImgRight .disImg {
+		position: absolute;
+		top: 0;
+		left: 4.72rem;
+		z-index: 1;
+		display: block;
+		width: 2.14rem;
+		margin: 0 auto;
+	}
+	.textLeftImgRight .disText{
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 1;
+	}
+	.imgLeftTextRight .disTitle, .textLeftImgRight .disTitle {
+		width: 4.1rem;
+		height: 0.8rem;
+		line-height: 0.42rem;
+		margin-top: 0.02rem;
+		font-size: 0.32rem;
+		font-weight: bold;
+		color: #000000;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display:-webkit-box; 
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp:2;
+	}
+	.imgLeftTextRight .disTitleDes, .textLeftImgRight .disTitleDes {
+		width: 4.1rem;
+		/*height: 0.64rem;*/
+		line-height: 0.32rem;
+		margin-top: 0.16rem;
+		margin-bottom: 0.22rem;
+		font-size: 0.24rem;
+		color: #555555;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display:-webkit-box; 
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp:2;
 	}
 	.productsTitle {
 		height: 0.32rem;
@@ -412,31 +638,79 @@
 		color: #222222;
 		letter-spacing: 0.01rem;
 		font-weight: bold;
-	}
-	.proTitBor {
-		float: left;
-		display: inline-block;
-		width: 0.04rem;
-		height: 0.32rem;
-		background: #EB6069;
-	}
-	.proImg {
-		float: left;
-		display: inline-block;
-		width: 1.468rem;
-		height: 0.268rem;
-		margin-top: 0.026rem;
-		margin-left: 0.2rem;
-	}
+	}	
 	.moreBtn {
 		font-size: 0.28rem;
 		color: #999999;
+	}	
+	.blur_all {
+		width: 100%;
+		height: 100%;
+	}
+	.blur_all1 {
+		background-attachment: fixed;
+	    -webkit-filter: blur(0.1rem);
+	    filter: blur(0.1rem);
+	}
+	.scrollTip {
+		margin-top: 0.24rem;
+		font-size: 0.24rem;
+		color: #CCCCCC;
+		text-align: center;
 	}
 	.proLeft {
 		width: 3.36rem;
 		height: 3.36rem;
 		background: url(/static/imgNew/tian3.png) no-repeat;
 		background-size: cover;
+	}
+	.proLP1 {
+		width: 3.1rem;
+		margin-top: 0.1rem;
+		margin-left: 0.2rem;
+		height: 0.44rem;
+		line-height: 0.44rem;
+		font-size: 0.32rem;
+		color: #C09E4B;
+		letter-spacing: 0.01rem;		
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+	.proLP2 {
+		width: 2.44rem;
+		margin-left: 0.2rem;
+		margin-top: 0.08rem;
+		line-height: 0.34rem;
+		min-height: 0.68rem;
+		font-size: 0.24rem;
+		color: #444444;
+		overflow: hidden;
+		text-overflow:ellipsis;
+		display:-webkit-box; 
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp:2;
+	}
+	.proLp3P {
+		height: 0.38rem;
+		margin-left: 0.2rem;
+		margin-top: 0.14rem;
+		line-height: 0.38rem;
+		font-size: 0.24rem;
+		color: #FFFFFF;
+	}
+	.big {
+		display: inline-block;
+		margin: 0 0.02rem;
+		font-size: 0.32rem;
+	}
+	.proLp3 {
+		display: inline-block;
+		padding: 0.05rem 0;
+		padding-left: 0.1rem;
+		padding-right: 0.22rem;
+		border-radius: 0 0.3rem 0.3rem 0;
+		background: #D8BC75;
 	}
 	.proRight1 {
 		width: 3.28rem;
@@ -451,119 +725,52 @@
 		background: url(/static/imgNew/zui3.png) no-repeat;
 		background-size: cover;
 	}
-	.proContent{
-		margin-top: 0.24rem;
-		padding-right: 0.3rem;
-		overflow: hidden;
-	}
-	.disImg {
-		display: block;
-		width: 6.86rem;
-		margin: 0 auto;
-	}
-	.custseven_sattus {
-		position: fixed;
-		top: 0;
-		bottom: 0;
-		right: 0;
-		left: 0;
-		background: #000000;
-		z-index: 100;
-		background: rgba(0, 0, 0, 0.2);
-	}
-	.cs_div_centen {
-		overflow: hidden;
-		width: 5.42rem;
-		height: 3.56rem;
-		margin: 0 auto;
-		margin-top: 50%;
-		border-radius: 0.16rem;
-		background: rgba(248, 248, 248, 0.91);
-		border-radius: 0.26rem;
-		position: relative;
-	}
-	.cs_div_opentitle {
-		width: 100%;
-		height: 0.36rem;
-		text-align: center;
-		font-size: 0.32rem;
-		color: #222222;
-		font-weight: bold;
-		margin-top: 0.32rem;
-	}
-	.cs_div_openiput1 {
-		width: 4.76rem;
-		height: 1.23rem;
-		margin: 0 auto;
-		margin-top: 0.24rem;
-		padding: 0 0.3rem 0 0.3rem;
-	}
-	.cust_p{
+	.proR1P1 {
+		width: 3.1rem;
+		padding-top: 0.1rem;
+		margin-left: 0.2rem;
+		height: 0.44rem;
 		line-height: 0.44rem;
-		text-align: justify;
+		font-size: 0.28rem;
+		color:  #72B67E;
+		letter-spacing: 0.01rem;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
 	}
-	.cs_btn_bootom {
-		width: 5.42rem;
-		height: 0.89rem;
-		position: absolute;
-		bottom: 0;
-		border-top: 0.01rem solid #CCCCCC;
+	.proR2P1 {
+		color:  #CA9196;
 	}
-	.cs_btn_cancer1 {
-		display: block;
-		float: left;
-		width: 2.69rem;
-		height: 0.88rem;
-		font-size: 0.32rem;
-		color: #EB6067;
-		line-height: 0.88rem;
-		text-align: center;
-		border-right: 0.01rem solid #CCCCCC;
-	}
-	.cs_btn_bg {
-		display: block;
-		float: left;
-		height: 0.88rem;
-		width: 0.01rem;
-		background: #CCCCCC;
-	}
-	.cs_btn_cancer2 {
-		display: block;
-		float: left;
-		width: 2.69rem;
-		height: 0.88rem;
-		font-size: 0.3rem;
-		color: #EB6067;
-		line-height: 0.88rem;
-		text-align: center;
-		font-weight: bold;
-	}
-	.blur_all {
-		width: 100%;
-		height: 100%;
-	}
-	.blur_all1 {
-		background-attachment: fixed;
-	    -webkit-filter: blur(0.1rem);
-	    filter: blur(0.1rem);
-	}
-	.disTitle {
-		height: 0.48rem;
-		line-height: 0.48rem;
-		margin-top: 0.04rem;
-		font-size: 0.24rem;
-		font-weight: bold;
-		color: #222222;
-	}
-	.disTitleDes {
+	.proR1P2 {
+		width: 1.64rem;
+		line-height: 0.26rem;
+		min-height: 0.5rem;
+		margin-left: 0.2rem;
 		font-size: 0.2rem;
-		color: #222222;
-		margin-bottom: 0.24rem;
+		color: #444444;		
+		overflow: hidden;
+		text-overflow:ellipsis;
+		display:-webkit-box; 
+		-webkit-box-orient:vertical;
+		-webkit-line-clamp:2;
 	}
-	.scrollTip {
-		margin-top: 0.24rem;
+	.proR1P3P {
+		height: 0.38rem;
+		line-height: 0.38rem;
+		margin-left: 0.2rem;
+		margin-top: 0.08rem;
 		font-size: 0.24rem;
-		color: #CCCCCC;
-		text-align: center;
+		color: #FFFFFF;
+	}
+	.proR1P3 {
+		display: inline-block;
+		padding: 0.02rem 0;
+		padding-left: 0.1rem;
+		padding-right: 0.22rem;
+		border-radius: 0 0.3rem 0.3rem 0;
+		background: #72B67E;
+	}
+	.proR2P3 {
+		background:  #CA9196;
 	}
 </style>

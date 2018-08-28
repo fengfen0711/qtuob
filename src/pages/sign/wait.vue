@@ -7,7 +7,7 @@
 		<p class="wait_word">等待处理</p>
 		<p class="wait_content">您提交的申请正在审核中……静候佳音</p>
 		<div class="waitdiv" id="waitdiv" v-show="waitdiv">
-			<div class="cir1 cir_one clear" style="border: 1px solid red;"><div class="cir2 cir_two"></div></div><span class="zt">已提交</span>
+			<div class="cir1 cir_one clear"><div class="cir2 cir_two"></div></div><span class="zt">已提交</span>
 			<div class="hr"></div>
 			<div class="cir1 boo cir_one clear"><div class="cir2 cir_two "></div></div><span class="zt zt1">团队总监审批</span>
 			<div class="cir1 boo1 cir_one clear"><div class="cir2 cir_two "></div></div><span class="zt zt2">分公司审批</span>
@@ -46,17 +46,18 @@
 		},
 		mounted(){
 			if(this.$route.query.regStatus=="CN"){
+			
 				document.getElementById("waitdiv").style.display="none";
 				document.getElementById("waitdiv1").style.display="block"
-				document.getElementById("waitdiv").style.display="none";
+				document.getElementById("waitdiv2").style.display="none";
 			}else if(this.$route.query.regStatus=="TN"){
 				document.getElementById("waitdiv").style.display="block";
 				document.getElementById("waitdiv1").style.display="none"
-				document.getElementById("waitdiv").style.display="none";
+				document.getElementById("waitdiv2").style.display="none";
 			}else if(this.$route.query.regStatus=="ZN"){
 				document.getElementById("waitdiv").style.display="none";
 				document.getElementById("waitdiv1").style.display="none"
-				document.getElementById("waitdiv").style.display="block";
+				document.getElementById("waitdiv2").style.display="block";
 			}
 		},
 	}

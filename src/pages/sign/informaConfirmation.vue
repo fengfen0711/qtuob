@@ -97,13 +97,11 @@
 								this.political();
 
 								this.knowlage = res.data.output.tblBroker.educationType;
-								console.log(this.knowlage)
 							 	this.knowlagenow();
-								console.log(this.knowlage)
 								//educationImgSerial 学历影像
-								if(res.data.output.tblBrokerImg.educationImgSerial != "null") {
-									this.headerImage = "http://outer.qtoubao.cn:9900/" + res.data.output.tblBrokerImg.educationImgSerial
-									this.code = res.data.output.tblBrokerImg.educationImgSerial
+								if(res.data.output.brokerImg.educationImgSerial != "null") {
+									this.headerImage =  res.data.output.brokerImg.educationImgSerial
+									this.code = res.data.output.brokerImg.educationImgSerial
 								} else {
 									this.code = "";
 								}
@@ -377,6 +375,7 @@
 						"education": this.code // 影像文件路径
 
 					}
+					console.log(informdata)
 					this.$store.dispatch("changeRecord", informdata)
 					console.log(informdata)
 					this.$router.push('/addbankCard?brokerId=' + this.$route.query.brokerId);

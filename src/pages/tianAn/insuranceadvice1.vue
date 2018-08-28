@@ -37,11 +37,11 @@
 				</div>
 				<div class="mask_in">
 					<span class="mask_tou">承保日期</span>
-					<input class="mask_wei" type="date" v-model="td3" />
+					<input class="mask_wei selectimg" type="date" v-model="td3" />
 				</div>
 				<div class="mask_in">
 					<span class="mask_tou">保单状态</span>
-					<select class="mask_wei" v-model="td4">
+					<select class="mask_wei selectimg" v-model="td4">
 						<option value="生效">生效</option>
 						<option value="未生效">未生效</option>
 					</select>
@@ -49,7 +49,7 @@
 				</div>
 				<div class="mask_in">
 					<span class="mask_tou">理赔经历</span>
-					<select class="mask_wei" v-model="td5">
+					<select class="mask_wei selectimg" v-model="td5">
 						<option value="有">有</option>
 						<option value="无">无</option>
 					</select>
@@ -833,6 +833,7 @@
 	.mask_tou {
 		font-size: .3rem;
 		float: left;
+		border: none;
 	}
 	
 	.mask_wei {
@@ -840,6 +841,10 @@
 		width: 3.5rem;
 		height: 1rem;
 		border: none;
+		appearance:none;
+		 -moz-appearance:none;
+		 -webkit-appearance:none;
+		
 	}
 	
 	.btn_left {
@@ -848,5 +853,10 @@
 	
 	.btn_right {
 		margin: 2rem .36rem 0;
+	}
+	.selectimg{
+		background: url(/static/upDown.png) no-repeat right center;
+		background-size: 0.4rem 0.45rem;
+		outline: none;
 	}
 </style>

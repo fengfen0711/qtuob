@@ -102,7 +102,7 @@
 		created() {
 			this.init();
 			this.nopayclick();
-			console.log(this.$store.state.orderState.AUC)
+//			console.log(this.$store.state.orderState.AUC)
 		},
 
 		mounted() {
@@ -112,9 +112,9 @@
 			//			}
 
 			var s = this.$refs.test
-			for(var i = 0, j = this.addData.length; i < j; i++) {
-				s[this.addData[i]].style.opacity = 1
-			}
+//			for(var i = 0, j = this.addData.length; i < j; i++) {
+//				s[this.addData[i]].style.opacity = 1
+//			}
 
 			let canvas = this.$refs.canvasF;
 			canvas.height = this.$refs.canvasHW.offsetHeight
@@ -204,10 +204,17 @@
 						console.log(res.data);
 						var dataCode = res.data.code;
 						if(dataCode == "SYS_S_000") {
-							this.cardPDFArray = res.data.output.pdfURL;
-							Toast("签字完成")
+							console.log("cheng")
+							if(res.data.output.pdfURL!=undefined){
+								this.cardPDFArray = res.data.output.pdfURL;
+								this.photo = true
+								Toast("签字完成")
+							}else{
+								Toast(res.data.output.desc)
+							}
+							
 						} else {
-							Toast(res.data.output.desc);
+							Toast(res.data.desc);
 						}
 					}, res => {
 						Indicator.close();
@@ -215,38 +222,47 @@
 					})
 			},
 			cardPDF() {
-				for(var i = 0; i < this.cardPDFArray.length; i++) {
-					if(this.cardPDFArray[i].tmId == "TM0003") {
-						this.pdfFlag = false
-						this.pdf = this.cardPDFArray[2].tmFmsUrl;
+				if(this.cardPDFArray.length>0){
+					for(var i = 0; i < this.cardPDFArray.length; i++) {
+						if(this.cardPDFArray[i].tmId == "TM0003") {
+							this.pdfFlag = false
+							this.pdf = this.cardPDFArray[2].tmFmsUrl;
+						}
 					}
 				}
+				
 
 			},
 			cardPDF1() {
-				for(var i = 0; i < this.cardPDFArray.length; i++) {
-					if(this.cardPDFArray[i].tmId == "TM0002") {
-						this.pdfFlag = false
-						//						this.$refs.bg.setAttribute("class", "bg1")
-						this.pdf = this.cardPDFArray[i].tmFmsUrl;
+				if(this.cardPDFArray.length>0){
+					for(var i = 0; i < this.cardPDFArray.length; i++) {
+						if(this.cardPDFArray[i].tmId == "TM0002") {
+							this.pdfFlag = false
+							//						this.$refs.bg.setAttribute("class", "bg1")
+							this.pdf = this.cardPDFArray[i].tmFmsUrl;
+						}
 					}
 				}
 			},
 			cardPDF2() {
-				for(var i = 0; i < this.cardPDFArray.length; i++) {
-					if(this.cardPDFArray[i].tmId == "TM0001") {
-						this.pdfFlag = false
-						//						this.$refs.bg.setAttribute("class", "bg1")
-						this.pdf = this.cardPDFArray[i].tmFmsUrl;
+				if(this.cardPDFArray.length>0){
+					for(var i = 0; i < this.cardPDFArray.length; i++) {
+						if(this.cardPDFArray[i].tmId == "TM0001") {
+							this.pdfFlag = false
+							//						this.$refs.bg.setAttribute("class", "bg1")
+							this.pdf = this.cardPDFArray[i].tmFmsUrl;
+						}
 					}
 				}
 			},
 			cardPDF3() {
-				for(var i = 0; i < this.cardPDFArray.length; i++) {
-					if(this.cardPDFArray[i].tmId == "TM0003") {
-						this.pdfFlag = false
-						//						this.$refs.bg.setAttribute("class", "bg1")
-						this.pdf = this.cardPDFArray[3].tmFmsUrl;
+				if(this.cardPDFArray.length>0){
+					for(var i = 0; i < this.cardPDFArray.length; i++) {
+						if(this.cardPDFArray[i].tmId == "TM0003") {
+							this.pdfFlag = false
+							//						this.$refs.bg.setAttribute("class", "bg1")
+							this.pdf = this.cardPDFArray[3].tmFmsUrl;
+						}
 					}
 				}
 			},
@@ -266,11 +282,6 @@
 					} else {
 						this.alldata[index].msg = this.session
 					}
-
-					//					window.localStorage.photo1 = this.signPhoto
-					//					window.localStorage.photo2 = this.signPhoto1
-					//					window.localStorage.photo = this.photo
-					//					window.localStorage.addData = JSON.stringify(this.addData)
 					if(index == 0) {
 						this.cardPDF();
 					} else if(index == 1) {
@@ -326,10 +337,10 @@
 				console.log("==111==" + JSON.stringify(data));
 				this.$http.post(this.$store.state.link + '/trd/order/v1/saveorder', data)
 					.then(res => {
-						console.log("==222==" + JSON.stringify(res.data));
+						console.log("==123==" + JSON.stringify(res.data));
 						var dataCode = res.data.code;
 						if(dataCode == "SYS_S_000") {
-							this.photo = true
+							
 //							Toast("签字完成")
 							this.init1();
 						} else {
@@ -342,6 +353,7 @@
 			queryOrder() {
 				console.log(this.addData)
 				if(this.addData.length != 4) {
+					console.log(1)
 					Toast("请依次阅读投保文件")
 				} else {
 					var data = { //订单查询   订单状态:10-暂存单 20-自核成功 30-已撤单 40-承保成功 60-犹豫期退保 01-自核交易失败 02-自核不通过 03-人工核保中 04-人工核保成功 05-人核未进核心 06-人核失败 07-人核失败并发送通知书 08-收费中 09-收费成功 11-收费失败 12-收费交易失败 13-承保失败 14-承保交易失败 15-保单生效已回执状态 16-退保 17-已删除 18-承保收费成功 19-拒保 21-其他 ,

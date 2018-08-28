@@ -1,46 +1,67 @@
 <template>
 	<div class="one" style=" -webkit-tap-highlight-color: transparent; -webkit-focus-ring-color: transparent;">
+		<div class="titleFont">
+			本人特此声明：<br/>
+			本人已亲自面见投保人和被投保人，就投保单的告知<br/>
+			事项逐一向投保人和被投保人当面询问，并见证投保<br/>
+			人和被投保人在投保单上签字。<br/>
+			此外，本人还核对了其身份证件且证实本表格所列情<br/>
+			况与投保单表格中的陈述一致，如有不实见证或报告，<br/>
+			本人愿意承担相应法律责任。
+		</div>
 		<div class="twoCon">
-			<p class="title_twoCon clearFloat">
-				<label class="titleLable_twoCon left">银行账户信息</label>
-			</p>
 			<div class="policyHolder">
-				<p class="inputGrop clearFloat">
-					<label class="inputLabel3 left"><label class="start left">*</label>户名</label>
-					<input type="text" class="inputText left" maxlength="20" placeholder="请输入真实姓名" />
-				</p>
                 <p class="inputGrop clearFloat">
-					<label class="inputLabel3 left"><label class="start left">*</label>银行卡类型</label>
-					<select name="name_car" class="left inputText inputWidth">
+					<label class="inputLabel3">你是怎么认识被保险人的？</label>
+					<select name="name_car" class="inputText inputWidth">
 						<option>请选择</option>
                         <option>请选择</option>
 					</select>
 				</p>
+			</div>
+			<div class="policyHolder">
                 <p class="inputGrop clearFloat">
-					<label class="inputLabel3 left"><label class="start left">*</label>转账银行</label>
-					<select name="name_car" class="left inputText inputWidth">
+					<label class="inputLabel3">被保险人的投保目的？</label>
+					<select name="name_car" class="inputText inputWidth">
 						<option>请选择</option>
                         <option>请选择</option>
 					</select>
 				</p>
+			</div>
+			<div class="policyHolder">
                 <p class="inputGrop clearFloat">
-					<label class="inputLabel3 left"><label class="start left">*</label>付款账号</label>
-					<input type="text" maxlength="18" class="inputTextCard left" placeholder="请输入付款账号" />
+					<label class="inputLabel3">投保人/被保险人的家庭收入主要来源？</label>
+					<select name="name_car" class="inputText inputWidth">
+						<option>请选择</option>
+                        <option>请选择</option>
+					</select>
 				</p>
+			</div>
+			<div class="policyHolder">
                 <p class="inputGrop clearFloat">
-					<label class="inputLabel left"><label class="start left">*</label>支付方式</label>
-					<span class="inputText inputSpan left">
-					<span class="sex sexM">
-						<img src="/static/img/sexNo.png" class="sexImg" v-if="true" style="width:0.48rem;height:0.48rem;"/>
-						<img src="/static/img/sexS.png" class="sexImg" v-else="false" style="width:0.48rem;height:0.48rem;" />
-						<label>实时支付</label>
-					</span>
-					<span class="sex sexF" style="marginLeft:0.6rem;">
-						<img src="/static/img/sexNo.png" class="sexImg" v-if="true" style="width:0.48rem;height:0.48rem;"/>
-						<img src="/static/img/sexS.png" class="sexImg" v-else="false" style="width:0.48rem;height:0.48rem;"/>
-						<label>批量支付</label>
-					</span>
-					</span>
+					<label class="inputLabel3">投保人的居住情况？</label>
+					<select name="name_car" class="inputText inputWidth">
+						<option>请选择</option>
+                        <option>请选择</option>
+					</select>
+				</p>
+			</div>
+			<div class="policyHolder">
+                <p class="inputGrop clearFloat">
+					<label class="inputLabel3">投保人的日常出行交通工具？</label>
+					<select name="name_car" class="inputText inputWidth">
+						<option>请选择</option>
+                        <option>请选择</option>
+					</select>
+				</p>
+			</div>
+			<div class="policyHolder">
+                <p class="inputGrop clearFloat">
+					<label class="inputLabel3">是否具有国外多次往返签证？</label>
+					<select name="name_car" class="inputText inputWidth">
+						<option>请选择</option>
+                        <option>请选择</option>
+					</select>
 				</p>
 			</div>
 		</div>
@@ -55,7 +76,7 @@
 	import { Toast } from 'mint-ui'
 	import { Indicator } from 'mint-ui'
 	export default {
-		name: "recognizee",
+		name: "",
 		data() {
 			return {
             }
@@ -65,7 +86,7 @@
 				this.$router.push('/questionnaire1');
 			},
        		nextClick() {
-				this.$router.push('/businessInform');
+				this.$router.push('/bankCard');
 			},
 			
 		}
@@ -73,12 +94,14 @@
 </script>
 
 <style scoped="scoped">
+	.titleFont{
+		line-height: 0.36rem;
+		color: skyblue;
+		padding-left: 0.36rem;
+		padding-top: 0.36rem;
+	}
 	.left {
 		float: left;
-	}
-	
-	.right {
-		float: right;
 	}
 	
 	input,
@@ -117,10 +140,6 @@
 		font-weight: 100;
 	}
 	
-	.labsex {
-		color: #C8C7CC;
-	}
-	
 	.clearFloat:after {
 		height: 0;
 		display: block;
@@ -130,27 +149,6 @@
 		content: "";
 	}
 	
-	.inputLabel2 {
-		display: block;
-		height: 0.88rem;
-		line-height: 0.88rem;
-		color: #555555;
-	}
-	
-	.brspanbo {
-		display: block;
-		position: absolute;
-		left: 2.3rem;
-		top: 0;
-		height: 0.88rem;
-		line-height: 0.88rem;
-		color: #B2B2B2;
-	}
-	
-	.opa0 {
-		opacity: 0;
-	}
-	
 	.one {
 		width: 100%;
 		min-height: 100%;
@@ -158,79 +156,11 @@
 		background: #F3F3F3;
 	}
 	
-	.oneTitle {
-		width: 100%;
-		height: 1.28rem;
-		padding-top: 0.32rem;
-		background: #FFFFFF;
-	}
-	
-	.oneTitleText {
-		height: 0.34rem;
-		line-height: 0.34rem;
-		font-size: 0.26rem;
-		color: #999999;
-	}
-	
-	.start {
-		display: block;
-		height: 0.88rem;
-		line-height: 0.88rem;
-		color: red;
-	}
-	
-	.startopacity {
-		display: block;
-		height: 0.88rem;
-		line-height: 0.88rem;
-		color: red;
-		opacity: 0;
-	}
-	
-	.oneTitleTextSpan1 {
-		margin-left: 0.2rem;
-	}
-	
-	.oneTitleTextSpan2 {
-		margin-left: 1.5rem;
-	}
-	
-	.oneTitleTextSpan3 {
-		margin-right: 0.2rem;
-	}
-	
-	.ranchImg {
-		display: block;
-		width: 6.3rem;
-		margin: 0 auto;
-		margin-bottom: 0.2rem;
-	}
-	
-	.selected {
-		color: #EB7760;
-	}
-	
-	.boderbo {
-		/*width: 5.5rem;*/
-		border: none;
-		border-radius: 0;
-		border-bottom: 0.02rem solid #979797;
-	}
-	
-	.bg {
-		margin-top: 0.2rem;
-	}
-	
-	.bg1 {
-		margin-left: 0.2rem;
-	}
-	
 	.twoCon {
 		/*margin-top: 0.4rem;*/
 		padding: 0 0.4rem;
 		font-size: 0.32rem;
 		color: #222222;
-		background: #FFFFFF;
 		overflow: scroll;
 		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
@@ -240,30 +170,6 @@
 		width: 0;
 		height: 0;
 		background-color: #fff;
-	}
-	
-	.title_twoCon {
-		height: 1.11rem;
-		line-height: 1.11rem;
-		border-bottom: solid 0.01rem #C8C7CC;
-	}
-	
-	.borderNone {
-		border: none;
-	}
-	
-	.titleLable_twoCon {
-		display: inline-block;
-		font-size: 0.34rem;
-		font-weight: bold;
-		color: #222222;
-	}
-	
-	.btnImg {
-		display: inline-block;
-		width: 0.56rem;
-		height: 0.56rem;
-		margin-top: 0.275rem;
 	}
 	
 	.btnBox {
@@ -283,11 +189,11 @@
 		width: 3.12rem;
 		height: 0.88rem;
 		line-height: 0.88rem;
-		border: 0.02rem solid #EB7760;
+		border: 0.02rem solid #c9141e;
 		box-shadow: inset 0 0.01rem 0.03rem 0 rgba(255, 255, 255, 0.50);
 		border-radius: 0.5rem;
 		font-size: 0.32rem;
-		color: #EB7760;
+		color: #c9141e;
 		text-align: center;
 	}
 	
@@ -295,78 +201,31 @@
 		margin-right: 0.3rem;
 	}
 	
-	.inputGrop1 {
-		font-size: 0.28rem;
-		border-bottom: solid 0.01rem #C8C7CC;
-	}
-	
 	.inputGrop {
 		position: relative;
-		height: 0.88rem;
 		font-size: 0.28rem;
-		border-bottom: solid 0.01rem #C8C7CC;
+		background: #fff;
+		border-radius: 0.15rem;
+		padding-left: 0.24rem;
+		margin-top: 0.27rem;
 	}
-	
-	.inputSpan {
-		line-height: 0.88rem;
-		color: #555555;
-		font-weight: bold;
-	}
-	
-	.inputLabel {
-		display: block;
-		width: 2.04rem;
-		height: 0.88rem;
-		line-height: 0.88rem;
-		font-weight: bold;
-		color: #555555;
-		padding-left: 0;
-	}
-	
+
 	.inputLabel3 {
 		display: block;
-		width: 2.3rem;
-		height: 0.88rem;
 		line-height: 0.88rem;
 		font-weight: bold;
 		color: #555555;
-		/*background: #669900;*/
+		font-size: 0.3rem;
+		padding-top: 0.1rem;
 	}
-	
-	.padleftitem {
-		padding-left: 0.25rem;
-	}
-	
-	.inputLabel1 {
-		line-height: 0.68rem;
-	}
-	
+
 	.inputText {
 		height: 0.88rem;
 		font-size: 0.28rem;
 		color: #666666;
-		padding-left: 0;
+		margin-bottom: 0.2rem;
 	}
-	
-	.inputText2 {
-		width: 2.7rem;
-		height: 0.88rem;
-		font-size: 0.28rem;
-		color: #666666;
-		padding-left: 0;
-	}
-	
-	.inputTextCard {
-		width: 3rem;
-		height: 0.88rem;
-		font-size: 0.28rem;
-		color: #666666;
-	}
-	
-	.inpuDate {
-		width: 3rem;
-	}
-	
+
 	select {
 		padding-right: 0.48rem;
 		border: none;
@@ -378,199 +237,12 @@
 		-webkit-appearance: none;
 		-moz-appearance: none;
 	}
-	
-	.dateBox {
-		position: absolute;
-		right: 0;
-		top: 0;
-		z-index: 1;
-		display: block;
-		height: 0.87rem;
-		padding: 0 0.2rem;
-		line-height: 0.88rem;
-		background: #FFFFFF;
-		border-left: solid 0.01rem #C8C7CC;
-	}
-	
-	.dateB {
-		position: absolute;
-		right: 1.78rem;
-		top: 0;
-		z-index: -1;
-		width: 0.4rem;
-		height: 0.87rem;
-		background: #FFFFFF;
-	}
-	
-	.upDownImg3 {
-		display: block;
-		width: 0.4rem;
-		height: 0.44rem;
-		margin-top: 0.22rem;
-	}
-	
-	.dateBox1 {
-		position: absolute;
-		right: 0;
-		top: 0;
-		z-index: 1;
-		display: block;
-		width: 1.8rem;
-		height: 0.87rem;
-		padding: 0 0.26rem;
-		line-height: 0.88rem;
-		background: #FFFFFF;
-	}
-	
-	.selImg {
-		display: block;
-		float: left;
-		width: 0.48rem;
-		height: 0.48rem;
-		margin-top: 0.2rem;
-		margin-right: 0.26rem;
-	}
-	
-	.selectBox {
-		width: 100%;
-		height: 0.88rem;
-		line-height: 0.88rem;
-	}
-	
-	.inputText1 {
-		display: block;
-		width: 3.6rem;
-		height: 0.68rem;
-		margin-left: 2.04rem;
-		font-size: 0.28rem;
-		color: #666666;
-		padding-left: 0;
-	}
-	
-	.pro {
-		width: 3.6rem;
-	}
-	
-	.dateInput {
-		width: 2.7rem;
-	}
-	
+
 	.inputWidth {
-		width: 4.4rem;
+		width: 6rem;
 	}
-	
-	.inputWidth11 {
-		width: 4.4rem;
-		overflow: hidden;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-	}
-	
-	.inputWidth1 {
-		width: 3rem;
-	}
-	
-	.inputWidth2 {
-		width: 3.5rem;
-	}
-	
-	.inputselect {
-		height: 0.68rem;
-	}
-	
-	.sBox {
-		padding: 0 0.4rem;
-		margin-top: 0.34rem;
-		margin-bottom: 0.88rem;
-		font-size: 0.28rem;
-		line-height: 0.4rem;
-	}
-	
-	.sImg {
-		display: block;
-		width: 0.48rem;
-		height: 0.48rem;
-		margin-top: -0.04rem;
-	}
-	
-	.sDes {
-		margin-left: 0.16rem;
-	}
-	
-	.sSpan {
-		color: #6BD1CF;
-	}
-	
-	.inputselectP {
-		position: relative;
-		height: 0.68rem;
-	}
-	
-	.upDownImg {
-		position: absolute;
-		right: 0;
-		top: 0.22rem;
-		z-index: 3;
-		width: 0.4rem;
-		height: 0.44rem;
-	}
-	
-	.upDownImg1 {
-		top: 0.12rem;
-	}
-	
-	.upDownImg2 {
-		right: 2rem;
-	}
+
 	.twoCon .inputGrop:last-child {
 		border: none;
-	}
-	
-	.twoCon1 {
-		margin-top: 0.4rem;
-	}
-	
-	.sumBtn {
-		position: absolute;
-		right: 0;
-		top: 0;
-		z-index: 3;
-		width: 0.4rem;
-		height: 0.88rem;
-		line-height: 0.88rem;
-		font-size: 0.6rem;
-		text-align: center;
-		color: #EB7760;
-	}
-	
-	.signBox {
-		padding-bottom: 0.32rem;
-	}
-	
-	.signBox span {
-		display: inline-block;
-		float: left;
-		width: 1.84rem;
-		margin: 0 0.15rem;
-		height: 0.68rem;
-		line-height: 0.68rem;
-		margin-top: 0.32rem;
-		font-size: 0.28rem;
-		color: #555555;
-		text-align: center;
-		border: solid 0.02rem #54CCC1;
-		border-radius: 0.34rem;
-		margin-right: 0.2rem;
-	}
-	.marR {
-		margin-right: 0.233rem;
-	}
-	.selectedSign {
-		background: #54CCC1;
-		color: #FFFFFF;
-	}
-	
-	.opa1 {
-		z-index: 2;
 	}
 </style>

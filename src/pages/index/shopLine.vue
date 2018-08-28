@@ -91,7 +91,12 @@
 			handleClickDetail(e) {
 				var code = e.currentTarget.getAttribute('code')
 				var prodSaleCode = e.currentTarget.getAttribute('coder')
-				this.$router.push('/detail?prodCode=' + code + '&prodSaleCode=' + prodSaleCode + "&userId=" + localStorage.userId)
+				if(code=="P000304010207"){
+					this.$router.push('/yin?prodCode=' + code + '&prodSaleCode=' + prodSaleCode + "&userId=" + localStorage.userId)
+				}else{
+					this.$router.push('/shopLineDe?prodCode=' + code + '&prodSaleCode=' + prodSaleCode + "&userId=" + localStorage.userId)	
+				}
+				
 			},
 			select_lab(ev, code) {
 				this.tagCode = code;

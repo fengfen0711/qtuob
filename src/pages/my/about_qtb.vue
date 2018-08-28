@@ -19,7 +19,10 @@
       		return {
       			
       		}
-    	}
+    	},
+    	created() {
+			this.common.noShare();
+		},
    }
 </script>
 
@@ -42,12 +45,11 @@
 		margin-top: 0.1rem;
 	}
 	.about_p{
-		
 		font-size:0.28rem;
 		color: #222222;
 		width: 95%;
 		float: left;
 		margin-left: 0.08rem;
-		line-height: 0.4rem;
+		line-height: 0.5rem;
 	}
 </style>

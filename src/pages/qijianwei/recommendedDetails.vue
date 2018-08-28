@@ -83,7 +83,7 @@
 					"shareUrl": window.location.href.split('#')[0]
 				}
 				console.log(data)
-				var share_url = window.location.href.split('/')[2] + "/static/router.html?type=recommendedDetails&code=recommendedDetails&seq=" + this.$route.query.seq + "&custId=" + this.$route.query.custId + "&userId=" + this.$route.query.userId;
+				var share_url =this.$store.state.shareLink + "/static/router.html?type=recommendedDetails&code=recommendedDetails&seq=" + this.$route.query.seq + "&custId=" + this.$route.query.custId + "&userId=" + this.$route.query.userId;
 
 				Indicator.open();
 				this.$http.post(this.$store.state.wx_share, data).then(res => {

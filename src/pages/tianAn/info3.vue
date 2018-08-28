@@ -104,7 +104,7 @@
 			this.birthDate = datew;
 			this.relationship(); //关系
 			this.idCardType();
-//			this.benefit();
+			//			this.benefit();
 			this.nationalitySelect();
 			this.init();
 		},
@@ -125,7 +125,7 @@
 				}
 				this.$http.post(this.$store.state.link + '/trd/order/v1/queryorder', data)
 					.then(res => {
-						//						console.log("===" + JSON.stringify(res.data));
+												console.log("===" + JSON.stringify(res.data));
 						var dataCode = res.data.code;
 						if(dataCode == "SYS_S_000") {
 							this.addData1 = res.data.output;
@@ -179,12 +179,12 @@
 						console.log(res.data);
 					})
 			},
-			listenToMyChild(...aaa) {
+			listenToMyChild(...data) {
 
-				this.allData.push(aaa[0])
+				this.allData.push(data[0])
 			},
-			listenToMyChild1(...aaa) {
-				this.nextFlag = aaa[0];
+			listenToMyChild1(...data) {
+				this.nextFlag = data[0];
 			},
 			deletBen(...data) {
 				for(var i = 0; i < this.addBen.length; i++) {
@@ -197,6 +197,7 @@
 				}
 			},
 			addBen1(index) {
+				
 				if(index == 1) {
 					this.addIndex = true;
 				}
@@ -255,8 +256,8 @@
 				}
 
 				this.$http.post(this.$store.state.link + '/dic/findCustomerTypeForTianAn', data)
-				.then(res => {
-					console.log(res.data)
+					.then(res => {
+						console.log(res.data)
 						var dataCode = res.data.code;
 						if(dataCode == "SYS_S_000") {
 							this.nexusList = res.data.output;
@@ -406,6 +407,41 @@
 			},
 			handleClickNext() {
 				if(this.policyHolderShow) {
+					var addMainDataTop = {
+						"agentCode": this.addData1.mainResp.agentCode, //代理人代码 
+						"agentName": this.addData1.mainResp.agentName, //代理人名称 
+						"amnt": this.addData1.mainResp.amnt, //保额
+						"deptCode": this.addData1.mainResp.deptCode, //机构代码   
+						"deptName": this.addData1.mainResp.deptName, //机构名称
+						"agentDeptCode": this.addData1.mainResp.agentDeptCode, //代理机构
+						"expireProcessMode": this.addData1.mainResp.expireProcessMode, //到期处理方式
+						"firstPremium": this.addData1.mainResp.firstPremium, //首期保费 
+						"flightNo": this.addData1.mainResp.flightNo, //航班号 
+						"initialPremamt": this.addData1.mainResp.initialPremamt, //首次缴费金额 
+						"issueTime": this.addData1.mainResp.issueTime, //签单日期 
+						"lowFlag": "A", //法定受益人标识 A-是;B-否 
+						"oprCode": this.addData1.mainResp.oprCode, //录单员代码 
+						"oprName": this.addData1.mainResp.oprName, //录单员姓名 
+						"plcyEffcTime": this.addData1.mainResp.plcyEffcTime, //保单生效时间 
+						"plcyInvalidTime": this.addData1.mainResp.plcyInvalidTime, //保单失效时间 
+						"plcySts": this.addData1.mainResp.plcySts, //保单状态 
+						"autoPayFlag": this.addData1.mainResp.autoPayFlag,
+						"prem": this.addData1.mainResp.prem, //保费 
+						"prodCode": this.addData1.mainResp.prodCode, //产品编码 
+						"prodNo": this.addData1.mainResp.prodNo, //产品代码 
+						//						"prodName": this.$route.query.prodName, //产品名称 
+						"prodName": this.addData1.mainResp.prodName, //产品名称 
+						"productPeriod": this.addData1.mainResp.productPeriod, //产品期限 
+						"productPeriodFlag": this.addData1.mainResp.productPeriodFlag, //产品期限标志
+						"relaApplNo": this.addData1.mainResp.relaApplNo, //万能险关联投保单号
+						"sumAmnt": this.addData1.mainResp.sumAmnt, //保额合计 ,
+						"sumPrem": this.addData1.mainResp.sumPrem, //保费合计 
+						"withdrawalDate": this.addData1.mainResp.withdrawalDate, //撤单申请日期 
+						"withdrawalTime": this.addData1.mainResp.withdrawalTime, //撤单申请时间
+						"applName": this.addData1.applntResp.applName,
+						"insrntName": this.addData1.insrntResp.insrntName,
+						"userId": this.$route.query.userId
+					}
 					//法定
 					var data = {
 						"token": this.$route.query.token,
@@ -417,11 +453,12 @@
 							"oprCode": this.$route.query.userId,
 							"prodCode": this.$route.query.prodCode
 						},
-						"opt": "BNF",
+						"opt": "MAIN,BNF",
 						"pkgNo": this.$route.query.orderNo, //订单号
-						"bnfReq": []
+						"bnfReq": [],
+						"mainReq": addMainDataTop
 					}
-					//					console.log("data1===" + JSON.stringify(data))
+										console.log("data1===" + JSON.stringify(data))
 					Indicator.open();
 					this.$http.post(this.$store.state.link + '/trd/order/v1/saveorder', data)
 						.then(res => {
@@ -429,11 +466,19 @@
 							//							console.log("data2===" + JSON.stringify(res.data))
 							var dataCode = res.data.code;
 							if(dataCode == "SYS_S_000") {
+								var relationToInsured = '';
 								if(this.addData1.applntResp.relationToInsured == "00") {
-									this.$router.push('/insuranceadvice?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&code=" + "1" + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
+									relationToInsured = "Y";
 								} else {
-									this.$router.push('/insuranceadvice1?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
+									relationToInsured = "N";
 								}
+								this.$router.push('/informationinput?prodCode=' + this.$route.query.prodCode + "&relationToInsured=" + relationToInsured + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
+
+								//								if(this.addData1.applntResp.relationToInsured == "00") {
+								//									this.$router.push('/insuranceadvice?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&code=" + "1" + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
+								//								} else {
+								//									this.$router.push('/insuranceadvice1?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
+								//								}
 							} else {
 								Toast(res.data.desc);
 							}
@@ -478,7 +523,7 @@
 							ProportionFlag = false;
 						}
 					}
-					
+
 					var allcertfCode = [];
 					console.log(this.allData.length)
 					if(this.allData.length > 1) {
@@ -498,7 +543,7 @@
 					}
 					if(this.nextFlag) { //子组件return
 						return;
-					}else if(!ProportionFlag) {
+					} else if(!ProportionFlag) {
 						Toast("请检查同一顺序下的受益比例之和是否等于100")
 						return;
 					}
@@ -564,11 +609,19 @@
 							//							console.log("==222==" + JSON.stringify(res.data));
 							var dataCode = res.data.code;
 							if(dataCode == "SYS_S_000") {
+								var relationToInsured = '';
 								if(this.addData1.applntResp.relationToInsured == "00") {
-									this.$router.push('/insuranceadvice?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&code=" + "1" + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
+									relationToInsured = "Y";
 								} else {
-									this.$router.push('/insuranceadvice1?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
+									relationToInsured = "N";
 								}
+								this.$router.push('/informationinput?prodCode=' + this.$route.query.prodCode + "&relationToInsured=" + relationToInsured + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
+
+								//								if(this.addData1.applntResp.relationToInsured == "00") {
+								//									this.$router.push('/insuranceadvice?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&code=" + "1" + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
+								//								} else {
+								//									this.$router.push('/insuranceadvice1?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
+								//								}
 							} else {
 								Toast(res.data.desc);
 							}

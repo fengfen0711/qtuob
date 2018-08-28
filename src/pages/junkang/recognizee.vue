@@ -7,11 +7,9 @@
 			<div class="policyHolder">
 				<p class="inputGrop clearFloat">
 					<label class="inputLabel3 left"><label class="start left">*</label>是投保人的</label>
-					<select class="left inputText inputWidth">
-						<option>哥哥</option>
-                        <option>姐姐</option>
-					</select>
-				</p>
+					<input type="text" class="inputText left" placeholder="请输入" />
+					<span class="dateBox1"></span>
+				</p>				
 				<p class="inputGrop clearFloat">
 					<label class="inputLabel3 left"><label class="start left">*</label>姓名</label>
 					<input type="text" class="inputText left" maxlength="20" placeholder="请输入真实姓名" />
@@ -25,19 +23,19 @@
 				</p>
                 <p class="inputGrop clearFloat">
 					<label class="inputLabel3 left"><label class="start left">*</label>证件号码</label>
-					<input type="text" maxlength="18" class="inputTextCard left" placeholder="请输入证件号码" />
+					<input type="text" maxlength="18" class="inputTextCard left" v-model="IDnum" placeholder="请输入证件号码" />
 				</p>
                 <p class="inputGrop clearFloat">
 					<label class="inputLabel left"><label class="start left">*</label>性别</label>
-					<span class="inputText inputSpan left">
-					<span class="sex sexM">
-						<img src="/static/img/sexNo.png" class="sexImg" v-if="true" style="width:0.48rem;height:0.48rem;"/>
-						<img src="/static/img/sexS.png" class="sexImg" v-else="false" style="width:0.48rem;height:0.48rem;" />
+					<span class="inputText inputSpan left left1">
+					<span class="sex sexM" @click="sexChose">
+						<img src="/static/img/sexNo.png" class="sexImg" v-show="showImg" style="width:0.48rem;height:0.48rem;"/>
+						<img src="/static/img/sexS.png" class="sexImg" v-show="!showImg" style="width:0.48rem;height:0.48rem;" />
 						<label>男</label>
 					</span>
-					<span class="sex sexF" style="marginLeft:0.6rem;">
-						<img src="/static/img/sexNo.png" class="sexImg" v-if="true" style="width:0.48rem;height:0.48rem;"/>
-						<img src="/static/img/sexS.png" class="sexImg" v-else="false" style="width:0.48rem;height:0.48rem;"/>
+					<span class="sex sexF" style="marginLeft:0.6rem;" @click="sexChose">
+						<img src="/static/img/sexNo.png" class="sexImg" v-show="!showImg" style="width:0.48rem;height:0.48rem;"/>
+						<img src="/static/img/sexS.png" class="sexImg" v-show="showImg" style="width:0.48rem;height:0.48rem;"/>
 						<label>女</label>
 					</span>
 					</span>
@@ -49,19 +47,24 @@
 				</p>				
 				<p class="inputGrop clearFloat">
 					<label class="inputLabel left"><label class="start left">*</label>证件是否长期</label>
-					<span class="inputText inputSpan left">
-					<span class="sex sexM">
-						<img src="/static/img/sexNo.png" class="sexImg" v-if="true" style="width:0.48rem;height:0.48rem;"/>
-						<img src="/static/img/sexS.png" class="sexImg" v-else="false" style="width:0.48rem;height:0.48rem;" />
+					<span class="inputText inputSpan left left1">
+					<span class="sex sexM"  @click="sexOpen">
+						<img src="/static/img/sexNo.png" class="sexImg" v-show="showImgY" style="width:0.48rem;height:0.48rem;"/>
+						<img src="/static/img/selected.png" class="sexImg" v-show="!showImgY" style="width:0.48rem;height:0.48rem;" />
 						<label>是</label>
 					</span>
-					<span class="sex sexF" style="marginLeft:0.6rem;">
-						<img src="/static/img/sexNo.png" class="sexImg" v-if="true" style="width:0.48rem;height:0.48rem;"/>
-						<img src="/static/img/sexS.png" class="sexImg" v-else="false" style="width:0.48rem;height:0.48rem;"/>
+					<span class="sex sexF" style="marginLeft:0.6rem;"  @click="sexOpen">
+						<img src="/static/img/sexNo.png" class="sexImg" v-show="!showImgY" style="width:0.48rem;height:0.48rem;"/>
+						<img src="/static/img/selected.png" class="sexImg" v-show="showImgY" style="width:0.48rem;height:0.48rem;"/>
 						<label>否</label>
 					</span>
 					</span>
 				</p>
+				<p class="inputGrop clearFloat" v-show="dataShow">
+					<label class="inputLabel3 left"><label class="start left">*</label>证件有效期至</label>
+					<input type="date" class="inputText dateInput left" placeholder=/>
+					<span class="dateBox1"></span>
+				</p>	
 				<p class="inputGrop clearFloat">
 					<label class="inputLabel3 left"><label class="start left">*</label>国籍</label>
 					<select class="inputLabel inputWidth left">
@@ -100,15 +103,15 @@
 				</p>
                 <p class="inputGrop clearFloat">
 					<label class="inputLabel3 left"><label class="startopacity left">*</label>固定电话</label>
-					<input type="text" maxlength="11" class="inputText left" placeholder="请输入固定电话" />
+					<input type="text" maxlength="11" class="inputText left" placeholder="请输入固定电话"  v-model="telPhone"/>
 				</p>
 				<p class="inputGrop clearFloat">
 					<label class="inputLabel3 left"><label class="start left">*</label>手机号码</label>
-					<input type="text" maxlength="11" class="inputText left" placeholder="请输入手机号码" />
+					<input type="text" maxlength="11" class="inputText left" placeholder="请输入手机号码"  v-model="phone"/>
 				</p>
 				<p class="inputGrop clearFloat">
 					<label class="inputLabel3 left"><label class="startopacity left">*</label>邮箱地址</label>
-					<input type="text" class="inputText left" placeholder="请输入邮箱" />
+					<input type="text" class="inputText left" placeholder="请输入邮箱" v-model="reEmail" />
 				</p>
                 <p class="inputGrop clearFloat">
 					<label class="inputLabel3 left"><label class="start left">*</label>所在地区</label>
@@ -121,14 +124,14 @@
 				<p class="inputGrop clearFloat">
 
 					<label class="inputLabel3 left"><label class="startopacity left">*</label>邮编</label>
-					<input type="text" maxlength="6" class="inputText left" placeholder="请输入邮编" />
+					<input type="text" maxlength="6" class="inputText left" placeholder="请输入邮编" v-model="email" />
 				</p>
 			</div>
 		</div>
-		<p class="btnBox clearFloat">
-			<span class="btn btn1 left"  @click="lastClick">上一步</span>
-			<span class="btn left"  @click="nextClick">下一步</span>
-		</p>
+		<div  class="btnBox clearFloat" >
+					<div class="boxLast" @click="lastClick">上一步</div>
+					<div class="boxNext" @click="nextClick">下一步</div>
+		</div>
 	</div>
 </template>
 
@@ -139,19 +142,107 @@
 		name: "recognizee",
 		data() {
 			return {
+				showImg:false,
+				showImgY:false,
+				dataShow:false,
+				IDnum: '', //证件号码
+				telPhone: '',//固定电话
+				phone: '',//手机号
+				reEmail: '',//邮箱地址
+				email: ''//邮编
             }
         }, methods:{
        		lastClick() {
-				this.$router.push('/affirm');
+				window.history.go(-1);
 			},
        		nextClick() {
-				this.$router.push('/recognizee');
+				var regCard = /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/; //证件
+				var chinese = /[\u4E00-\u9FA5]/i;
+				var regT = /^0\d{2,3}[1-9]\d{6,7}$/ //固定号码
+				var regPh = /^1[0-9]{10}$/; //手机号	
+				var reg = /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/; //邮箱地址		
+				var rezipCode = /^[1-9][0-9]{5}$/; //邮编
+
+				// 身份证
+				if(this.IDnum == "" || this.IDnum == undefined) {
+					Toast('请输入证件号码')
+					return;
+				} else {
+					if(this.cardType == "0" || this.cardType == "4" || this.cardType == "C") {
+						if(this.IDnum.length != 18) {
+							Toast('证件号码位数不正确')
+							return;
+						}
+						if(!this.idCardFlag) {
+							Toast('证件号码格式不正确')
+							return;
+						}
+					}
+				}
+
+				if(chinese.test(this.IDnum)) {
+					Toast('证件号码格式不正确')
+					return;
+				}
+
+				// 固定号码
+				if(this.telPhone == "" || this.telPhone == undefined) {} else {
+					if(!patrn.test(this.telPhone)) {
+						Toast("固定号码格式不正确")
+						return;
+					}
+				}
+
+				// 手机号
+				if(this.phone == '' || this.phone == undefined) {
+					Toast('请输入手机号码')
+					return;
+				}
+				if(regPh.test(this.phone) == false) {
+					Toast('手机号码格式不正确')
+					return;
+				}
+
+				// 邮箱
+				if(this.reEmail == '' || this.reEmail == undefined) {
+					Toast('请输入邮箱')
+					return;
+				}
+				if(reg.test(this.reEmail) == false) {
+					Toast('邮箱格式不正确')
+					return;
+				}
+				
+				// 邮编
+				if(this.email == '' || this.email == undefined) {
+					Toast('请输入邮编地址')
+					return;
+				}
+				if(!rezipCode.test(this.email)) {
+					Toast('邮编地址格式不正确')
+					return;
+				}
+
+
+
+				//this.$router.push('/beneficiary');
 			},
+			//男女
 			sexChose() {
 				if(this.showImg){
 					this.showImg = false
 				}else{
 					this.showImg = true
+				}
+			},
+		//长期是否
+			sexOpen(){
+				if(this.showImgY){
+					this.showImgY = false
+					this.dataShow = false
+				}else{
+					this.showImgY= true
+					this.dataShow = true
 				}
 			}
 			
@@ -161,6 +252,9 @@
 </script>
 
 <style scoped="scoped">
+	.left1{
+		margin-left: 0.18rem;
+	}
 	.left {
 		float: left;
 	}
@@ -355,7 +449,7 @@
 	}
 	
 	.btnBox {
-		padding: 0.64rem 0.4rem;
+		/*padding: 0.64rem 0.4rem;*/
 		text-align: center;
 	}
 	
@@ -660,5 +754,39 @@
 	
 	.opa1 {
 		z-index: 2;
+	}
+	.btnBox {
+		/*position: absolute;*/
+		width:6.64rem;
+		height:0.88rem;
+		margin: 0 auto;
+		padding-top: 0.64rem;
+		padding-bottom: 0.64rem;
+	}
+	.boxLast {
+		width: 3.12rem;
+		height: 0.88rem;
+		line-height: 0.88rem;
+		text-align: center;
+		font-size: 0.32rem;
+		color:#c9141e;
+		letter-spacing: 0;
+		border:0.02rem solid #c9141e;
+		border-radius: .44rem;
+		float: left;
+		margin-right: 0.3rem;
+	}
+	
+	.boxNext {
+		width: 3.12rem;
+		height: 0.88rem;
+		line-height: 0.88rem;
+		text-align: center;
+		font-size: 0.32rem;
+		color:  #c9141e;
+		letter-spacing: 0;
+		border:0.02rem solid #c9141e;
+		border-radius: .44rem;
+		float: right;
 	}
 </style>

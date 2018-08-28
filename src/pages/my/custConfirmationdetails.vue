@@ -67,8 +67,11 @@
 					this.type = res.data.output.certiType;
 					this.number_card = res.data.output.certiCode;
 					this.inphon = res.data.output.mobileNo;
-					this.share_Url = res.data.output.h5Url + "?pkInsureId=" + res.data.output.pkInsureId + "&beforeOrderStatus=" + res.data.output.beforeOrderStatus + "&userId=" + localStorage.getItem("userId") + "&token=" + localStorage.getItem("token");
-					console.log("分享的地址====" + this.share_Url);
+//					this.share_url = this.$store.state.shareLink+ "/static/router.html?type=afternoon&code=afternoon&temCode=" + this.$route.query.temCode;
+//					console.log(httpLink)
+					//					this.share_Url = this.$store.state.shareLink1 + "/work/sign/index1.html?pkInsureId=" + res.data.output.pkInsureId + "&beforeOrderStatus=" + res.data.output.beforeOrderStatus + "&userId=" + localStorage.getItem("userId") + "&token=" + localStorage.getItem("token");
+					this.share_Url = this.$store.state.shareLink + "/static/router.html?type=confirm&code=confirm&pkInsureId=" + res.data.output.pkInsureId + "&beforeOrderStatus=" + res.data.output.beforeOrderStatus + "&userId=" + localStorage.getItem("userId") + "&token=" + localStorage.getItem("token");
+
 					this.weChat();
 				} else {
 					if(res.data.desc != undefined) {
@@ -82,7 +85,7 @@
 				console.log("2===" + res.data)
 			});
 
-//			this.weChat();
+			//			this.weChat();
 			//				this.share_wx();
 		},
 		methods: {
@@ -99,6 +102,8 @@
 				}
 				console.log(data)
 				Indicator.open();
+//				this.share_url = this.$store.state.shareLink + "/static/router.html?type=confirm&code=confirm&pkInsureId=" + res.data.output.pkInsureId + "&beforeOrderStatus=" + res.data.output.beforeOrderStatus + "&userId=" + localStorage.getItem("userId") + "&token=" + localStorage.getItem("token");
+					console.log(this.share_url)
 				this.$http.post(this.$store.state.wx_share, data).then(res => {
 					Indicator.close();
 					console.log("分享回来的数据" + JSON.stringify(res.data))
@@ -113,11 +118,11 @@
 							jsApiList: ['onMenuShareAppMessage', 'onMenuShareTimeline'] // 此处填你所用到的方法 
 						});
 						wx.onMenuShareAppMessage({ // 分享给朋友
-							title: "客户确认书", // 分享标题
-							desc: "为你设计的专属客户确认书，请确认！趣投保，更懂你的签单伴侣", // 分享描述
+							title: "签署委托书", // 分享标题
+							desc: "非常感谢您选择明大保险经纪作为您的保险经纪人，我们将竭诚为您提供高品质的保险业务服务", // 分享描述
 							//							link: "http://outer.qtoubao.cn/work/sign/index.html?pkInsureId=475046&beforeOrderStatus=N&userId=275007&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHQiOjE1NTYyNzAxNTM1MDUsInBhc3N3b3JkIjoiYTExMTExMSIsImlhdCI6MTUyNzIzOTc1MzUwNSwidXNlcm5hbWUiOiIxMzQ2Mzk1NDkwMiJ9.47OULIwZY5rZxe1qDdfW3xOKFoaNfr2spqnK7gI96Ew", // 分享链接 默认以当前链接
 							link: this.share_Url,
-							imgUrl: this.$store.state.imgUrl, // 分享图标
+							imgUrl: this.$store.state.MDimgUrl, // 分享图标
 							type: '', // 分享类型,music、video或link，不填默认为link
 							dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
 							// 用户确认分享后执行的回调函数
@@ -138,8 +143,7 @@
 						});
 
 					} else {
-						if(res.data.desc != undefined) {
-						} else {
+						if(res.data.desc != undefined) {} else {
 							console.log("分享接口undefined");
 						}
 					}

@@ -34,7 +34,7 @@
 				</dl>
 				<dl class="btnDl" @click="handleClickConfirmation">
 					<img src="/static/img/mine.png" class="btnImg" />
-					<dt class="btnDt">客户确认书</dt>
+					<dt class="btnDt">客户委托书</dt>
 				</dl>
 				<dl class="btnDl" @click="handleClickMore">
 					<img src="/static/img/pro.png" class="btnImg" />
@@ -116,7 +116,7 @@
 	  			salecode2:"",
 	  			salecode3:"",
 	  			noticeTitle:"早报",
-	  			notice:"早报sjkdhsdhfsdhfdshfksdjhfskdjfhksdjhfdsjkfhskdhfdjk",
+	  			notice:"",
 	  			selected:true,
 			    adImgUrls:[],
 			    proLists:[],
@@ -132,11 +132,11 @@
 				"userId": localStorage.getItem("userId"),
 				"token": localStorage.getItem("token")
 			};
-			console.log("===王璇接口data==" + JSON.stringify(data));
+//			console.log("===王璇接口data==" + JSON.stringify(data));
 			this.$http.post(this.$store.state.link + '/sso/dovltoken', data)
 			.then(data => {
 				Indicator.close()
-				console.log("===王璇接口token校验==" + JSON.stringify(data.data));
+//				console.log("===王璇接口token校验==" + JSON.stringify(data.data));
 				var dataCode = data.data.code;
 				if(dataCode == "SYS_S_000") {
 					if(data.data.output.flag == "Y") {
@@ -285,7 +285,7 @@
 					Indicator.close();
 					console.log("总数据111111==" + JSON.stringify(res.data))
 					if(res.data.code == "SYS_S_000") {
-						var brokerCodehas = res.data.output.hasOwnProperty("brokerCode");					
+						var brokerCodehas = res.data.output.tblBroker.hasOwnProperty("brokerCode");					
 						if(brokerCodehas == true) {
 							this.$router.push('/custConfirmation')
 						} else {
@@ -327,7 +327,7 @@
 					Indicator.close()
 					var dataCode = data.data.code;
 					if (dataCode == "SYS_S_000") {
-							if(data.data.output.brokerCode!=undefined){
+							if(data.data.output.tblBroker.brokerCode!=undefined){
 								window.localStorage.brokerCode=data.data.output.brokerCode;
 								this.$router.push('/reinforce');
 							}else{
@@ -677,7 +677,7 @@
 	.proContent{
 		overflow: hidden;
 	}
-		.custseven_sattus {
+	.custseven_sattus {
 		position: fixed;
 		top: 0;
 		bottom: 0;

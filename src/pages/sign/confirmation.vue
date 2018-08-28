@@ -1,6 +1,19 @@
 <template>
 	<div class="confirmation_all">
 		<div class="bg"></div>
+		<div v-if="!cust_Seven" class="custseven_sattus" @touchmove.prevent>
+			<div class="cs_div_centen">
+				<div class="cs_div_opentitle">提示</div>
+				<div class="cs_div_openiput1">
+					<p class="cust_p">
+						您已经是我们的签约经纪人，无需再次申请。
+					</p>
+				</div>
+				<div class="cs_btn_bootom">
+					<div class="cs_btn_cancercust" @click="index_know">确定</div>
+				</div>
+			</div>
+		</div>
 		<div class="top">
 			<img class="logo" src="/static/img/sign/mdlogo.png" alt="" @click="confirm" />
 		</div>
@@ -158,6 +171,7 @@
 		name: "confirmation",
 		data() {
 			return {
+				cust_Seven: true,
 				img: '/static/img/sign/bg_example.png',
 				img1: '/static/img/sign/font_example.png',
 				picValue: '',
@@ -225,7 +239,10 @@
 //				}
 //
 //			},
-
+			index_know() {
+				this.cust_Seven = true;
+				WeixinJSBridge.call('closeWindow');
+			},
 			nationcon() {
 				var nationInfo = {
 
@@ -255,7 +272,7 @@
 				});
 			},
 			initialization() {
-				if(this.$route.query.status == "2") {
+				if(this.$route.query.brokerId != "undefined") {
 					var data = {
 						"brokerId": this.$route.query.brokerId
 
@@ -266,16 +283,16 @@
 							console.log(res.data)
 							var dataCode = res.data.code;
 							if(dataCode == "SYS_S_000") {
-								if(res.data.output.tblBrokerImg.idCardSerial != "null") {
-									//									this.code = "http://outer.qtoubao.cn:9900/" + res.data.output.tblBrokerImg.idCardSerial; //身份证正面
-									this.img = "http://outer.qtoubao.cn:9900/" + res.data.output.tblBrokerImg.idCardSerial;
-									this.code = res.data.output.tblBrokerImg.idCardSerial
+								if(res.data.output.brokerImg.idCardSerial != "null") {
+									//									this.code = "http://outer.qtoubao.cn:9900/" + res.data.output.brokerImg.idCardSerial; //身份证正面
+									this.img = res.data.output.brokerImg.idCardSerial;
+									this.code = res.data.output.brokerImg.idCardSerial
 								} else {
 									this.code = "";
 								}
-								if(res.data.output.tblBrokerImg.idCardSerialReverse != "null") {
-									this.img1 = "http://outer.qtoubao.cn:9900/" + res.data.output.tblBrokerImg.idCardSerialReverse; //身份证反面
-									this.code1 = res.data.output.tblBrokerImg.idCardSerialReverse
+								if(res.data.output.brokerImg.idCardSerialReverse != "null") {
+									this.img1 = res.data.output.brokerImg.idCardSerialReverse; //身份证反面
+									this.code1 = res.data.output.brokerImg.idCardSerialReverse
 								} else {
 									this.code1 = "";
 								}
@@ -294,8 +311,8 @@
 								this.hujadress = res.data.output.tblBroker.rsdResidence //户籍地址
 								this.confirmadress = res.data.output.tblBroker.addressDeta //详细地址
 								this.nation = res.data.output.tblBroker.nationType;
+								document.getElementById("selectoption").style.color = "#222222"
 								this.nationcon();
-
 								//省
 								this.nownation = res.data.output.tblBroker.province
 								console.log(this.nownation)
@@ -308,23 +325,35 @@
 								//区
 								this.nownation2 = res.data.output.tblBroker.area
 								this.procounty();
-								var date = new Date(res.data.output.tblBrokerImg.certificateStartDate); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+								
+								var date = new Date(res.data.output.brokerImg.certificateStartDate); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
 								var Y = date.getFullYear() + '-';
 								var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
-								var D = date.getDate();
+								var D = date.getDate()< 10 ? '0' +  date.getDate() : date.getDate();
 								var a = Y + M + D
 								this.confirmdata = a
-								var date = new Date(res.data.output.tblBrokerImg.certificateEndDate); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
-								var Y = date.getFullYear() + '-';
-								var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
-								var D = date.getDate();
-								this.confirmtime = Y + M + D;
+								if(this.confirmtime=="2999-12-31"){
+									this.longcard = false;
+								}else{
+									var date = new Date(res.data.output.brokerImg.certificateEndDate); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+									var Y = date.getFullYear() + '-';
+									var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+									var D = date.getDate()< 10 ? '0' +  date.getDate() : date.getDate();;
+									this.confirmtime = Y + M + D;
+								}
+								
 								this.phone = res.data.output.tblBroker.mobile //代理人手机号
 								var phonedata = {
 									"brokerMobile": this.phone
 								}
 								this.$store.dispatch("changeMobile", phonedata)
-								console.log(phonedata)
+								
+//								var data = {
+//									"sign": res.data.output.brokerImg.sign
+//			
+//								}
+//								this.$store.dispatch("changeSign", data)
+								console.log(data)
 							} else {
 								//							Toast(res.data.desc);
 							}
@@ -702,7 +731,24 @@
 					Toast("请上传身份证正面照");
 				} else {
 					this.Idcard();
-					var conirmdata = {
+					if(this.confirmtime=="长期"){
+						var conirmdata = {
+						"brokerName": this.name, //经纪人姓名
+						"brokerCertiCode": this.cardnum, //证件号码
+						"brokerGender": this.feamle, //性别
+						"nationType": this.nation, //民族编码
+						"rsdResidence": this.hujadress, //户籍地址
+						"province": this.nownation, //现居地址省
+						"urban": this.nownation1, //现居地址市
+						"area": this.nownation2, //现居地址区
+						"addressDeta": this.confirmadress, //详细地址
+						"certiStartDate": this.confirmdata,
+						"certiEndDate": "2999-12-31",
+						"certiCodeDownCode": this.code1,
+						"certiCodeUpCode": this.code
+					}
+					}else{
+						var conirmdata = {
 						"brokerName": this.name, //经纪人姓名
 						"brokerCertiCode": this.cardnum, //证件号码
 						"brokerGender": this.feamle, //性别
@@ -717,6 +763,8 @@
 						"certiCodeDownCode": this.code1,
 						"certiCodeUpCode": this.code
 					}
+					}
+					
 					this.$store.dispatch("changeCard", conirmdata)
 					console.log(conirmdata);
 					this.$router.push('/informaConfirmation?brokerId=' + this.$route.query.brokerId)
@@ -831,6 +879,7 @@
 								this.longcard = false;
 								//								document.getElementById("codeid").disabled=true;
 								this.longfalse = true;
+//								this.confirmtime="2999-12-31";
 
 							} else {
 								this.longcard = true;
@@ -905,15 +954,11 @@
 							this.next();
 
 						} else if(res.data.code == "CORE_E_204") {
-							Toast(res.data.desc);
-							//						this.next();
-							this.$router.push('/waitindex');
-
+//							this.$router.push('/waitindex?regStatus='+"TN");
+							this.cust_Seven = false;
 						} else if(res.data.code == "CORE_E_207") {
-							//						this.next();
-							this.$router.push('/waitindex');
+							this.$router.push('/waitindex?regStatus='+"TN");
 						} else if(res.data.code == "CORE_E_212") {
-							//this.$router.push('/failindex');
 							this.next();
 
 						} else if(res.data.code == "CORE_E_209") {
@@ -1308,5 +1353,90 @@
 		vertical-align: middle;
 		margin-left: 0.15rem;
 		font-size: 0.28rem;
+	}
+	.custseven_sattus {
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		right: 0;
+		left: 0;
+		background: #000000;
+		z-index: 100;
+		background: rgba(0, 0, 0, 0.20);
+	}
+	
+	.custseven_sattus1 {
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		right: 0;
+		left: 0;
+		background: #000000;
+		z-index: 100;
+		background: rgba(0, 0, 0, 0.20);
+	}
+	
+	.cs_div_centen {
+		overflow: hidden;
+		width: 5.42rem;
+		height: 3.56rem;
+		margin: 0 auto;
+		margin-top: 50%;
+		border-radius: 0.16rem;
+		background: rgba(248, 248, 248, 0.95);
+		border-radius: 0.26rem;
+		position: relative;
+	}
+	
+	.cs_div_centen1 {
+		overflow: hidden;
+		width: 5.42rem;
+		height: 3rem;
+		margin: 0 auto;
+		margin-top: 50%;
+		border-radius: 0.16rem;
+		background: rgba(248, 248, 248, 0.95);
+		border-radius: 0.26rem;
+		position: relative;
+	}
+	
+	.cs_div_opentitle {
+		width: 100%;
+		height: 0.36rem;
+		text-align: center;
+		font-size: 0.32rem;
+		color: #222222;
+		font-weight: bold;
+		margin-top: 0.32rem;
+	}
+	
+	.cs_div_openiput1 {
+		width: 4.76rem;
+		height: 1.23rem;
+		margin: 0 auto;
+		margin-top: 0.38rem;
+		padding: 0 0.3rem 0 0.3rem;
+	}
+	
+	.cust_p {
+		text-align: justify;
+		text-align: center;
+		line-height: 0.5rem;
+	}
+	
+	.cs_btn_bootom {
+		width: 5.42rem;
+		height: 0.89rem;
+		position: absolute;
+		bottom: 0;
+		border-top: 0.01rem solid #CCCCCC;
+	}
+	.cs_btn_cancercust {
+		display: block;
+		font-size: 0.32rem;
+		color: #EB6067;
+		line-height: 0.88rem;
+		text-align: center;
+		border-right: 0.01rem solid #CCCCCC;
 	}
 </style>

@@ -32,7 +32,8 @@
 		},
 		methods: {
 			again() {
-				this.$router.push('/intoinfo?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
+//				 + "&token=" + this.$route.query.token
+				this.$router.push('/intoinfo?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$store.state.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$store.state.token)
 			},
 			backhome() {
 				this.$router.push('/')

@@ -33,7 +33,6 @@
 				</p>
 				<!--证件类型-->
 				<p class="inputGrop clearFloat">
-
 					<label class="inputLabel3 left"><label class="start left">*</label>证件类型</label>
 					<select name="name_car" v-model="cardType" class="left inputText inputWidth" @change="getCouponSelected">
 						<option :value="coupon.code" v-for="coupon in couponList">{{coupon.name}}</option>
@@ -58,6 +57,15 @@
 						<img src="/static/upDown.png" class="upDownImg3" />
 					</label>
 				</p>
+				<!--客户身份-->
+				<!--<p class="inputGrop clearFloat">
+					<label class="inputLabel3 left"><label class="start left">*</label>客户身份</label>
+					<select name="name_car" v-model="identityType" class="left inputText inputWidth" @change="getIdentity">
+						<option value="1">仅为中国税收居民</option>
+						<option value="2">仅为非居民</option>
+						<option value="3">既是中国税收居民又是其他国家(地区)税收居民</option>
+					</select>
+				</p>-->
 				<!--国籍-->
 				<!--<p class="inputGrop clearFloat">
 					<label class="inputLabel left">国籍</label>
@@ -96,12 +104,12 @@
 				<div class="inputGrop1 clearFloat">
 					<p class="inputselectP">
 						<label class="inputLabel3 inputLabel1 left"><label class="start left">*</label>联系地址</label>
-						<select class="inputText inputselect pro inputWidth left" v-model="provinceType" @change="aaa">
+						<select class="inputText inputselect pro inputWidth left" v-model="provinceType" @change="pullProvince">
 							<option :value="[province.cnCode,province.cnName]" v-for="(province,index) in provinceList">{{province.cnName}}</option>
 						</select>
 					</p>
 					<p class="inputselectP">
-						<select class="inputText1 inputWidth" v-model="cityType" @change="bbb">
+						<select class="inputText1 inputWidth" v-model="cityType" @change="pullCity">
 							<option :value="[city.cnCode,city.cnName]" v-for="city in cityList">{{city.cnName}}</option>
 						</select>
 					</p>
@@ -176,6 +184,7 @@
 		props: ['backview'],
 		data() {
 			return {
+
 				idCardFlag: false,
 				spanFlag: false,
 				occupation: '',
@@ -186,6 +195,7 @@
 				sexShow: true, //性别选择
 				policyHolderShow: true,
 				cardType: '', //证件类型
+				identityType: '1', //证件类型
 				//婚姻状况
 				marryList: [],
 				couponList: [], //证件类型
@@ -261,7 +271,7 @@
 			}
 			this.$http.post(this.$store.state.link + '/trd/order/v1/queryorder', data)
 				.then(res => {
-					//					console.log("data==" + JSON.stringify(res.data))
+					console.log("data==" + JSON.stringify(res.data))
 					var dataCode = res.data.code;
 					if(dataCode == "SYS_S_000") {
 						this.allData = res.data.output;
@@ -298,12 +308,16 @@
 						this.birthDate = res.data.output.applntResp.birthday //  出生日期
 
 						//						this.reHighs = res.data.output.applntResp.nationality //  国籍
-						this.reHighs = "37" //  国籍
+						if(res.data.output.applntResp.nationality != undefined) {
+							this.reHighs = res.data.output.applntResp.nationality //  国籍
+						} else {
+							this.reHighs = "37" //  国籍
+						}
 
 						this.phone = res.data.output.applntResp.mobile //  手机号码
 						this.telPhone = res.data.output.applntResp.tel //  固定号码
 						if(res.data.output.applntResp.province == "" || res.data.output.applntResp.province == undefined) {} else {
-							this.ccc1();
+							this.pullArea1();
 						}
 						//this.provinceType =res.data.output.applntResp.province//  联系地址
 						//this.cityType = res.data.output.applntResp.city
@@ -339,7 +353,7 @@
 				})
 
 			//  根据数字字典调省市区
-			this.ccc();
+			this.pullArea();
 			this.nationalitySelect();
 			this.Sourceofincome();
 		},
@@ -437,7 +451,7 @@
 					this.addtest = true;
 				}
 			},
-			ccc() {
+			pullArea() {
 				var data = {
 					"code": "0",
 					"orgCode": "000034"
@@ -452,7 +466,7 @@
 							//调取所有的省份
 							this.provinceList = res.data.output;
 							this.provinceType = [res.data.output[0].cnCode, res.data.output[0].cnName];
-							this.aaa();
+							this.pullProvince();
 						} else {
 							Toast(res.data.desc);
 						}
@@ -461,7 +475,7 @@
 					})
 
 			},
-			ccc1() {
+			pullArea1() {
 				var data = {
 					"code": "0",
 					"orgCode": "000034"
@@ -477,7 +491,7 @@
 									this.provinceType = [this.allData.applntResp.province, this.provinceList[i].cnName];
 								}
 							}
-							this.aaa1();
+							this.pullProvince();
 						} else {
 							Toast(res.data.desc);
 						}
@@ -485,7 +499,7 @@
 						console.log(res.data);
 					})
 			},
-			aaa(orgCode) {
+			pullProvince(orgCode) {
 				//用省调取所有的市
 				var data = {
 					"code": this.provinceType[0],
@@ -500,7 +514,7 @@
 							this.cityList = res.data.output;
 
 							this.cityType = [res.data.output[0].cnCode, res.data.output[0].cnName];
-							this.bbb();
+							this.pullCity();
 						} else {
 							Toast(res.data.desc);
 						}
@@ -509,7 +523,7 @@
 					})
 
 			},
-			aaa1() {
+			pullProvince1() {
 				//用省调取所有的市
 				var data = {
 					"code": this.provinceType[0],
@@ -525,7 +539,7 @@
 									this.cityType = [this.allData.applntResp.city, this.cityList[i].cnName];
 								}
 							}
-							this.bbb1();
+							this.pullCity1();
 						} else {
 							Toast(res.data.desc);
 						}
@@ -535,7 +549,7 @@
 
 			},
 			//用市调取所有的县
-			bbb() {
+			pullCity() {
 				var data = {
 					"code": this.cityType[0],
 					"orgCode": "000034"
@@ -556,7 +570,7 @@
 					})
 
 			},
-			bbb1() {
+			pullCity1() {
 				var data = {
 					"code": this.cityType[0],
 					"orgCode": "000034"
@@ -659,6 +673,10 @@
 				}
 				this.cardnum();
 			},
+			getIdentity() {
+				if(this.identityType != "1") {} else { //中国
+				}
+			},
 			dateSel() {
 				if(this.cardType == "0") {
 					if(this.jsGetAge(this.birthDate) >= 46) {
@@ -693,7 +711,7 @@
 					var foday = new Date(temp[0], parseInt(temp[1]) - 1, temp[2]);
 					if(foday < today) {
 						Toast('证件有效期不可选择今天之前的日期');
-						this.birthDate = ""
+						this.termValidityDate = ""
 					}
 				}
 				if(this.termValidityDate == "") {
@@ -937,6 +955,7 @@
 					"weight": this.reWeight, //体重
 					"workCompany": this.address, //工作单位 
 					"zipCode": this.email, //邮编
+					"custIdentity": "1"
 					//						"zoneType": "string" //居民类型
 				}
 
@@ -982,6 +1001,7 @@
 					"workCompany": this.address, //工作单位 ,
 					"zipCode": this.email, //邮编 ,
 					//					"zoneType": "string" //居民类型
+					"custIdentity": "1"
 				}
 				//				var info3data = {
 				//					"token": this.$route.query.token,
@@ -1091,13 +1111,13 @@
 				return returnAge;
 			},
 			provinceChange() {
-				this.ccc()
+				this.pullArea()
 			},
 			cityChange() {
-				this.aaa()
+				this.pullProvince()
 			},
 			countyChange() {
-				this.bbb()
+				this.pullCity()
 			}
 		}
 	}
@@ -1483,9 +1503,11 @@
 	.dateInput {
 		width: 2.7rem;
 	}
+	
 	.dateInput1 {
 		z-index: 1;
 	}
+	
 	.inputWidth {
 		width: 4.4rem;
 		/*background: #669900;*/
