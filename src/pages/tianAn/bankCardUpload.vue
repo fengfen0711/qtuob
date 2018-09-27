@@ -332,7 +332,8 @@
 						},
 						"opt": "DOC",
 						"pkgNo": this.$route.query.orderNo, //订单号
-						"docReq": docReq
+						"docReq": docReq,
+						"upPay":"1"
 					}
 					this.$http.post(this.$store.state.link + '/trd/order/v1/saveorder', data)
 						.then(res => {

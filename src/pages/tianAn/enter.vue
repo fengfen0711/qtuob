@@ -3,31 +3,91 @@
 		<div v-if="!pdfFlag" class="ctc_div_mask">
 			<Pdf :pdf="pdf" @pdfClose="pdfClose"></Pdf>
 		</div>
-		<div :class="{center:blur} ">
+		<div class="top1">
+			<p class="touP">投保人单证信息</p>
+			<div :code="pdf1" style="border: none;" class="tain_p_topitem "  @click="select_item($event,0)">
+				<img ref="test" class="tain_img_topitemleft" src="/static/img/icon_select1_focus.png" />
+				<span class="tain_span_nameitem">投保人个人税收居民身份声明文件</span>
+				<img class="tain_img_topitemright" src="/static/qijianwei/btn_next.png" />
+			</div>
+			<div class="relationship">
+				签名人为：
+				<img class="radio" src="/static/img/sexS.png"/>
+				本人
+			</div>
+			<div :code="pdf2" class="tain_p_topitem "  @click="select_item($event,1)">
+				<img ref="test" class="tain_img_topitemleft" src="/static/img/icon_select1_focus.png" />
+				<span class="tain_span_nameitem">人身保险投保提示书</span>
+				<img class="tain_img_topitemright" src="/static/qijianwei/btn_next.png" />
+			</div>
+			<div :code="pdf3" class="tain_p_topitem "  @click="select_item($event,2)">
+				<img ref="test" class="tain_img_topitemleft" src="/static/img/icon_select1_focus.png" />
+				<span class="tain_span_nameitem">个人业务投保单</span>
+				<img class="tain_img_topitemright" src="/static/qijianwei/btn_next.png" />
+			</div>
 			<div class="sign" @click="handleClickSign(1)">
 				<img v-if="sign" ref="tou" :src="signPhoto" :code="code" alt="" /> 投保人签字区域
 			</div>
+		</div>
+		<div class="top2" v-if="people">
+			<p class="touP">被保险人单证信息</p>
+			<div :code="pdf4" style="border: none;" class="tain_p_topitem "  @click="select_item($event,3)">
+				<img ref="test" class="tain_img_topitemleft" src="/static/img/icon_select1_focus.png" />
+				<span class="tain_span_nameitem">被保险人个人税收居民身份声明</span>
+				<img class="tain_img_topitemright" src="/static/qijianwei/btn_next.png" />
+			</div>
+			<div class="relationship">
+				签名人为：
+				<img v-if="remark==0" @click="handleClickChoose(0)" class="radio" src="/static/img/sexS.png"/>
+				<img v-if="!remark==0" @click="handleClickChoose(0)" class="radio" src="/static/img/sexNo.png"/>
+				本人
+				&nbsp;&nbsp;
+				<img v-if="!remark==0" @click="handleClickChoose(1)" class="radio" src="/static/img/sexS.png"/>
+				<img v-if="remark==0" @click="handleClickChoose(1)" class="radio" src="/static/img/sexNo.png"/>
+				法定监护人
+			</div>
+			<div :code="pdf3" class="tain_p_topitem "  @click="select_item($event,4)">
+				<img ref="test" class="tain_img_topitemleft" src="/static/img/icon_select1_focus.png" />
+				<span class="tain_span_nameitem">个人业务投保单</span>
+				<img class="tain_img_topitemright" src="/static/qijianwei/btn_next.png" />
+			</div>
 			<div class="sign" @click="handleClickSign(2)">
-				<img v-if="sign" ref="bei" :src="signPhoto1" :code="code1" alt="" /> 被保人签字区域
+				<img v-if="sign" ref="bei" :src="signPhoto1" :code="code1" alt="" /> 被保险人签字区域
+			</div>
+		</div>
+		<div class="list">
+			签名即表示本人已详细阅读并同意上述所有集成了电子签名的单证内容
+		</div>
+		<div class="btn">
+			<div class="last" @click="back">上一步</div>
+			<div class="next" @click="handleClickSuc">确认提交</div>
+		</div>
+		<!--<div :class="{center:blur} ">
+			<div class="sign" @click="handleClickSign(1)">
+				<img v-if="sign" ref="tou" :src="signPhoto" :code="code" alt="" /> 投保人签字区域
+			</div>
+			<div class="relationship">
+				签名人为被保险人：
+				<select class="select selectimg" v-model="remark">
+					<option value="0">本人</option>
+					<option value="1">法定监护人</option>
+				</select>
+			</div>
+			<div class="sign" @click="handleClickSign(2)">
+				<img v-if="sign" ref="bei" :src="signPhoto1" :code="code1" alt="" /> 被保险人签字区域
 			</div>
 			<div class="context">
-				被保险人（法定监护人）签字（请横向签字）。
+				被保险人（法定监护人）签字（请从左到右签字）。
 			</div>
 			<div class="success" @click="handleClickSuc">签字完成</div>
 			<div class="list">
-				投保人与被投保人本人都已经确认并阅读<span @click="cardPDF">《个人税收居民身份声明文件》、</span><span @click="cardPDF1">《人身保险投保提示书》、</span>
-				<span @click="cardPDF2">《电子投保单》</span>，签字确保上述信息的真实、将在 30日内通知贵机构，否则本人承担由此造成的不利 后果。
-			</div>
-			<div ref="item" :code="item.msg" class="tain_p_topitem " v-for="(item,index) in alldata" @click="select_item($event,index)">
-				<img ref="test" class="tain_img_topitemleft" src="/static/img/icon_select1_focus.png" />
-				<span class="tain_span_nameitem">{{item.name}}</span>
-				<img class="tain_img_topitemright" src="/static/qijianwei/btn_next.png" />
+				签名即表示本人已详细阅读并同意上述所有集成了电子签名的单证内容
 			</div>
 			<div class="btn">
 				<div class="last" @click="back">上一步</div>
 				<div class="next" @click="queryOrder">确认提交</div>
 			</div>
-		</div>
+		</div>-->
 
 		<div class="signatureBox" :class="{active:mask}">
 			<div class="visaDetailTop">
@@ -50,7 +110,7 @@
 	import { Indicator } from 'mint-ui';
 	import { MessageBox } from 'mint-ui';
 	export default {
-		name: "Code",
+		name: "enter",
 		data() {
 			return {
 				points: [],
@@ -72,50 +132,29 @@
 				signPhoto1: "",
 				index: "",
 				photo: "",
-				alldata: [{
-						"name": '投保人个税信息',
-						"msg": ""
-					},
-					{
-						"name": '被保人个税信息',
-						"msg": ""
-					},
-					{
-						"name": '人身保险投保提示书',
-						"msg": ""
-					},
-					{
-						"name": '电子投保单',
-						"msg": ""
-					}
-				],
 				addData: [],
 				code: "",
 				code1: "",
 				cardPDFArray: [],
 				pdfFlag: true,
 				pdf: "",
-				orderstatus:''
-
+				orderstatus:'',
+				preview:false,
+				remark:0,
+				pdf1:"",
+				pdf2:"",
+				pdf3:"",
+				pdf4:"",
+				people:false
 			}
 		},
 		created() {
 			this.init();
 			this.nopayclick();
-//			console.log(this.$store.state.orderState.AUC)
 		},
 
 		mounted() {
-			//			if(window.localStorage.photo != undefined) {
-			//				this.$refs.tou.setAttribute('class', 'signPhoto')
-			//				this.$refs.bei.setAttribute('class', 'signPhoto')
-			//			}
-
 			var s = this.$refs.test
-//			for(var i = 0, j = this.addData.length; i < j; i++) {
-//				s[this.addData[i]].style.opacity = 1
-//			}
-
 			let canvas = this.$refs.canvasF;
 			canvas.height = this.$refs.canvasHW.offsetHeight
 			canvas.width = this.$refs.canvasHW.offsetWidth
@@ -124,6 +163,14 @@
 			this.canvasTxt = canvas.getContext("2d");
 		},
 		methods: {
+			handleClickChoose(data){
+				if(data==0){
+					this.remark=0
+				}else{
+					this.remark=1
+				}
+				
+			},
 			pdfClose(...data) {
 				this.pdfFlag = data[0]
 				this.$refs.bg.style.position = "absolute"
@@ -138,7 +185,7 @@
 					},
 					"userId": this.$store.state.userId,
 					"token": this.$store.state.token,
-					"opt": "MAIN",
+					"opt": "ALL",
 					"pkgNo": this.$route.query.orderNo
 				}
 				Indicator.open();
@@ -148,6 +195,18 @@
 					Indicator.close();
 					if(response.data.code == "SYS_S_000") {
 						this.orderstatus = response.data.output.mainResp.orderStatus;
+						console.log(response.data.output.insrntResp.age)
+						if(response.data.output.applntResp.relationToInsured=="00"){
+							this.people=false
+							this.$refs.bg.style.height="100%"
+							this.$refs.bg.style.padding="0"
+						}else{
+							this.people=true
+							this.$refs.bg.style.height=""
+						}
+						if(response.data.output.insrntResp.age<18){
+							this.remark=1
+						}
 					}
 				}, response => {
 					Indicator.close();
@@ -155,25 +214,36 @@
 				});
 			},
 			init() {
-				var data = [{
-						"tmId": "TM0001"
-					},
-					{
-						"tmId": "TM0002"
-					},
-					{
-						"tmId": "TM0003"
-					}
-				]
+				var data = {
+				  "pkgNo": this.$route.query.orderNo,
+				  "sceneCode": "SC0001"
+				}
 				Indicator.open();
-				this.$http.post(this.$store.state.link + '/css/css/queryTemplateByTmIdList', data)
+				this.$http.post(this.$store.state.link + '/css/css/queryTmIdUrlByPS', data)
 					.then(res => {
 						Indicator.close();
-						console.log("==222==" + JSON.stringify(res.data));
+//						console.log("==2221==" + JSON.stringify(res.data));
+						console.log(res.data.output)
 						var dataCode = res.data.code;
 						if(dataCode == "SYS_S_000") {
 							this.cardPDFArray = res.data.output;
-							console.log(this.cardPDFArray)
+							
+							for(var i=0,j=this.cardPDFArray.length;i<j;i++){
+								if(this.cardPDFArray[i].tmId=="TM0001"){
+									this.pdf3=this.cardPDFArray[i].tmFmsUrl
+								}
+								if(this.cardPDFArray[i].tmId=="TM0002"){
+									this.pdf2=this.cardPDFArray[i].tmFmsUrl
+								}
+								if(this.cardPDFArray[i].tmName=="投保人税收居民身份声明文件"){
+									this.pdf1=this.cardPDFArray[i].tmFmsUrl
+								}
+								if(this.cardPDFArray[i].tmName=="被保险人税收居民身份声明文件"){
+									this.pdf4=this.cardPDFArray[i].tmFmsUrl
+								}
+							}
+							
+							
 						} else {
 							Toast(res.data.desc);
 						}
@@ -206,9 +276,9 @@
 						if(dataCode == "SYS_S_000") {
 							console.log("cheng")
 							if(res.data.output.pdfURL!=undefined){
-								this.cardPDFArray = res.data.output.pdfURL;
+//								this.cardPDFArray = res.data.output.pdfURL;
 								this.photo = true
-								Toast("签字完成")
+								this.queryOrder()
 							}else{
 								Toast(res.data.output.desc)
 							}
@@ -221,81 +291,29 @@
 						console.log(res.data);
 					})
 			},
-			cardPDF() {
-				if(this.cardPDFArray.length>0){
-					for(var i = 0; i < this.cardPDFArray.length; i++) {
-						if(this.cardPDFArray[i].tmId == "TM0003") {
-							this.pdfFlag = false
-							this.pdf = this.cardPDFArray[2].tmFmsUrl;
-						}
-					}
-				}
-				
-
-			},
-			cardPDF1() {
-				if(this.cardPDFArray.length>0){
-					for(var i = 0; i < this.cardPDFArray.length; i++) {
-						if(this.cardPDFArray[i].tmId == "TM0002") {
-							this.pdfFlag = false
-							//						this.$refs.bg.setAttribute("class", "bg1")
-							this.pdf = this.cardPDFArray[i].tmFmsUrl;
-						}
-					}
-				}
-			},
-			cardPDF2() {
-				if(this.cardPDFArray.length>0){
-					for(var i = 0; i < this.cardPDFArray.length; i++) {
-						if(this.cardPDFArray[i].tmId == "TM0001") {
-							this.pdfFlag = false
-							//						this.$refs.bg.setAttribute("class", "bg1")
-							this.pdf = this.cardPDFArray[i].tmFmsUrl;
-						}
-					}
-				}
-			},
-			cardPDF3() {
-				if(this.cardPDFArray.length>0){
-					for(var i = 0; i < this.cardPDFArray.length; i++) {
-						if(this.cardPDFArray[i].tmId == "TM0003") {
-							this.pdfFlag = false
-							//						this.$refs.bg.setAttribute("class", "bg1")
-							this.pdf = this.cardPDFArray[3].tmFmsUrl;
-						}
-					}
-				}
+			cardPDF(data) {
+				this.pdfFlag = false
+				this.pdf = data
 			},
 			handleClickSuc() {
-				if(this.signPhoto != "" && this.signPhoto1 != "") {
-					this.next();
-				} else {
-					Toast("请签字")
+				if(!this.people){
+					if(this.signPhoto != "") {
+						this.next();
+					} else {
+						Toast("请签字")
+					}
+				}else{
+					if(this.signPhoto != "" && this.signPhoto1 != "") {
+						this.next();
+					} else {
+						Toast("请签字")
+					}
 				}
 			},
 			select_item(e, index) {
-				if(this.photo) {
-					this.addData.push(index);
-					e.currentTarget.getElementsByClassName('tain_img_topitemleft')[0].style.opacity = 1;
-					if(e.currentTarget.getElementsByClassName('tain_img_topitemright')[0].src.indexOf("downImg") != -1) {
-						this.alldata[index].msg = ""
-					} else {
-						this.alldata[index].msg = this.session
-					}
-					if(index == 0) {
-						this.cardPDF();
-					} else if(index == 1) {
-						this.cardPDF3();
-					} else if(index == 2) {
-						this.cardPDF1();
-					}else if(index == 3) {
-						this.cardPDF2();
-					}
-					//					window.location.href = e.currentTarget.getAttribute('code')
-				} else {
-					Toast("请点击签字完成")
-				}
-
+				this.addData.push(index);
+				e.currentTarget.getElementsByClassName('tain_img_topitemleft')[0].style.opacity = 1;
+				this.cardPDF(e.currentTarget.getAttribute('code'));
 			},
 			back() {
 				window.history.go(-1)
@@ -303,22 +321,42 @@
 			next() {
 
 				var docReq = [];
-				var obj1 = {
-					"docFileName": "投保人签字", //单证文件名 
-					"docType": "014", //单证类型
-					"fileSerialNo": this.code, //文件序列号 : 文件在影像系统唯一标识 
-					"remark": "", //备注 
-					"showOrder": 16 //显示顺序
+				if(this.people){
+					var obj1 = {
+						"docFileName": "投保人签字", //单证文件名 
+						"docType": "014", //单证类型
+						"fileSerialNo": this.code, //文件序列号 : 文件在影像系统唯一标识 
+						"remark": "0", //备注 
+						"showOrder": 16 //显示顺序
+					}
+					var obj2 = {
+						"docFileName": "被保险人签字", //单证文件名 
+						"docType": "014", //单证类型
+						"fileSerialNo": this.code1, //文件序列号 : 文件在影像系统唯一标识 
+						"remark": this.remark.toString(), //备注 
+						"showOrder": 17 //显示顺序
+					}
+				}else{
+					var obj1 = {
+						"docFileName": "投保人签字", //单证文件名 
+						"docType": "014", //单证类型
+						"fileSerialNo": this.code, //文件序列号 : 文件在影像系统唯一标识 
+						"remark": "0", //备注 
+						"showOrder": 16 //显示顺序
+					}
+					var obj2 = {
+						"docFileName": "被保险人签字", //单证文件名 
+						"docType": "014", //单证类型
+						"fileSerialNo": this.code, //文件序列号 : 文件在影像系统唯一标识 
+						"remark": "0", //备注 
+						"showOrder": 17 //显示顺序
+					}
 				}
-				var obj2 = {
-					"docFileName": "被保人签字", //单证文件名 
-					"docType": "014", //单证类型
-					"fileSerialNo": this.code1, //文件序列号 : 文件在影像系统唯一标识 
-					"remark": "", //备注 
-					"showOrder": 17 //显示顺序
-				}
+				
+				
 				docReq.push(obj1);
 				docReq.push(obj2);
+				console.log(docReq)
 				var data = {
 					"token": this.$route.query.token,
 					"userId": this.$route.query.userId,
@@ -352,9 +390,8 @@
 			},
 			queryOrder() {
 				console.log(this.addData)
-				if(this.addData.length != 4) {
-					console.log(1)
-					Toast("请依次阅读投保文件")
+				if(!this.photo) {
+					Toast("请点击签字完成")
 				} else {
 					var data = { //订单查询   订单状态:10-暂存单 20-自核成功 30-已撤单 40-承保成功 60-犹豫期退保 01-自核交易失败 02-自核不通过 03-人工核保中 04-人工核保成功 05-人核未进核心 06-人核失败 07-人核失败并发送通知书 08-收费中 09-收费成功 11-收费失败 12-收费交易失败 13-承保失败 14-承保交易失败 15-保单生效已回执状态 16-退保 17-已删除 18-承保收费成功 19-拒保 21-其他 ,
 						"token": this.$route.query.token,
@@ -377,14 +414,15 @@
 							console.log("==" + JSON.stringify(res.data))
 							var dataCode = res.data.code;
 							if(dataCode == "SYS_S_000") {
+								console.log(res.data.output[0].orderStatus)
 								if(res.data.output[0].orderStatus == this.$store.state.orderState.UDR) {
 									this.issue(); //出单
 								} else if(res.data.output[0].orderStatus == this.$store.state.orderState.HPUC) { //走人工核保页面
 									this.$router.push('/artificialSubmission')
 								} else {
-									//									Toast("查询订单状态失败")
+//																		Toast("查询订单状态失败")
 									this.issue(); //出单
-									//									this.$router.push('/issueError?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
+//																		this.$router.push('/issueError?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
 								}
 							} else {
 								this.$router.push('/issueError?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
@@ -435,16 +473,56 @@
 					})
 			},
 			handleClickSign(a) {
-				if(this.index == a) {
-					this.index = a
-				} else {
-					this.index = a
-					this.overwrite()
+				
+				this.addData=[...new Set(this.addData)].sort()
+				if(a==1){
+					if(this.addData.indexOf(0)!=-1&&this.addData.indexOf(1)!=-1&&this.addData.indexOf(2)!=-1){
+						if(this.index == a) {
+							this.index = a
+						} else {
+							this.index = a
+							this.overwrite()
+						}
+		
+						this.$refs.bg.style.position = "fixed"
+						this.mask = true
+						this.blur = true
+					}else{
+						Toast("签字前，请依次预览以上文件")
+					}
+					
+				}else{
+					if(this.addData.indexOf(3)!=-1&&this.addData.indexOf(4)!=-1){
+						if(this.index == a) {
+							this.index = a
+						} else {
+							this.index = a
+							this.overwrite()
+						}
+		
+						this.$refs.bg.style.position = "fixed"
+						this.mask = true
+						this.blur = true
+					}else{
+						Toast("签字前，请依次预览以上文件")
+					}
 				}
-
-				this.$refs.bg.style.position = "fixed"
-				this.mask = true
-				this.blur = true
+//				console.log(this.addData)
+//				if(this.addData.length==this.cardPDFArray.length){
+//					if(this.index == a) {
+//						this.index = a
+//					} else {
+//						this.index = a
+//						this.overwrite()
+//					}
+//	
+//					this.$refs.bg.style.position = "fixed"
+//					this.mask = true
+//					this.blur = true
+//				}else{
+//					Toast("签字前，请依次预览以上文件")
+//				}
+				
 
 			},
 			//电脑设备事件
@@ -460,6 +538,7 @@
 					console.log(obj);
 					this.startX = obj.x;
 					this.startY = obj.y;
+					this.canvasTxt.lineWidth = 5;
 					this.canvasTxt.beginPath();
 					this.canvasTxt.moveTo(this.startX, this.startY);
 					this.canvasTxt.lineTo(obj.x, obj.y);
@@ -481,6 +560,7 @@
 					console.log(obj)
 					this.startX = obj.x;
 					this.startY = obj.y;
+					this.canvasTxt.lineWidth = 5;
 					this.canvasTxt.beginPath();
 					this.canvasTxt.moveTo(this.startX, this.startY);
 					this.canvasTxt.lineTo(obj.x, obj.y);
@@ -500,6 +580,7 @@
 					};
 					this.moveY = obj.y;
 					this.moveX = obj.x;
+					this.canvasTxt.lineWidth = 5;
 					this.canvasTxt.beginPath();
 					this.canvasTxt.moveTo(this.startX, this.startY);
 					this.canvasTxt.lineTo(obj.x, obj.y);
@@ -521,6 +602,7 @@
 					};
 					this.moveY = obj.y;
 					this.moveX = obj.x;
+					this.canvasTxt.lineWidth = 5;
 					this.canvasTxt.beginPath();
 					this.canvasTxt.moveTo(this.startX, this.startY);
 					this.canvasTxt.lineTo(obj.x, obj.y);
@@ -540,6 +622,7 @@
 						x: ev.offsetX,
 						y: ev.offsetY
 					};
+					this.canvasTxt.lineWidth = 5;
 					this.canvasTxt.beginPath();
 					this.canvasTxt.moveTo(this.startX, this.startY);
 					this.canvasTxt.lineTo(obj.x, obj.y);
@@ -563,6 +646,7 @@
 						x: ev.targetTouches[0].clientX,
 						y: ev.targetTouches[0].clientY - 30
 					};
+					this.canvasTxt.lineWidth = 5;
 					this.canvasTxt.beginPath();
 					this.canvasTxt.moveTo(this.startX, this.startY);
 					this.canvasTxt.lineTo(obj.x, obj.y);
@@ -680,14 +764,15 @@
 	.sign {
 		width: 6.44rem;
 		height: 3.56rem;
-		margin: 0.32rem auto 0rem;
+		margin: .4rem auto 0;
 		font-size: 0.4rem;
 		line-height: 3.56rem;
 		text-align: center;
 		color: #EB7760;
 		letter-spacing: 0;
 		background: #FFFFFF;
-		border-radius: .16rem;
+		border-bottom-left-radius: .16rem;
+		border-bottom-right-radius: .16rem;
 		overflow: hidden;
 	}
 	
@@ -932,7 +1017,7 @@
 	}
 	
 	.list span {
-		color: #5bcdc3;
+		/*color: #5bcdc3;*/
 	}
 	
 	.tain_p_topitem {
@@ -982,5 +1067,41 @@
 		background: #000000;
 		background: rgba(0, 0, 0, 0.40);
 		z-index: 100;
+	}
+	.relationship{
+		height: 1rem;
+		background: #fff;
+		line-height: 1rem;
+		padding-left: .78rem;
+		border-bottom: .001rem solid #C8C7CC ;
+	}
+	.select{
+		display: inline-block;
+		height: 1rem;
+		width: 2rem;
+		line-height: 1rem;
+		border: none;
+		margin-left: 1rem;
+		appearance:none;
+		 -moz-appearance:none;
+		 -webkit-appearance:none;
+	}
+	.selectimg{
+		background: url(/static/upDown.png) no-repeat right center;
+		background-size: 0.4rem 0.45rem;
+		outline: none;
+	}
+	.touP{
+		height: .86rem;
+		padding-left: .3rem;
+		font-size: .32rem;
+		line-height: .86rem;
+	}
+	.radio{
+		width: .48rem;
+		height: .48rem;
+	}
+	.top2{
+		margin-top: .2rem;
 	}
 </style>

@@ -71,7 +71,7 @@ brspanbo<template>
 				</select>
 			</p>
 			<p class="inputGrop clearFloat">
-				<label class="inputLabel left">与被保险人关系</label>
+				<label class="inputLabel left">受益人是被保险人的</label>
 				<select class="left inputText inputWidth" v-model="relationship">
 					<option :value="nexus.code" v-for="nexus in nexusList">{{nexus.name}}</option>
 				</select>
@@ -274,43 +274,43 @@ brspanbo<template>
 
 				if(this.name == "") {
 					Toast('名字不得为空')
-					this.$emit('child_saya1', true);
+					this.$emit('child_sayaa', true);
 					return;
 				}
 				if(re.test(this.name)) {
 					Toast("受益人人姓名必须为纯中文");
-					this.$emit('child_saya1', true);
+					this.$emit('child_sayaa', true);
 					return;
 				}
 				if(this.IDnum == "") {
 					Toast('证件号码格式不正确')
-					this.$emit('child_saya1', true);
+					this.$emit('child_sayaa', true);
 					return;
 				}
 				if(this.cardType == "0" && this.nationality != "37") {
 					Toast('证件是身份证时国籍必须是中国')
-					this.$emit('child_saya1', true);
+					this.$emit('child_sayaa', true);
 					return;
 				}
 				if(this.Proportion1 == "" || this.Proportion1 == undefined) {
 					Toast('受益顺序不得为空')
-					this.$emit('child_saya1', true);
+					this.$emit('child_sayaa', true);
 					return;
 				} else {
 					if(!patrn.test(this.Proportion1)) {
 						Toast("受益顺序格式不正确")
-						this.$emit('child_saya1', true);
+						this.$emit('child_sayaa', true);
 						return;
 					}
 					if(this.Proportion1 <= 0) {
 						Toast("受益顺序格式不正确")
-						this.$emit('child_saya1', true);
+						this.$emit('child_sayaa', true);
 						return;
 					}
 				}
 				if(this.bili == "" || this.bili == undefined) {
 					Toast('受益比例不得为空')
-					this.$emit('child_saya1', true);
+					this.$emit('child_sayaa', true);
 					return;
 				}
 				var myDate = new Date();
@@ -328,12 +328,12 @@ brspanbo<template>
 				if(this.termValidityDateShow) {
 					if(this.cardTime == "请选择证件有效期" || this.cardTime == "" || this.cardTime == undefined) {
 						Toast('请选择证件有效期')
-						this.$emit('child_saya1', true);
+						this.$emit('child_sayaa', true);
 						return;
 					} else {
 						if(datew != "" && this.cardTime != "" && d1 > d2) {
 							Toast('有效期时间不可以选择今天之前')
-							this.$emit('child_saya1', true);
+							this.$emit('child_sayaa', true);
 							return;
 						}
 					}
@@ -341,7 +341,7 @@ brspanbo<template>
 				if(this.cardType == "4" || this.cardType == "F") {
 					if(this.termValidityDateShow == true) {
 						Toast('证件类型为户口本、出生证明时,证件有效期只能为长期')
-						this.$emit('child_saya1', true);
+						this.$emit('child_sayaa', true);
 						return;
 					}
 				}
@@ -365,18 +365,18 @@ brspanbo<template>
 						}
 						if(months > 3) {
 							Toast('证件类型为临时身份证，有效期不能大于三个月')
-							this.$emit('child_saya1', true);
+							this.$emit('child_sayaa', true);
 							return
 						}
 					}
 				}
 				if(this.nationality == "") {
-					this.$emit('child_saya1', true);
+					this.$emit('child_sayaa', true);
 					Toast('国籍不得为空')
 					return;
 				}
 				if(this.bili == 0) {
-					this.$emit('child_saya1', true);
+					this.$emit('child_sayaa', true);
 					Toast('受益比例必须大于0')
 					return;
 				}
@@ -387,7 +387,7 @@ brspanbo<template>
 					//不是长期
 					if(this.birthDate == "") {
 						Toast("请选择证件有效期")
-						this.$emit('child_saya1', true);
+						this.$emit('child_sayaa', true);
 						return;
 					} else {
 						certfEndTime = this.cardTime;
@@ -404,7 +404,7 @@ brspanbo<template>
 				} else {
 					sex = "F"
 				}
-				this.$emit('child_saya1', false);
+				this.$emit('child_sayaa', false);
 				var bnfReq = {
 					"age": this.jsGetAge(this.birthDate), //年龄 ,
 					"birthday": this.birthDate, //出生年月 : 格式yyyy-MM-dd ,
@@ -417,7 +417,7 @@ brspanbo<template>
 					"certfType": this.cardType, //证件类型 ,
 					"gender": sex, //性别 : M-男;F-女 ,
 					"nationality": this.nationality, //国籍
-					"relatoInsured": this.relationship, // 受益人与被保人关系 ,
+					"relatoInsured": this.relationship, // 受益人与被保险人关系 ,
 					"bnfType": "1", //受益人类别 : 1-身故受益人;2-生存受益人;3-红利受益人;4-未知 ,
 					"bnfGrade": "1" //受益等级
 				}
@@ -568,10 +568,6 @@ brspanbo<template>
 		outline: none;
 	}
 	
-	input {
-		font-weight: 100;
-	}
-	
 	input::-ms-clear {
 		display: none;
 		width: 0;
@@ -585,12 +581,10 @@ brspanbo<template>
 	textarea::-webkit-input-placeholder,
 	input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	.clearFloat:after {
@@ -633,6 +627,7 @@ brspanbo<template>
 	
 	.opa0 {
 		opacity: 0;
+		z-index: -1;
 	}
 	
 	.oneTitleTextSpan3 {
@@ -744,7 +739,7 @@ brspanbo<template>
 	.brspanbo {
 		display: block;
 		position: absolute;
-		left: 2.05rem;
+		left: 2.65rem;
 		top: 0;
 		height: 0.88rem;
 		line-height: 0.88rem;
@@ -794,7 +789,7 @@ brspanbo<template>
 	
 	.inputLabel {
 		display: block;
-		width: 2.04rem;
+		width: 2.64rem;
 		height: 0.88rem;
 		line-height: 0.88rem;
 		font-weight: bold;
@@ -810,7 +805,7 @@ brspanbo<template>
 	.inputText {
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		padding-left: 0;
 	}
 	
@@ -818,7 +813,7 @@ brspanbo<template>
 		width: 3rem;
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.inpuDate {
@@ -844,7 +839,7 @@ brspanbo<template>
 		z-index: 1;
 		display: block;
 		height: 0.88rem;
-		padding: 0 0.26rem;
+		padding-right: 0.26rem;
 		line-height: 0.88rem;
 		background: #FFFFFF;
 		border-left: solid 0.01rem #C8C7CC;
@@ -869,7 +864,7 @@ brspanbo<template>
 		width: 0.48rem;
 		height: 0.48rem;
 		margin-top: 0.2rem;
-		margin-right: 0.26rem;
+		/*margin-right: 0.26rem;*/
 	}
 	
 	.selectBox {
@@ -884,7 +879,7 @@ brspanbo<template>
 		height: 0.68rem;
 		margin-left: 2.04rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.pro {
@@ -892,11 +887,11 @@ brspanbo<template>
 	}
 	
 	.dateInput {
-		width: 2.85rem;
+		width: 2.7rem;
 	}
 	
 	.inputWidth {
-		width: 4.66rem;
+		width: 4.06rem;
 	}
 	
 	.inputWidth1 {
@@ -950,9 +945,9 @@ brspanbo<template>
 	
 	.dateB {
 		position: absolute;
-		right: 1.86rem;
+		right: 1.36rem;
 		top: 0;
-		z-index: -1;
+		z-index: 3;/*改成-1调试，显示改成3*/
 		width: 0.4rem;
 		height: 0.87rem;
 		background: #FFFFFF;

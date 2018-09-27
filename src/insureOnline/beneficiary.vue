@@ -333,7 +333,7 @@
     		childSay(){
     			//受益人
     			if (this.nexusType == "111") {
-    				Toast("请选择受益人与被保人的关系~")
+    				Toast("请选择受益人与被保险人的关系~")
     				return
     			}
     			if (this.policyHolderName == "") {
@@ -465,9 +465,6 @@
 	input, button {
 		outline: none;
 	}
-	input {
-		font-weight: 100;
-	}
 	input::-ms-clear {
 		display: none;
 		width: 0;
@@ -478,11 +475,9 @@
 	}
 	textarea::-webkit-input-placeholder, input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	.clearFloat:after {
 		height: 0;
@@ -637,7 +632,7 @@
 	.inputText {
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	.inpuDate {
 		width: 3rem;
@@ -698,7 +693,7 @@
 		height: 0.68rem;
 		margin-left: 2.04rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	.pro {
 		width: 3.6rem;
@@ -853,7 +848,6 @@
 		position: absolute;
 		top: 0;
 		left: 2.04rem;
-		font-weight: 100;
 		line-height: 0.88rem;
 		font-size: 0.28rem;
 		color: #B2B2B2;

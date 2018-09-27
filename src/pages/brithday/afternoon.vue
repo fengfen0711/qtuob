@@ -82,7 +82,7 @@
 	
 	.after_color {
 		font-size: 0.22rem;
-		color: #666666
+		color: #333333
 	}
 	
 	.after_data {
@@ -93,7 +93,7 @@
 	
 	.after_content {
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		margin-top: 0.16rem;
 		line-height: 0.5rem;
 	}

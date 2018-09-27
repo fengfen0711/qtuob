@@ -20,7 +20,7 @@
 					<span class="feed_number">{{applicant}}</span>
 				</p>
 				<p class="feed_div_p1">
-					<label class="feed_order">被保人姓名</label>
+					<label class="feed_order">被保险人姓名</label>
 					<span class="feed_number">{{insuredname}}</span>
 				</p>
 				<p class="feed_div_p1">
@@ -75,7 +75,7 @@
 				this.$router.push('/mylifeOrder')
 			},
 			backHome() {
-				this.$router.push('/newIndex/home')
+				this.$router.push('/')
 			},
 			init() {
 				var data = {

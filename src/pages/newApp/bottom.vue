@@ -18,12 +18,14 @@
 				    <span class="spanText" :class="{spanTextSelected:productShow}">产品</span>
 			    </router-link>
 			</div>
-			<div class="footerDiv">
-				<router-link :to="{name: 'descover'}" tag="div">
+			<div class="footerDiv" @click="toDescover">
+				<!--<router-link :to="{name: desPath}" tag="div">-->
+				<div>
 					<img class="tag_img" src="/static/imgNew/icon_descover_unfocus3.png">
 				    <img class="tag_img tag_img1" :class="{disblock:descoverShow,disnone:!descoverShow}" src="/static/imgNew/icon_descover_focus3.png">	
 				    <span class="spanText" :class="{spanTextSelected:descoverShow}">发现</span>
-			    </router-link>
+				</div>
+			    <!--</router-link>-->
 			</div>
 			<div class="footerDiv" @click="toMine">
 				<router-link :to="{name: minePath}" tag="div">
@@ -38,7 +40,7 @@
 
 <script>
 	export default {
-	  	name: 'newIndex',
+	  	name: 'index',
 	  	data(){
 	  		return {
 	  			homeShow:true,
@@ -48,20 +50,23 @@
 	  			path:this.$route.path,
 	  			pathMain:'',
 	  			minePath:'',
-	  			titleList:[],
+	  			desPath:'',
+	  			titleId:'',
 	  			question: 0,
 				size: 0,
 	  		}
 	  	},
     	created(){
     		this.size = document.documentElement.clientHeight;
-    		this.pathMain = this.path.split('newIndex/')
-			this.handleClickFirst(this.pathMain[this.pathMain.length-1])
-			this.titleAjax()
+    		this.pathMain = this.path.split('#/');
+			this.handleClickFirst(this.pathMain[this.pathMain.length-1]);
+			if (localStorage.token) {
+				this.titleAjax();
+			}
     	},
     	updated(){
-    		this.pathMain = this.path.split('newIndex/')
-			this.handleClickFirst(this.pathMain[this.pathMain.length-1])
+    		this.pathMain = this.path.split('#/');
+			this.handleClickFirst(this.pathMain[this.pathMain.length-1]);
     	},
 		mounted() {
 			const that = this
@@ -96,17 +101,21 @@
 	  				this.descoverShow = false;
 	  				this.productShow = false;
 	  			}else{
-	  				if(index.indexOf("newIndex") != -1){
-	  					this.$router.push('/newIndex/home')
+	  				if(index.indexOf("") != -1){
+	  					this.$router.push('/home')
 	  				}
 	  			}
 	  		},
+	  		toDescover(){
+	  			this.$router.push('/descover/recommend')
+//	  			this.desPath = 'descover'
+	  		},
 	  		toMine () {
 	  			if (this.$store.state.loginId == "0") {
-					this.$router.push('/logNew')
+					this.$router.push('/regLog')
 				}else{
 					this.minePath = 'mine'
-					this.$router.push('/newIndex/mine')
+					this.$router.push('/mine')
 				}
 	  		},
 	  		titleAjax(){
@@ -117,7 +126,7 @@
 				.then(res => {
 //					console.log(res.data)
 					if(res.data.code == "SYS_S_000") {
-						this.titleList = res.data.output.articleTypeRespList;
+						this.titleId = res.data.output.articleTypeRespList[0].typeId;
 					}
 				}, res => {
 					console.log(res.data)

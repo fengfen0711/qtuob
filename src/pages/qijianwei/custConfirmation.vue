@@ -69,7 +69,9 @@
 			}
 		},
 		created() {
-			alert(1)
+			if (this.$route.query.token != undefined) {
+				window.localStorage.token = this.$route.query.token
+			}
 			this.init();
 		},
 		filters: {
@@ -209,8 +211,8 @@
 			},
 			init() {
 				var data = {
-					"brokerId": localStorage.BrokerId,
-					"token":localStorage.getItem("token"),
+					"brokerId": this.$store.state.brokerInfo.brokerId,
+					"token":localStorage.token,
 					"userId":localStorage.userId
 				};
 				console.log(data)
@@ -229,6 +231,7 @@
 						this.data_flag = false;
 						if(res.data.desc != undefined) {
 							Toast(res.data.desc);
+							console.log(res.data.desc);
 						} else {
 							console.log("登录接口undefined");
 						}
@@ -241,9 +244,9 @@
 			},
 			name_init() {
 				var data = {
-					"brokerId": localStorage.getItem("brokerId"),
+					"brokerId": this.$store.state.brokerInfo.brokerId,
 					"name": this.input_value,
-					"token":localStorage.getItem("token"),
+					"token":localStorage.token,
 					"userId":localStorage.userId
 				};
 				Indicator.open();
@@ -306,7 +309,7 @@
 	.ctc_div_introduce {
 		width: 7.3rem;
 		padding-left: 0.2rem;
-		color: #666666;
+		color: #333333;
 		font-size: 0.26rem;
 		line-height: 0.4rem;
 		margin-top: 0.16rem;
@@ -410,7 +413,7 @@
 	
 	.ctc_div_null {
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		margin-top: 0.34rem;
 		text-align: center;
 	}

@@ -49,11 +49,11 @@
 		<div class="userInfoDown">
 			<p class="inputGrop">
 				<label class="inputLabel">服务客户数（位）</label>
-				<input type="text" class="inputText1" placeholder="0" v-model="customNum" />
+				<input type="text" class="inputText1" placeholder="" v-model="customNum" />
 			</p>
 			<p class="inputGrop">
 				<label class="inputLabel">累计送出保障（万元）</label>
-				<input type="text" class="inputText1" placeholder="0" v-model="priceNum" />
+				<input type="text" class="inputText1" placeholder="" v-model="priceNum" />
 			</p>
 			<p class="inputGrop1">
 				<label class="inputLabel1">个性签名</label>
@@ -84,8 +84,8 @@
 	  			typeNum:"",
 	  			wechartNum:"",
 	  			compName:"",
-	  			customNum:"0",
-	  			priceNum:"0",
+	  			customNum:"",
+	  			priceNum:"",
 	  			userSign:"",
 	  			userPositionShow:false,
 	  			userPosition:"",
@@ -178,15 +178,23 @@
 					}
 										
 					if (!res.data.output.custNum || res.data.output.custNum == "null" || res.data.output.custNum == "") {				
-						this.customNum = '0'
-					}else{	
-						this.customNum = res.data.output.custNum	
+						this.customNum = ''
+					}else{
+						if (parseFloat(res.data.output.custNum) == 0) {
+							this.customNum = ''
+						}else{
+							this.customNum = res.data.output.custNum
+						}
 					}
 					
 					if (!res.data.output.sendGuarantee || res.data.output.custNum == "null" || res.data.output.custNum == "") {				
-						this.priceNum = '0'
+						this.priceNum = ''
 					}else{
-						this.priceNum = res.data.output.sendGuarantee
+						if (parseFloat(res.data.output.sendGuarantee) == 0) {
+							this.customNum = ''
+						}else{
+							this.priceNum = res.data.output.sendGuarantee
+						}
 					}
 					
 					if (res.data.output.headImg == undefined) {
@@ -513,7 +521,7 @@
 					var dataCode = res.data.code;
 					if (dataCode == "SYS_S_000") {
 						Toast("保存成功");
-						this.$router.push('/newIndex/mine')
+						this.$router.push('/mine')
 					}else{
 						Toast(res.data.desc);
 					}
@@ -538,9 +546,6 @@
 	}
 	input, button {
 		outline: none;
-	}
-	input {
-		font-weight: 100;
 	}
 	input::-ms-clear {
 		display: none;

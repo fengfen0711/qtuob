@@ -440,7 +440,7 @@ brspanbo<template>
 					"certfType": this.cardType, //证件类型 ,
 					"gender": sex, //性别 : M-男;F-女 ,
 					"nationality": this.nationality, //国籍
-					"relatoInsured": this.relationship, // 受益人与被保人关系 ,
+					"relatoInsured": this.relationship, // 受益人与被保险人关系 ,
 					"bnfType": "1", //受益人类别 : 1-身故受益人;2-生存受益人;3-红利受益人;4-未知 ,
 					"bnfGrade": "1" //受益等级
 				}
@@ -591,10 +591,6 @@ brspanbo<template>
 		outline: none;
 	}
 	
-	input {
-		font-weight: 100;
-	}
-	
 	input::-ms-clear {
 		display: none;
 		width: 0;
@@ -608,12 +604,10 @@ brspanbo<template>
 	textarea::-webkit-input-placeholder,
 	input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	.clearFloat:after {
@@ -833,7 +827,7 @@ brspanbo<template>
 	.inputText {
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		padding-left: 0;
 	}
 	
@@ -841,7 +835,7 @@ brspanbo<template>
 		width: 3rem;
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.inpuDate {
@@ -907,7 +901,7 @@ brspanbo<template>
 		height: 0.68rem;
 		margin-left: 2.04rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.pro {
@@ -1128,7 +1122,7 @@ brspanbo<template>
 		width: 3rem;
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	.inputLabel3 {
 		display: block;
@@ -1142,7 +1136,7 @@ brspanbo<template>
 	.inputText {
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		padding-left: 0;
 	}
 	.dateInput {

@@ -93,7 +93,7 @@
 		<div class="userInfoMid">
 			<p class="userHeader clearFloat">
 				<span class="title">
-					被保人信息
+					被保险人信息
 				</span>
 			</p>
 			<p class="inputGrop">
@@ -222,7 +222,6 @@
 	import Exif from 'exif-js'
 	import { Toast } from 'mint-ui'
 	import { Indicator } from 'mint-ui'
-	import trialCalculation from '@/components/button.vue'
 	import { Dictionaries } from "../../assets/js/counry.js";
 	export default {
 		data() {
@@ -360,8 +359,14 @@
 							console.log(this.$store.state.AUC_TWO)
 							if(res.data.output.uwStatus == this.$store.state.AUC_TWO) {
 								this.goIssue();
-							} else {
-								Toast("res.data.output.message")
+							} else if(res.data.output.uwStatus == this.$store.state.zhOrderState.AUF){
+								Toast(res.data.output.message+"请联系线下工作人员")
+								// this.wrap_aut = false;
+							} else if(res.data.output.uwStatus == this.$store.state.zhOrderState.HUS){
+								Toast(res.data.output.message)
+								this.wrap_aut = false;
+							} else if(res.data.output.uwStatus == this.$store.state.zhOrderState.AUT) {
+								Toast(res.data.output.message)
 							}
 						}
 					}, res => {
@@ -390,16 +395,16 @@
 						console.log(res.data);
 						Indicator.close();
 						if(res.data.code == "SYS_S_000") {
-							if(res.data.output.code == "UDR") {
-								//								Toast("出单成功");
+							if(res.data.output.code == "PAY") {//支付成功
 								this.$router.push('/feedbackpayment?payType=Y&message=' + res.data.output.message+'&prodCode=' + this.$route.query.prodCode + '&prodNo=' + this.$route.query.prodNo + '&orderNo=' + this.$route.query.orderNo + '&cmpCode=' + this.$route.query.cmpCode);
-							} else if(res.data.output.code == "UDR_FAL") {
+							} else if(res.data.output.code == "PAY_FAL") {//支付失败
+								Toast(res.data.output.message)
 								this.$router.push('/feedbackpayment?payType=N&message=' + res.data.output.message+'&prodCode=' + this.$route.query.prodCode + '&prodNo=' + this.$route.query.prodNo + '&orderNo=' + this.$route.query.orderNo + '&cmpCode=' + this.$route.query.cmpCode);
-							} else {
-								Toast("res.data.output.message")
+							} else if(res.data.output.code == "UDR"){//出单成功
+								Toast(res.data.output.message)
+							} else if(res.data.output.code == "UDR_FAL"){//出单失败
+								Toast(res.data.output.message)
 							}
-							//							Toast("出单成功");
-							//this.$router.push('/feedbackpayment');
 						}
 					}, res => {
 						Indicator.close();
@@ -468,7 +473,7 @@
 						this.appDay = state.applntResp.birthday;
 						this.cardType = state.applntResp.certfType;
 						this.appIDnum = state.applntResp.certfCode;
-						//被保人
+						//被保险人
 						this.insuerName = state.insrntResp.insrntName;
 						if(state.insrntResp.gender == "M") {
 							this.insuerNex = "男";
@@ -521,9 +526,6 @@
 
 		},
 
-		components: {
-			trialCalculation
-		}
 	}
 </script>
 
@@ -543,7 +545,6 @@
 	.right {
 		float: right;
 	}
-	
 	input,
 	button {
 		background: none;
@@ -553,10 +554,6 @@
 	input,
 	button {
 		outline: none;
-	}
-	
-	input {
-		font-weight: 100;
 	}
 	
 	input::-ms-clear {
@@ -572,48 +569,10 @@
 	textarea::-webkit-input-placeholder,
 	input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
-	}
-	
-	input,
-	button {
-		background: none;
-		border: none;
-	}
-	
-	input,
-	button {
-		outline: none;
-	}
-	
-	input {
-		font-weight: 100;
-	}
-	
-	input::-ms-clear {
-		display: none;
-		width: 0;
-		height: 0;
-	}
-	
-	input::-ms-reveal {
-		display: none;
-	}
-	
-	textarea::-webkit-input-placeholder,
-	input::-webkit-input-placeholder {
-		color: #B2B2B2;
-		font-weight: 100;
-	}
-	
-	input:-ms-input-placeholder {
-		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	select {

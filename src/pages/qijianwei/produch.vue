@@ -431,7 +431,7 @@
 	
 	.prd_div_null {
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		margin-top: 0.34rem;
 		text-align: center;
 	}

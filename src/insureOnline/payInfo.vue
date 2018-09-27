@@ -388,10 +388,6 @@ button {
 	outline: none;
 }
 
-input {
-	font-weight: 100;
-}
-
 input::-ms-clear {
 	display: none;
 	width: 0;
@@ -405,12 +401,10 @@ input::-ms-reveal {
 textarea::-webkit-input-placeholder,
 input::-webkit-input-placeholder {
 	color: #B2B2B2;
-	font-weight: 100;
 }
 
 input:-ms-input-placeholder {
 	color: #B2B2B2;
-	font-weight: 100;
 }
 
 .clearFloat:after {
@@ -504,18 +498,18 @@ input:-ms-input-placeholder {
 	height: 0.88rem;
 	line-height: 0.88rem;
 	font-size: 0.28rem;
-	color: #666666;
+	color: #333333;
 }
 
 .inputText {
 	height: 0.88rem;
 	font-size: 0.28rem;
-	color: #666666;
+	color: #333333;
 }
 
 .inputText1 {
 	font-size: 0.28rem;
-	color: #666666;
+	color: #333333;
 }
 
 .selected {

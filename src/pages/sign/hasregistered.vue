@@ -7,19 +7,20 @@
 		<div class="information_p">
 			<p class="information_succss">提交申请成功</p>
 			<p class="informaton_descrip">
-				您已经注册过趣投保 App 账号
-				为方便查询申请进度，请前往趣投保 App 或
-				趣投保科技官方微信公众号（qutoubaokj）登录查
-				询申请进度。
+				<!--您已经注册过趣投保 App 账号 为方便查询申请进度，请前往趣投保 App 或 趣投保科技官方微信公众号（qutoubaokj）登录查 询申请进度。-->
+				您的合伙人申请已经提交成功，请使用您签约的手机号，前往个人中心查看审批进度。您也可以下载趣投保APP，更多功能祝您大展宏图
 			</p>
-			
+
 			<!--<p class="information_reconi">
 				下载趣投保 App<br/>关注趣投保科技官方微信公众号（趣投保科技）<br/>登陆后即可查询申请进度。
 			</p>
 			<a class="information_look">查看演示</a>-->
 		</div>
-		
-		<div class="btn" ref="styles"@click="backgo" >
+
+		<div class="btn" v-show="!pathShow" ref="styles" @click="backFirst">
+			前往首页
+		</div>
+		<div class="btn" :class="{disnone:pathShow1}" v-show="pathShow" ref="styles" @click="backgo">
 			返回
 		</div>
 		<div class="bottom" ref="styles1">
@@ -33,37 +34,52 @@
 		name: "informaReconfirm",
 		data() {
 			return {
-				question:0,
-         	size:0
+				question: 0,
+				size: 0,
+				pathShow: true,
+				pathShow1:true
 			}
 		},
 		created() {
-			this.size=document.documentElement.clientHeight
-		},
-		mounted(){
-      	const that=this
- 		window.onresize = function temp() {
-        that.question = document.documentElement.clientHeight;
-        	that.styleSet()
-      }
-     },
-		methods: {
-			styleSet(){
-      	 if(this.size < this.question){
-     	 this.$refs.styles.style.display="block"
-     	 this.$refs.styles1.style.display="block"
-	   }else{
-	      this.$refs.styles.style.display="none"
-	      this.$refs.styles1.style.display="none"
-	   }   
-    },
-	    backgo(){
-				WeixinJSBridge.call('closeWindow');
+			if(localStorage.path == "wechat") {
+				this.pathShow = false
+			} else {
+				this.pathShow = true
+				if (localStorage.path == "App") {
+					this.pathShow1 = true
+				}else{
+					this.pathShow1 = false
+				}
 			}
+			this.size = document.documentElement.clientHeight
+		},
+		mounted() {
+			const that = this
+			window.onresize = function temp() {
+				that.question = document.documentElement.clientHeight;
+				that.styleSet()
+			}
+		},
+		methods: {
+			styleSet() {
+				if(this.size < this.question) {
+					this.$refs.styles.style.display = "block"
+					this.$refs.styles1.style.display = "block"
+				} else {
+					this.$refs.styles.style.display = "none"
+					this.$refs.styles1.style.display = "none"
+				}
+			},
+			backgo() {
+				WeixinJSBridge.call('closeWindow');
+			},
+			backFirst() {
+				window.localStorage.removeItem("wechat");
+				this.$router.push('/')
+			},
 		}
-		
+
 	}
-	
 </script>
 
 <style scoped="scoped">
@@ -72,15 +88,15 @@
 		height: 100%;
 		overflow: hidden;
 	}
-	.bg{
+	.bg {
 		position: fixed;
-	  	top: 0;
-	  	bottom: 0;
-	  	left: 0;
-	  	right: 0;
-	  	background: url(/static/img/sign/bg.png) no-repeat;
-	  	background-size:cover ;
-	  	z-index: -1;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		background: url(/static/img/sign/bg.png) no-repeat;
+		background-size: cover;
+		z-index: -1;
 	}
 	.top {
 		width: 6.86rem;
@@ -91,7 +107,6 @@
 		margin-top: .38rem;
 		position: relative;
 	}
-	
 	.logo {
 		position: absolute;
 		bottom: .14rem;
@@ -99,15 +114,13 @@
 		height: .52rem;
 		left: 3.1rem;
 	}
-	.left,
-	.right {
+	.left, .right {
 		width: 3.17rem;
 		height: 1rem;
 		font-size: .32rem;
 		line-height: 1rem;
 		float: left;
 	}
-	
 	.bottom {
 		width: 6.86rem;
 		height: 1.52rem;
@@ -116,10 +129,9 @@
 		margin: 0 auto;
 		margin-top: .52rem;
 		position: relative;
-			position: absolute;
-  	bottom: .32rem;
-  	left: .32rem;
-		
+		position: absolute;
+		bottom: .32rem;
+		left: .32rem;
 	}
 	.btn {
 		width: 5.34rem;
@@ -134,21 +146,24 @@
 		font-size: .4rem;
 		color: #222222;
 		position: absolute;
-  	bottom: 2.6rem;
-  	left: 1.08rem;
+		bottom: 2.6rem;
+		left: 1.08rem;
 	}
-	.information_p{
+	.disnone {
+		display: none;
+	}
+	.information_p {
 		margin-top: 0.5rem;
 		padding: 0 0.94rem;
 	}
-	.information_succss{
+	.information_succss {
 		font-size: 0.48rem;
 		color: #000000;
 		margin: 0 auto;
 		text-align: center;
 		line-height: 0.4rem;
 	}
-	.informaton_descrip{
+	.informaton_descrip {
 		font-size: 0.28rem;
 		color: #000000;
 		line-height: 0.4rem;
@@ -160,7 +175,6 @@
 		margin: 0 auto;
 		margin-top: .22rem;
 	}
-	
 	.code {
 		width: 5.6rem;
 		height: .8rem;
@@ -178,26 +192,26 @@
 		color: #000000;
 		line-height: .8rem;
 	}
-	 .name{
-  	width: 3.5rem;
-  	height: .8rem;
-  	float: left;
-  	margin-left: 1.46rem;
-  	font-size: .28rem;
-  	border: none;
-  	background: none;
-  	margin: 0 auto;
-  	/*line-height: .8rem;*/
-  }
-  .information_reconi{
-  	font-size: 0.24rem;
-	color: #000000;
-	line-height: 0.4rem;
-  }
-  .information_look{
-  	font-size: 0.24rem;
-	color: #D0021B;
-	margin-top: 0.04rem;
-	text-decoration:underline;
-  }
+	.name {
+		width: 3.5rem;
+		height: .8rem;
+		float: left;
+		margin-left: 1.46rem;
+		font-size: .28rem;
+		border: none;
+		background: none;
+		margin: 0 auto;
+		/*line-height: .8rem;*/
+	}
+	.information_reconi {
+		font-size: 0.24rem;
+		color: #000000;
+		line-height: 0.4rem;
+	}
+	.information_look {
+		font-size: 0.24rem;
+		color: #D0021B;
+		margin-top: 0.04rem;
+		text-decoration: underline;
+	}
 </style>

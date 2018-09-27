@@ -8,7 +8,7 @@
 				</p>
 				<div class="policyHolder">
 					<p class="inputGrop clearFloat">
-						<label class="inputLabel left"><label class="star">*</label>是被保人的</label>
+						<label class="inputLabel left"><label class="star">*</label>是被保险人的</label>
 						<select v-model="nexusType" class="inputText inputWidth left" @change="nexList">
 							<option value="q">请选择</option>
 							<option :value="nexus.dicCode" v-for="nexus in nexusList">{{nexus.dicName}}</option>
@@ -277,14 +277,20 @@
 			}
 		},
 		created() {
-			if(localStorage.dataList != undefined) {
-				this.dictionaries = JSON.parse(localStorage.dataList)
-			} else {
+//			if(localStorage.dataList != undefined) {
+//				this.dictionaries = JSON.parse(localStorage.dataList)
+//				console.log(this.dictionaries)
+//			} else {
+//				var _this = this
+//				Dictionaries(this.$store.state.link5).then((res) => {
+//					_this.dictionaries = res.output
+//				})
+//			}
 				var _this = this
 				Dictionaries(this.$store.state.link5).then((res) => {
 					_this.dictionaries = res.output
+					
 				})
-			}
 
 			if(this.$route.query.status == "2") {
 				this.appName = this.$route.query.name
@@ -324,8 +330,8 @@
 					"pkgNo": this.$route.query.orderNo,
 
 				}
-				console.log(this.$route.query.birthadty)
-				console.log(this.$route.query.sex)
+//				console.log(this.$route.query.birthadty)
+//				console.log(this.$route.query.sex)
 				console.log("====请求报文====" + JSON.stringify(data))
 				this.$http.post(this.$store.state.link5 + '/trd/order/v1/queryorder', data).then(res => {
 					console.log("====回显====" + JSON.stringify(res.data))
@@ -619,6 +625,21 @@
 				//				
 			},
 			termValidityDateSel() {
+//			  var date = new Date();
+//			  var seperator1 = "-";
+//			  var year = date.getFullYear();
+//			  var month = date.getMonth() + 1;
+//			  var strDate = date.getDate();
+//			  if (month >= 1 && month <= 9) {
+//			    	month = "0" + month;
+//			  }
+//			  if (strDate >= 0 && strDate <= 9) {
+//			    	strDate = "0" + strDate;
+//			  }
+//			  var currentdate = year + seperator1 + month + seperator1 + strDate;
+//			  console.log( currentdate)
+//			  console.log(this.birthDate)
+			
 				var pdate = this.termValidityDate;
 				var d = new Date;
 				var today = new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -632,6 +653,7 @@
 					}
 				}
 			},
+			
 			//点击变色  收入来源
 			hand(index) {
 				//				arraySourceIncome
@@ -832,7 +854,7 @@
 					}
 
 				}
-				if(this.cardType == "P") {
+				if(this.cardType == "H" || this.cardType == "G") {
 					if(this.IDnum.length > 10 || this.IDnum.length < 8) {
 						Toast('投保人证件号码有误')
 						return
@@ -995,7 +1017,7 @@
 				}
 				//如果是ocr识别
 				var checkCvrgResp; //险种信息
-				//				var checkInsrntResp; //被保人简单信息
+				//				var checkInsrntResp; //被保险人简单信息
 				var checkInsuranceDutyResp; //责任信息
 				var checkMainResp; //主险信息
 				if(this.nextFlag == true) {
@@ -1043,7 +1065,7 @@
 							"fullAddr": this.add, //通讯地址
 							"gender": genderFlag, //性别 : M-男;F-女 ,
 							"incomeSource": incomeSource, //收入来源 ,
-							"insrntName": this.appName, //被保人姓名 ,
+							"insrntName": this.appName, //被保险人姓名 ,
 							"maritalStatus": this.marType, //婚姻状态 ,
 							"mobile": this.phone, //联系电话 
 							"nationality": this.reHighs, //国籍
@@ -1075,7 +1097,7 @@
 							"maritalStatus": this.marType, //婚姻状态 ,
 							"mobile": this.phone, //联系电话 ,
 							"nationality": this.reHighs, //国籍 ,
-							"relationToInsured": this.nexusType, //投保人与被保人关系 ,
+							"relationToInsured": this.nexusType, //投保人与被保险人关系 ,
 							"salary": this.income, //年收入 ,
 							"tel": this.tel, //固定电话 ,
 							"workCompany": this.work_address, //工作单位 ,
@@ -1189,7 +1211,7 @@
 							"maritalStatus": this.marType, //婚姻状态 ,
 							"mobile": this.phone, //联系电话 ,
 							"nationality": this.reHighs, //国籍 ,
-							"relationToInsured": this.nexusType, //投保人与被保人关系 ,
+							"relationToInsured": this.nexusType, //投保人与被保险人关系 ,
 							"salary": this.income, //年收入 ,
 							"tel": this.tel, //固定电话 ,
 							"workCompany": this.work_address, //工作单位 ,
@@ -1305,7 +1327,7 @@
 							"fullAddr": this.add, //通讯地址
 							"gender": genderFlag, //性别 : M-男;F-女 ,
 							"incomeSource": incomeSource, //收入来源 ,
-							"insrntName": this.appName, //被保人姓名 ,
+							"insrntName": this.appName, //被保险人姓名 ,
 							"maritalStatus": this.marType, //婚姻状态 ,
 							"mobile": this.phone, //联系电话 
 							"nationality": this.reHighs, //国籍
@@ -1337,7 +1359,7 @@
 							"maritalStatus": this.marType, //婚姻状态 ,
 							"mobile": this.phone, //联系电话 ,
 							"nationality": this.reHighs, //国籍 ,
-							"relationToInsured": this.nexusType, //投保人与被保人关系 ,
+							"relationToInsured": this.nexusType, //投保人与被保险人关系 ,
 							"salary": this.income, //年收入 ,
 							"tel": this.tel, //固定电话 ,
 							"workCompany": this.work_address, //工作单位 ,
@@ -1422,7 +1444,7 @@
 							"maritalStatus": this.marType, //婚姻状态 ,
 							"mobile": this.phone, //联系电话 ,
 							"nationality": this.reHighs, //国籍 ,
-							"relationToInsured": this.nexusType, //投保人与被保人关系 ,
+							"relationToInsured": this.nexusType, //投保人与被保险人关系 ,
 							"salary": this.income, //年收入 ,
 							"tel": this.tel, //固定电话 ,
 							"workCompany": this.work_address, //工作单位 ,
@@ -1660,10 +1682,6 @@
 		outline: none;
 	}
 	
-	input {
-		font-weight: 100;
-	}
-	
 	input::-ms-clear {
 		display: none;
 		width: 0;
@@ -1677,12 +1695,10 @@
 	textarea::-webkit-input-placeholder,
 	input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	select {
@@ -1845,20 +1861,20 @@
 	.inputText {
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.inputText1 {
 		height: 0.68rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.inputText22 {
 		width: 2.7rem;
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		padding-left: 0;
 	}
 	
@@ -1870,7 +1886,7 @@
 		width: 2.7rem;
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		padding-left: 0;
 	}
 	

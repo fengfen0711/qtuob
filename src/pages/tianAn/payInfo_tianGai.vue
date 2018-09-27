@@ -13,11 +13,11 @@
 			<div class="div_titleName">
 				<span class="pt_span_riskName">{{riskName}}</span>
 				<div class="pt_div_item">
-					<span class="pt_span_itemleft">保障期间</span>
+					<span class="pt_span_itemleft">保险期间</span>
 					<span class="pt_span_itemright">{{guarantee}}</span>
 				</div>
 				<div class="pt_div_item1">
-					<span class="pt_span_itemleft">保障额度</span>
+					<span class="pt_span_itemleft">基本保险金额</span>
 					<span class="pt_span_itemright">{{quota}}</span>
 				</div>
 			</div>
@@ -80,7 +80,7 @@
 				<img src="/static/selected.png" class="sImg left" v-show="!sBoxShow" />
 				<span class="sDes">我已阅读<span>《保险费自动转账授权声明》</span>。</span>
 			</p>
-			<p v-if="hui" class="warnP warnP1">1.银行账号的账户所有人为投保人，且开户银行以及账户信息真是可靠；</p>
+			<p v-if="hui" class="warnP warnP1">1.银行账号的账户所有人为投保人，且开户银行以及账户信息真实可靠；</p>
 			<p v-if="hui" class="warnP warnP2">2.投保人授权天安人寿保险股份有限公司委托投保人开户银行从上述银行账户按照保险和其他约定的方式、金额划款期、续期保险费。</p>
 			<p v-if="hui" class="btnBox clearFloat" :class="{btnBox1:btnBoxShow}">
 				<!--<span class="btn btn1 left" @click="handleClickUp">上一步</span>-->
@@ -397,20 +397,39 @@
 					"provinceCode": this.provinceType, //开户行所在省代码 
 					"provinceName": this.provinceName //开户行所在省
 				}
-				var data = {
-					"token": this.$route.query.token,
-					"userId": this.$route.query.userId,
-					"mark": "CALC",
-					"head": {
-						"channelCode": "qtb_h5",
-						"deptCode": this.$route.query.cmpCode,
-						"oprCode": this.$route.query.userId,
-						"prodCode": this.$route.query.prodCode
-					},
-					"opt": "PAY",
-					"pkgNo": this.$route.query.orderNo, //订单号
-					"paymentReq": paymentReqData
+				if(a==1){
+					var data = {
+						"token": this.$route.query.token,
+						"userId": this.$route.query.userId,
+						"mark": "CALC",
+						"head": {
+							"channelCode": "qtb_h5",
+							"deptCode": this.$route.query.cmpCode,
+							"oprCode": this.$route.query.userId,
+							"prodCode": this.$route.query.prodCode
+						},
+						"opt": "PAY",
+						"pkgNo": this.$route.query.orderNo, //订单号
+						"paymentReq": paymentReqData
+					}
+				}else{
+					var data = {
+						"token": this.$route.query.token,
+						"userId": this.$route.query.userId,
+						"mark": "CALC",
+						"head": {
+							"channelCode": "qtb_h5",
+							"deptCode": this.$route.query.cmpCode,
+							"oprCode": this.$route.query.userId,
+							"prodCode": this.$route.query.prodCode
+						},
+						"opt": "PAY",
+						"pkgNo": this.$route.query.orderNo, //订单号
+						"paymentReq": paymentReqData,
+						"upPay":"1"
+					}
 				}
+				
 				Indicator.open();
 				console.log("请求报文=====" + JSON.stringify(data))
 				this.$http.post(this.$store.state.link + '/trd/order/v1/saveorder', data)
@@ -512,10 +531,6 @@
 		outline: none;
 	}
 	
-	input {
-		font-weight: 100;
-	}
-	
 	input::-ms-clear {
 		display: none;
 		width: 0;
@@ -529,12 +544,10 @@
 	textarea::-webkit-input-placeholder,
 	input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	.ctc_div_labtitle1 {
@@ -764,7 +777,7 @@
 	}
 	
 	.pt_span_select {
-		color: #666666;
+		color: #333333;
 		font-size: 0.28rem;
 		line-height: 0.84rem;
 	}
@@ -889,13 +902,13 @@
 	.inputText {
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.inputText2 {
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		width: 4.5rem;
 	}
 	
@@ -959,7 +972,7 @@
 	
 	.inputText1 {
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.pro {

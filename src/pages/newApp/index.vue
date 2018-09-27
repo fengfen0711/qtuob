@@ -26,35 +26,17 @@
 					<dt class="btnDt">客户委托书</dt>
 				</dl>
 			</div>
-			<div class="products">
+			<div class="products" ref="products">
 				<p class="productsTitle clearFloat">
-					<span class="proTitText">热销爆款</span>
+					<span class="proTitText" @click="a">热销爆款</span>
 					<span class="moreBtn right proMore" @click="handlePro(2)">查看更多 <b class="triangle_right"></b></span>
 				</p>
 				<div class="proBox">
 					<div class="clearFloat proContent">
-						<div class="left proLeft" :code="[code1,salecode1]" @click="handleClickDetail">
-							<!--<p class="proLP1">{{pro01}}</p>
-							<p class="proLP2">{{pro02}}</p>
-							<p class="proLp3P" v-if="pro03!=undefined">
-								<span class="proLp3">¥<span class="big">{{pro03}}</span>起</span>
-							</p>-->
-						</div>
+						<div class="left proLeft" :code="[code1,salecode1]" @click="handleClickDetail"></div>
 						<div class="right proRight">
-							<div class="proRight1" :code="[code2,salecode2]" @click="handleClickDetail">
-								<!--<p class="proR1P1">{{pro11}}</p>
-								<p class="proR1P2">{{pro12}}</p>
-								<p class="proR1P3P" v-if="pro13!=undefined">
-									<span class="proR1P3">¥<span class="big">{{pro13}}</span>起</span>
-								</p>-->
-							</div>
-							<div class="proRight2" :code="[code3,salecode3]" @click="handleClickDetail">
-								<!--<p class="proR1P1 proR2P1">{{pro21}}</p>
-								<p class="proR1P2 proR2P2">{{pro22}}</p>
-								<p class="proR1P3P proR2P3P" v-if="pro23!=undefined">
-									<span class="proR1P3 proR2P3">¥<span class="big">{{pro23}}</span>起</span>
-								</p>-->
-							</div>
+							<div class="proRight1" :code="[code2,salecode2]" @click="handleClickDetail"></div>
+							<div class="proRight2" :code="[code3,salecode3]" @click="handleClickDetail"></div>
 						</div>
 					</div>
 				</div>
@@ -65,11 +47,11 @@
 					<span class="moreBtn right proMore" @click="handlePro(3)">查看更多 <b class="triangle_right"></b></span>
 				</p>
 				<div class="clearFloat proContent" :class="art.atcStyle | layout" v-for="art in artList" @click="godetail(art.articleId)">
-					<img :src="art.picRul" class="disImg" />
+					<img :src="art.picUrl" class="disImg" />
 					<div class="disText">
 						<p class="disTitle">{{art.title}}</p>
-						<p class="disTitleDes">{{art.atcDesc}}</p>
-						<p class="disTitleDes"><span>{{art.createDatetime}}</span><span class="sign" v-for="tag in art.tagList">{{tag.name}}</span></p>
+						<p class="disTitleDes">{{art.actDesc}}</p>
+						<p class="disTitleDes"><span>{{art.createTime}}</span><span class="sign" v-for="tag in art.tagList">{{tag.name}}</span></p>
 					</div>
 				</div>
 			</div>
@@ -79,7 +61,7 @@
 </template>
 
 <script>
-	import { Toast } from 'mint-ui'
+	import { Toast } from 'mint-ui';
 	import { Swipe, SwipeItem } from 'mint-ui';
 	import { Tabbar, TabItem } from 'mint-ui';
 	import { Indicator } from 'mint-ui';
@@ -90,15 +72,6 @@
 	  		return {
 	  			homeShow:true,
 	  			seen:true,
-	  			pro01:"",
-	  			pro02:"",
-	  			pro03:"",
-	  			pro11:"",
-	  			pro12:"",
-	  			pro13:"",
-	  			pro21:"",
-	  			pro22:"",
-	  			pro23:"",
 	  			code1:"",
 	  			code2:"",
 	  			code3:"",
@@ -109,7 +82,6 @@
 			    proLists:[],
 			    temCode:"",
 			    cust_status:true,
-			    phoneNum:"010-86220865",
 			    test:false,
 			    artList:[],
 			    signText:'成为合伙人',
@@ -118,116 +90,147 @@
 	  		}
 	  	},
 	  	beforeCreate() {
-			var userInfo = {
-				"userId": localStorage.getItem("userId"),
-				"token": localStorage.getItem("token")
-			}
-			this.$http.post(this.$store.state.link + '/sso/dovltoken', userInfo)
-			.then(res => {
-//				console.log(res.data);
-				var dataCode = res.data.code;
-				if(dataCode == "SYS_S_000") {
-					if(res.data.output.flag == "Y") {
-						this.$store.dispatch("changeLoginId", "1")
-					} else {
-						this.$store.dispatch("changeLoginId", "0")
-					}
-				} else {
-					this.$store.dispatch("changeLoginId", "0")
-					window.localStorage.removeItem("phoneNum");
-					window.localStorage.removeItem("token");
-					window.localStorage.removeItem("userId");
-					this.$store.dispatch("changeToken", '')
-					this.$store.dispatch("changeUserId", '')
-					this.$store.dispatch("changeUserInfoData", {})
-					this.$store.dispatch("changeBrokerInfoData", {})
+	  		if (localStorage.token) {
+	  			var tokenInfo = {
+					"token": this.$store.state.token
 				}
-			}, res => {
-				this.$store.dispatch("changeLoginId", "0")
-				console.log(res.data);
-			})
+	  			this.$http.post(this.$store.state.link + '/sso/v2/refreshToken', tokenInfo)
+				.then(res =>{
+					Indicator.close()
+				    console.log(res.data);
+					var dataCode = res.data.code;
+					if (dataCode == "SYS_S_000") {
+						window.localStorage.token = res.data.output.token;
+						this.$store.dispatch("changeLoginId", res.data.output.userInfo.userType);
+						if (res.data.output.userInfo.userId) {
+							window.localStorage.userId = res.data.output.userInfo.userId;
+							window.localStorage.phoneNum = res.data.output.userInfo.userPhone;
+							window.localStorage.isBindWeChat = res.data.output.userInfo.isBindWeChat;
+							if (res.data.output.brokerInfo && res.data.output.brokerInfo.brokerId) {
+								window.localStorage.BrokerId = res.data.output.brokerInfo.brokerId;
+							}
+							this.$store.dispatch("changeToken", res.data.output.token);
+							this.$store.dispatch("changeUserId", res.data.output.userInfo.userId);
+							this.$store.dispatch("changeUserInfoData", {});
+							this.$store.dispatch("changeUserInfoData", res.data.output.userInfo);
+							this.$store.dispatch("changeBrokerInfoData", {});
+							this.$store.dispatch("changeBrokerInfoData", res.data.output.brokerInfo);
+						}
+						this.init();
+					}else{
+						Toast(res.data.desc);
+						console.log(res.data.desc)
+					}
+				},res =>{
+					Indicator.close()
+					console.log(res.data);
+				})
+	  		}else{
+				window.localStorage.removeItem("token");
+				window.localStorage.removeItem("userId");
+				window.localStorage.removeItem("isBindWeChat");
+				if (localStorage.BrokerId) {
+					window.localStorage.removeItem("BrokerId");
+				}
+				this.$store.dispatch("changeLoginId", '0');
+				this.$store.dispatch("changeToken", '')
+				this.$store.dispatch("changeUserId", '')
+				this.$store.dispatch("changeUserInfoData", {})
+				this.$store.dispatch("changeBrokerInfoData", {})
+				var sceneInfo = {
+					"sceneCode": "s001"
+				}
+	  			this.$http.post(this.$store.state.link + '/sso/v2/applytoken', sceneInfo)
+				.then(res =>{
+					Indicator.close()
+				    console.log(res.data);
+					var dataCode = res.data.code;
+					if (dataCode == "SYS_S_000") {
+						window.localStorage.token = res.data.output.token;
+						this.$store.dispatch("changeToken", res.data.output.token);
+						this.$store.dispatch("changeLoginId", res.data.output.userType);
+						this.init();
+					}else{
+						Toast(res.data.desc);
+						console.log(res.data.desc)
+					}
+				},res =>{
+					Indicator.close()
+					console.log(res.data);
+				})
+	  		}
 		},
 	  	created(){
-	  		//banner
-	  		Indicator.open()
-	  		var Shudata={
-				"sitCode":"1"
-			}
-	  		this.$http.post(this.$store.state.link+'/cnt/resource/adlist', Shudata)
-			.then(data =>{
-				Indicator.close()
-			    //console.log(data.data);
-				var dataCode = data.data.code;
-				if (dataCode == "SYS_S_000") {
-					this.adImgUrls = data.data.output;
-				}else{
-					Toast(data.data.desc);
-					console.log(data.data.desc)
-				}
-			},data =>{
-				Indicator.close()
-				console.log(data.data);
-			})
-			//pro
-			var dataprop={
-				"showType": "1",
-				"tagCodes": [
-				    {
-				      "tagCode": "TAG000003"
-				    }
-				]
-			};
-	  		this.$http.post(this.$store.state.link+'/prd/prod/prodsalelist', dataprop)
-			.then(data =>{
-				Indicator.close()
-			    console.log(data.data);
-				var dataCode = data.data.code;
-				if (dataCode == "SYS_S_000") {					
-					this.proLists = data.data.output;
-					this.pro01 = this.proLists[0].prodSaleName;
-					this.pro02 = this.proLists[0].prodRecmd;
-					this.pro03 = this.proLists[0].minPrice;
-					this.pro11 = this.proLists[1].prodSaleName;
-					this.pro12 = this.proLists[1].prodRecmd;
-					this.pro13 = this.proLists[1].minPrice;
-					this.pro21 = this.proLists[2].prodSaleName;
-					this.pro22 = this.proLists[2].prodRecmd;
-					this.pro23 = this.proLists[2].minPrice;
-					this.code1 = this.proLists[0].prodCodeList[0].prodCode;
-					this.code2 = this.proLists[1].prodCodeList[0].prodCode;
-					this.code3 = this.proLists[2].prodCodeList[0].prodCode;
-					this.salecode1 = this.proLists[0].prodSaleCode;
-					this.salecode2 = this.proLists[1].prodSaleCode;
-					this.salecode3 = this.proLists[2].prodSaleCode;
-				}else{
-					Toast(data.data.desc);
-					console.log(data.data.desc);
-				}
-			},data =>{
-				Indicator.close()
-				console.log(data.data);
-			})
-			
-			this.recommendAjax()
-			this.getBroInfo()
+	  		
 	  	},
 	  	methods:{
-	  		handleClickMore(){
-	  			if (this.$store.state.loginId == "0") {
-					MessageBox.confirm('',{
-					  	title: '提示',
-					  	message: '请您登录后再进行查看哦',
-					  	confirmButtonText: '登录', 
-						cancelButtonText: '暂不登录', 
-					  	showCancelButton: true
-					}).then(action => {
-						this.$router.push('/logNew')
-					})
-				} else {
-					this.$router.push('/tool?status='+this.signStatus)
+	  		init(){
+	  			//banner
+	  			Indicator.open()
+		  		var Shudata={
+					"sitCode":"1"
 				}
+		  		this.$http.post(this.$store.state.link+'/cnt/resource/adlist', Shudata)
+				.then(data =>{
+					Indicator.close()
+				    //console.log(data.data);
+					var dataCode = data.data.code;
+					if (dataCode == "SYS_S_000") {
+						this.adImgUrls = data.data.output;
+					}else{
+						Toast(data.data.desc);
+						console.log(data.data.desc)
+					}
+				},data =>{
+					Indicator.close()
+					console.log(data.data);
+				})
+				//pro
+				var dataprop={
+					"showType": "1",
+					"tagCodes": [
+					    {
+					      "tagCode": "TAG000003"
+					    }
+					]
+				};
+		  		this.$http.post(this.$store.state.link+'/prd/prod/prodsalelist', dataprop)
+				.then(data =>{
+					Indicator.close()
+	//			    console.log(data.data);
+					var dataCode = data.data.code;
+					if (dataCode == "SYS_S_000") {					
+						this.proLists = data.data.output;
+						this.code1 = this.proLists[0].prodCodeList[0].prodCode;
+						this.code2 = this.proLists[1].prodCodeList[0].prodCode;
+						this.code3 = this.proLists[2].prodCodeList[0].prodCode;
+						this.salecode1 = this.proLists[0].prodSaleCode;
+						this.salecode2 = this.proLists[1].prodSaleCode;
+						this.salecode3 = this.proLists[2].prodSaleCode;
+					}else{
+						Toast(data.data.desc);
+						console.log(data.data.desc);
+					}
+				},data =>{
+					Indicator.close()
+					console.log(data.data);
+				})
+				
+				this.recommendAjax()
+				this.getBroInfo()
+	  		},
+	  		a(){
+	  			var a = this.$refs.products.offsetWidth;
+	  			alert(a)
+	  			console.log(a)
+	  		},
+	  		handleClickMore(){
+				this.$router.push('/tool?status='+this.signStatus)
 	  		},
 	  		handleClickConfirmation(){
+				this.loginIdF('/custConfirmation',1)
+	  		},
+	  		loginIdF(pathAddr,a){
 	  			if (this.$store.state.loginId == "0") {
 					MessageBox.confirm('',{
 					  	title: '提示',
@@ -236,14 +239,16 @@
 						cancelButtonText: '暂不登录', 
 					  	showCancelButton: true
 					}).then(action => {
-						this.$router.push('/logNew')
+						this.$router.push('/regLog')
 					})
-				} else {
-					if (this.$store.state.brokerInfo.isSignEnum == 'Y' && this.$store.state.brokerInfo.brokerCode != '') {
-						this.$router.push('/custConfirmation')
+				} else if (this.$store.state.loginId == "1") {
+					if (a == 1) {
+						this.path(pathAddr)
 					}else{
-						this.path('/custConfirmation')
+						this.$router.push(pathAddr)
 					}
+				}else if (this.$store.state.loginId == "2") {
+					this.$router.push(pathAddr)
 				}
 	  		},
 	  		path(pathAdd){
@@ -258,7 +263,6 @@
 					  	showCancelButton: true
 					}).then(action => {
 						this.$router.push('/guader')
-						this.quit()
 					})
 				} else  if (this.signStatus == "NE" || this.signStatus == "CE" || this.signStatus == "ZE") {
 					MessageBox.confirm('',{
@@ -283,7 +287,7 @@
 				}
 	  		},
 	  		getBroInfo(){
-	  			if (this.$store.state.brokerInfo.brokerId) {
+	  			if (this.$store.state.brokerInfo && this.$store.state.brokerInfo.brokerId) {
 	  				var broInfo = {
 						"brokerId": this.$store.state.brokerInfo.brokerId,
 					}
@@ -307,48 +311,17 @@
 	  				this.signStatus = ""
 	  			}
 	  		},
-			quit() {
-				var data = {
-					"loginNme": this.$store.state.userInfo.userPhone,
-					"loginType": "A",
-					"token": this.$store.state.token,
-					"userId": this.$store.state.userId
-				};
-				this.$http.post(this.$store.state.link + "/sso/dologout", data).then(res => {
-					Indicator.close();
-//					console.log(res.data)
-					if(res.data.code == "SYS_S_000") {
-						window.localStorage.removeItem("phoneNum");
-						window.localStorage.removeItem("token");
-						this.$store.dispatch("changeToken", '')
-						this.$store.dispatch("changeUserId", '')
-						this.$store.dispatch("changeUserInfoData", {})
-						this.$store.dispatch("changeBrokerInfoData", {})
-					} else {
-						window.localStorage.removeItem("phoneNum");
-						window.localStorage.removeItem("token");
-						this.$store.dispatch("changeToken", '')
-						this.$store.dispatch("changeUserId", '')
-						this.$store.dispatch("changeUserInfoData", {})
-						this.$store.dispatch("changeBrokerInfoData", {})
-					}
-				}, res => {
-					Indicator.close();
-					console.log(res.data)
-				})
-			},
 	  		handleClickSign(){
 	  			if (this.$store.state.loginId == "0") {
 					this.$router.push('/guader')
 				} else {
-					if (this.$store.state.brokerInfo.isSignEnum == 'Y' && this.$store.state.brokerInfo.brokerCode != '') {
+					if (this.$store.state.loginId == "2") {
 						this.$router.push('/step?brokerId='+ this.$store.state.brokerInfo.brokerId)
 					}else{
 						if (this.signStatus == "ZS") {
 							this.$router.push('/step?brokerId='+ this.$store.state.brokerInfo.brokerId)//已签约并审核成功
 						} else  if (this.signStatus == "") {
 							this.$router.push('/guader')
-							this.quit()
 						} else  if (this.signStatus == "NE" || this.signStatus == "CE" || this.signStatus == "ZE") {
 							this.$router.push('/failindex?brokerId='+ this.$store.state.brokerInfo.brokerId+'&failure=' + this.failure)//审核失败
 						} else  if (this.signStatus == "TN" || this.signStatus == "CN" || this.signStatus == "ZN") {
@@ -362,47 +335,35 @@
 	  			this.$router.push('/detail?prodCode='+code[0]+'&prodSaleCode='+code[1])
 	  		},
 	  		handleCustManagement(){
-	  			if (this.$store.state.loginId == "0") {
-					MessageBox.confirm('',{
-					  	title: '提示',
-					  	message: '请您登录后再进行查看哦',
-					  	confirmButtonText: '登录', 
-						cancelButtonText: '暂不登录', 
-					  	showCancelButton: true
-					}).then(action => {
-						this.$router.push('/logNew')
-					})
-				} else {
-					this.$router.push('/custSeven')
-				}
+				this.loginIdF('/custSeven')
 	  		},
 	  		handlePro(index){
 	  			if (index == 2) {
-	  				this.$router.push('/newIndex/product')
+	  				this.$router.push('/product')
 	  			}
 	  			else if (index == 3) {
-	  				this.$router.push('/newIndex/descover')
+	  				this.$router.push('/descover/recommend')
 	  			}
 	  		},
 	  		recommendAjax(){
 				var artInfo = {
-					"isStick": "y",
-					"sence": "s0001",
-					"length":0,
-					"start": 0
+					"typeId": "0-3",
+					"pageIndex":0,
+					"pageSize": 0
 				}
-				this.$http.post(this.$store.state.link + "/cnt/atc/queryAtcShow", artInfo)
+				console.log(artInfo)
+				this.$http.post(this.$store.state.link + "/cnt/atc/selArticleList", artInfo)
 				.then(res => {
-//					console.log(res.data)
+					console.log(res.data)
 					if(res.data.code == "SYS_S_000") {
-						this.artList = res.data.output.data;
+						this.artList = res.data.output;
 					}
 				}, res => {
 					console.log(res.data)
 				})
 			},
 			godetail(id){
-				console.log(id)
+//				console.log(id)
 				this.$router.push('/artDetail?detailId='+id)
 			},
 	  	},
@@ -507,6 +468,7 @@
 		display: block;
 		width: 6.86rem;
 		height: 3.2rem;
+		background: rgba(0,0,0,0.03);
 		margin: 0 auto;
 	}
 	.imgUpTextDown .disText{
@@ -526,6 +488,7 @@
 		display: block;
 		width: 6.86rem;
 		height: 3.2rem;
+		background: rgba(0,0,0,0.03);
 		margin: 0 auto;
 	}
 	.textUpImgDown .disText{
@@ -570,6 +533,8 @@
 		z-index: 1;
 		display: block;
 		width: 2.14rem;
+		height: 2.14rem;
+		background: rgba(0,0,0,0.03);
 		margin: 0 auto;
 	}
 	.imgLeftTextRight .disText{
@@ -588,6 +553,8 @@
 		z-index: 1;
 		display: block;
 		width: 2.14rem;
+		height: 2.14rem;
+		background: rgba(0,0,0,0.03);
 		margin: 0 auto;
 	}
 	.textLeftImgRight .disText{
@@ -613,7 +580,7 @@
 	.imgLeftTextRight .disTitleDes, .textLeftImgRight .disTitleDes {
 		width: 4.1rem;
 		/*height: 0.64rem;*/
-		line-height: 0.32rem;
+		line-height: 0.34rem;
 		margin-top: 0.16rem;
 		margin-bottom: 0.22rem;
 		font-size: 0.24rem;
@@ -664,54 +631,6 @@
 		background: url(/static/imgNew/tian3.png) no-repeat;
 		background-size: cover;
 	}
-	.proLP1 {
-		width: 3.1rem;
-		margin-top: 0.1rem;
-		margin-left: 0.2rem;
-		height: 0.44rem;
-		line-height: 0.44rem;
-		font-size: 0.32rem;
-		color: #C09E4B;
-		letter-spacing: 0.01rem;		
-		overflow: hidden;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-	}
-	.proLP2 {
-		width: 2.44rem;
-		margin-left: 0.2rem;
-		margin-top: 0.08rem;
-		line-height: 0.34rem;
-		min-height: 0.68rem;
-		font-size: 0.24rem;
-		color: #444444;
-		overflow: hidden;
-		text-overflow:ellipsis;
-		display:-webkit-box; 
-		-webkit-box-orient: vertical;
-		-webkit-line-clamp:2;
-	}
-	.proLp3P {
-		height: 0.38rem;
-		margin-left: 0.2rem;
-		margin-top: 0.14rem;
-		line-height: 0.38rem;
-		font-size: 0.24rem;
-		color: #FFFFFF;
-	}
-	.big {
-		display: inline-block;
-		margin: 0 0.02rem;
-		font-size: 0.32rem;
-	}
-	.proLp3 {
-		display: inline-block;
-		padding: 0.05rem 0;
-		padding-left: 0.1rem;
-		padding-right: 0.22rem;
-		border-radius: 0 0.3rem 0.3rem 0;
-		background: #D8BC75;
-	}
 	.proRight1 {
 		width: 3.28rem;
 		height: 1.6rem;
@@ -724,53 +643,5 @@
 		margin-top: 0.16rem;
 		background: url(/static/imgNew/zui3.png) no-repeat;
 		background-size: cover;
-	}
-	.proR1P1 {
-		width: 3.1rem;
-		padding-top: 0.1rem;
-		margin-left: 0.2rem;
-		height: 0.44rem;
-		line-height: 0.44rem;
-		font-size: 0.28rem;
-		color:  #72B67E;
-		letter-spacing: 0.01rem;
-		overflow: hidden;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-	}
-	.proR2P1 {
-		color:  #CA9196;
-	}
-	.proR1P2 {
-		width: 1.64rem;
-		line-height: 0.26rem;
-		min-height: 0.5rem;
-		margin-left: 0.2rem;
-		font-size: 0.2rem;
-		color: #444444;		
-		overflow: hidden;
-		text-overflow:ellipsis;
-		display:-webkit-box; 
-		-webkit-box-orient:vertical;
-		-webkit-line-clamp:2;
-	}
-	.proR1P3P {
-		height: 0.38rem;
-		line-height: 0.38rem;
-		margin-left: 0.2rem;
-		margin-top: 0.08rem;
-		font-size: 0.24rem;
-		color: #FFFFFF;
-	}
-	.proR1P3 {
-		display: inline-block;
-		padding: 0.02rem 0;
-		padding-left: 0.1rem;
-		padding-right: 0.22rem;
-		border-radius: 0 0.3rem 0.3rem 0;
-		background: #72B67E;
-	}
-	.proR2P3 {
-		background:  #CA9196;
 	}
 </style>

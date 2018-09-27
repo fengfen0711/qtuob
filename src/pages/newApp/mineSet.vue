@@ -69,33 +69,38 @@
 			},
 			quit() {
 				var data = {
-					"loginNme": this.$store.state.userInfo.userPhone,
-					"loginType": "A",
-					"token": this.$store.state.token,
-					"userId": this.$store.state.userId
-				};
-				this.$http.post(this.$store.state.link + "/sso/dologout", data).then(res => {
-					Indicator.close();
+				  	"token": this.$store.state.token,
+				}
+				this.$http.post(this.$store.state.link + "/sso/v2/doLogout", data).then(res => {
 					console.log(res.data)
 					if(res.data.code == "SYS_S_000") {
-						window.localStorage.removeItem("phoneNum");
 						window.localStorage.removeItem("token");
+						window.localStorage.removeItem("userId");
+						window.localStorage.removeItem("isBindWeChat");
+						if (localStorage.BrokerId) {
+							window.localStorage.removeItem("BrokerId");
+						}
+						this.$store.dispatch("changeLoginId", '0');
 						this.$store.dispatch("changeToken", '')
 						this.$store.dispatch("changeUserId", '')
 						this.$store.dispatch("changeUserInfoData", {})
 						this.$store.dispatch("changeBrokerInfoData", {})
-						this.$router.push('/newIndex/home');
+						this.$router.push('/home');
 					} else {
-						window.localStorage.removeItem("phoneNum");
 						window.localStorage.removeItem("token");
+						window.localStorage.removeItem("userId");
+						window.localStorage.removeItem("isBindWeChat");
+						if (localStorage.BrokerId) {
+							window.localStorage.removeItem("BrokerId");
+						}
+						this.$store.dispatch("changeLoginId", '0');
 						this.$store.dispatch("changeToken", '')
 						this.$store.dispatch("changeUserId", '')
 						this.$store.dispatch("changeUserInfoData", {})
 						this.$store.dispatch("changeBrokerInfoData", {})
-						this.$router.push('/newIndex/home');
+						this.$router.push('/home');
 					}
 				}, res => {
-					Indicator.close();
 					console.log(res.data)
 				})
 			},

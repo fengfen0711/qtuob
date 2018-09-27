@@ -39,7 +39,7 @@
 					"head": {
 						"channelCode": "qtb_h5",
 						"deptCode": this.cmpCode,
-						"oprCode": this.$route.query.userId,
+						"oprCode": this.$store.state.userId,
 						"prodCode": this.prodCode
 					}
 				}
@@ -72,7 +72,7 @@
 						cancelButtonText: '暂不登录', 
 					  	showCancelButton: true
 					}).then(action => {
-						this.$router.push('/logNew')
+						this.$router.push('/regLog')
 					})
 				} else {
 					if(this.saleStatus == 1) {
@@ -115,7 +115,7 @@
 					"head": {
 						"channelCode": "qtb_h5",
 						"deptCode": this.cmpCode,
-						"oprCode": this.$route.query.userId,
+						"oprCode": this.$store.state.userId,
 						"prodCode": this.prodCode
 					},
 					"agentCode": this.brokerCode,
@@ -144,7 +144,7 @@
 					"head": {
 						"channelCode": "qtb_h5",
 						"deptCode": this.cmpCode,
-						"oprCode": this.$route.query.userId,
+						"oprCode": this.$store.state.userId,
 						"prodCode": this.prodCode
 					}
 				}
@@ -178,7 +178,7 @@
 								}).then(action => {
 									if(action == 'confirm') {
 										this.orderNo = res.data.output.orderList[0].pkgNo
-										this.$router.push('/intoInfo?prodCode=' + this.prodCode + '&prodNo=' + this.prodNo + '&orderNo=' + this.orderNo + '&cmpCode=' + this.cmpCode + '&userId=' + this.$route.query.userId)
+										this.$router.push('/intoInfo?prodCode=' + this.prodCode + '&prodNo=' + this.prodNo + '&orderNo=' + this.orderNo + '&cmpCode=' + this.cmpCode + '&userId=' + this.$store.state.userId)
 									}
 								}).catch(err => {
 									if(err == 'cancel') {
@@ -193,7 +193,7 @@
 									cancelButtonText: '取消',
 									showCancelButton: true
 								}).then(action => {
-									this.$router.push('/mylifeOrder?userId=' + this.$route.query.userId)
+									this.$router.push('/mylifeOrder?userId=' + this.$store.state.userId)
 								}).catch(err => {
 									this.tianAncreateorderAjax()
 								})
@@ -208,11 +208,11 @@
 			tianAncreateorderAjax() {
 				var tianAnorderNoInfo = {
 					"token": this.stoken,
-					"userId": this.$route.query.userId,
+					"userId": this.$store.state.userId,
 					"head": {
 						"channelCode": "qtb_h5",
 						"deptCode": this.cmpCode,
-						"oprCode": this.$route.query.userId,
+						"oprCode": this.$store.state.userId,
 						"prodCode": this.prodCode
 					}
 				}
@@ -221,7 +221,7 @@
 						var dataCode = res.data.code;
 						if(dataCode == "SYS_S_000") {
 							this.orderNo = res.data.output;
-							this.$router.push('/intoInfo?prodCode=' + this.prodCode + '&prodNo=' + this.prodNo+ '&up=1&orderNo=' + this.orderNo + '&cmpCode=' + this.cmpCode + '&userId=' + this.$route.query.userId + '&token=' + this.stoken + '&prodName=' + this.prodInfo.prodName)
+							this.$router.push('/intoInfo?prodCode=' + this.prodCode + '&prodNo=' + this.prodNo+ '&up=1&orderNo=' + this.orderNo + '&cmpCode=' + this.cmpCode + '&userId=' + this.$store.state.userId + '&token=' + this.stoken + '&prodName=' + this.prodInfo.prodName)
 						} else {
 							Toast(res.data.desc);
 						}
@@ -253,10 +253,6 @@
 		outline: none;
 	}
 	
-	input {
-		font-weight: 100;
-	}
-	
 	input::-ms-clear {
 		display: none;
 		width: 0;
@@ -270,12 +266,10 @@
 	textarea::-webkit-input-placeholder,
 	input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	.clearFloat:after {
@@ -356,7 +350,7 @@
 		float: left;
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.inputSpan {

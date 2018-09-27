@@ -477,7 +477,7 @@
 	      					this.tmiddle()
 	      				}
 	      			}
-	      			//被保人信息
+	      			//被保险人信息
 			  		this.nexusType = allData.insrntResp.relaToAppnt
 			  		if (this.nexusType == "00") {
 			  			this.nexus = "本人"
@@ -1660,9 +1660,6 @@
 	input, button {
 		outline: none;
 	}
-	input {
-		font-weight: 100;
-	}
 	input::-ms-clear {
 		display: none;
 		width: 0;
@@ -1673,11 +1670,9 @@
 	}
 	textarea::-webkit-input-placeholder, input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	.clearFloat:after {
 		height: 0;
@@ -1822,7 +1817,7 @@
 	.inputText {
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	.inpuDate {
 		width: 3rem;
@@ -1884,7 +1879,7 @@
 		width: 3.6rem;
 		height: 0.68rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	.pro {
 		width: 3.6rem;
@@ -2012,7 +2007,7 @@
 	}
 	.inputSpan1 {
 		line-height: 0.88rem;
-		color: #666666;
+		color: #333333;
 	}
 	.inputSpan2 {
 		position: absolute;

@@ -31,10 +31,10 @@
 		},
 		methods: {
 			toGoApplicant(){
-				this.$router.push('/accInformation')
+				this.$router.push('/accInformation?prodCode=' + this.$route.query.prodCode + '&prodNo=' + this.$route.query.prodNo + '&orderNo=' + this.$route.query.orderNo + '&cmpCode=' + this.$route.query.cmpCode);
 			},
 			toGoIdCard(){
-				this.$router.push('/accInformation')
+				this.$router.push('/accInformation?prodCode=' + this.$route.query.prodCode + '&prodNo=' + this.$route.query.prodNo + '&orderNo=' + this.$route.query.orderNo + '&cmpCode=' + this.$route.query.cmpCode);
 			},
 			upload(e) {
 				Indicator.open()

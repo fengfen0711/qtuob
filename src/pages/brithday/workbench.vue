@@ -22,7 +22,7 @@
 		<div class="about_list">
 			<div class="about_text">
 				<span class="about_gol">当前版本</span>
-				<span class="about_tel" >1.1.8</span>
+				<span class="about_tel" >1.1.9</span>
 			</div>
 		</div>
 		<div class="about_list" v-on:click="qtb_detail">

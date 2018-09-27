@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <title>趣投保</title>
+    </head>
+    <body>
+    	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+        <script type="text/javascript">
+        	+function(){
+				var width=document.documentElement.clientWidth;
+				var html=document.getElementsByTagName('html')[0];
+				html.style.fontSize=(width/7.5)+"px";
+				var code = getUrlParam('code');
+//	            var _url = "http://192.144.139.88:10009/wx/getOAuth2UserInfo";
+	            var _url = "http://h5.qtoubao.cn:10009/wx/getOAuth2UserInfo";
+	            var post_dataInfo = {
+						"code": code
+					};
+				var post_data = JSON.stringify(post_dataInfo);
+				console.log(post_data)
+				if (code == null || localStorage.isBindWeChat == "Y") {
+//          		window.open("http://outer.qtoubao.cn/#/home?t=dsf7","_self");
+            		window.open("http://mp.qtoubao.cn/#/home?t=dsf7","_self");
+            	}else{
+	            	getUrl(post_data,_url);
+	            }
+			}()
+			function getUrlParam(name) {
+	            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+	            var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+	            if (r != null) return unescape(r[2]); return null; //返回参数值
+	       	}
+//				window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx841a97238d9e17b2&redirect_uri=http://outer.qtoubao.cn/static/index.html&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect";
+//	          	window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe0edd70ecc490238&redirect_uri=http://outer.qtoubao.cn/static/index.html&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+      		
+			//获取redirect url
+            function getUrl (post_data,_url) {
+                $.ajax({
+				    type:'post',
+                    url:_url, 
+                    dataType:'json',
+                    data: post_data,
+                    contentType : 'application/json',
+                    success:function(data){                 
+                        console.log(data);
+                        if (data.code == "SYS_S_000") {
+							if (data.output != null) {
+								if (data.output.subscribe) {
+                        			window.localStorage.subscribe = data.output.subscribe;
+                        		}else{
+                        			window.localStorage.subscribe = ""
+                        		}
+                        		
+                        		if (data.output.openId) {
+                        			window.localStorage.openId = data.output.openId;
+                        		}else{
+                        			window.localStorage.openId = ""
+                        		}
+                        		
+                        		if (data.output.nickname) {
+                        			window.localStorage.nickName = data.output.nickname;
+                        		}else{
+                        			window.localStorage.nickName = ""
+                        		}
+                        		
+                        		if (data.output.sex) {
+                        			window.localStorage.sex = data.output.sex;
+                        		}else{
+                        			window.localStorage.sex = ""
+                        		}
+                        		
+                        		if (data.output.language) {
+                        			window.localStorage.language = data.output.language;
+                        		}else{
+                        			window.localStorage.language = ""
+                        		}
+                        		
+                        		if (data.output.city) {
+                        			window.localStorage.city = data.output.city;
+                        		}else{
+                        			window.localStorage.city = ""
+                        		}
+                        		
+                        		if (data.output.province) {
+                        			window.localStorage.province = data.output.province;
+                        		}else{
+                        			window.localStorage.province = ""
+                        		}
+                        		
+                        		if (data.output.country) {
+                        			window.localStorage.country = data.output.country;
+                        		}else{
+                        			window.localStorage.country = ""
+                        		}
+                        		
+                        		if (data.output.headImgUrl) {
+                        			window.localStorage.headImgUrl = data.output.headImgUrl;
+                        		}else{
+                        			window.localStorage.headImgUrl = ""
+                        		}
+                        		
+                        		if (data.output.subscribeTime) {
+                        			window.localStorage.subscribeTime = data.output.subscribeTime;
+                        		}else{
+                        			window.localStorage.subscribeTime = ""
+                        		}
+                        		
+                        		if (data.output.unionId) {
+                        			window.localStorage.unionId = data.output.unionId;
+                        		}else{
+                        			window.localStorage.unionId = ""
+                        		}
+                        		
+                        		if (data.output.remark) {
+                        			window.localStorage.remark = data.output.remark;
+                        		}else{
+                        			window.localStorage.remark = ""
+                        		}
+                        		
+                        		if (data.output.groupId) {
+                        			window.localStorage.groupId = data.output.groupId;
+                        		}else{
+                        			window.localStorage.groupId = ""
+                        		}
+                        		
+                        		if (data.output.subscribeScene) {
+                        			window.localStorage.subscribeScene = data.output.subscribeScene;
+                        		}else{
+                        			window.localStorage.subscribeScene = ""
+                        		}
+                        		
+                        		if (data.output.qrScene) {
+                        			window.localStorage.qrScene = data.output.qrScene;
+                        		}else{
+                        			window.localStorage.qrScene = ""
+                        		}
+                        		
+                        		if (data.output.qrSceneStr) {
+                        			window.localStorage.qrSceneStr = data.output.qrSceneStr;
+                        		}else{
+                        			window.localStorage.qrSceneStr = ""
+                        		}
+							}
+//                      	window.open("http://outer.qtoubao.cn/#/home?t=dsf7","_self");
+                        	window.open("http://mp.qtoubao.cn/#/home?t=dsf7","_self");
+                        }else{
+                        	console.log("微信授权失败，请重试！");
+                        }
+                    },
+                    error: function(data){ 
+                        console.log(data);
+                    }
+                })
+            }
+        </script>
+    </body>
+</html>

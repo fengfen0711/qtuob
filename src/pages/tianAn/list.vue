@@ -23,7 +23,7 @@
 			点击签字
 		</div>
 		<div class="btnPerson">
-			<div class="btn_phone btn_Bsign">被投保人签字</div>
+			<div class="btn_phone btn_Bsign">被保险人签字</div>
 			<div class="btn_sign sign_ok">签字完成</div>
 		</div>
 		<div class="agree">

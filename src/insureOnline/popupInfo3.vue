@@ -119,7 +119,7 @@
 							<label class="inputLabel left">受益人{{index+1}}</label>
 						</p>
 						<p class="inputGrop clearFloat">
-							<label class="inputLabel left">与被保人关系</label>
+							<label class="inputLabel left">与被保险人关系</label>
 							<span class="inputText left">{{ben.relatoInsured}}</span>
 						</p>
 						<div class="recognizeeChild1">
@@ -167,7 +167,7 @@
 						<span class="sSpan">《责任免除条款》</span>、
 						<span class="sSpan">《银行自动转账授权声明》</span>、
 						<span class="sSpan">《人身保险投保提示书》</span>和
-						<span class="sSpan">《投保人与被保人告知声明》</span>。
+						<span class="sSpan">《投保人与被保险人告知声明》</span>。
 					</span>
 				</span>
 			</p>
@@ -178,7 +178,7 @@
 					<span class="sSpan1" @click="sBoxGoPdf(2)">《责任免除条款》</span>
 					<span class="sSpan1" @click="sBoxGoPdf(3)">《银行自动转账授权声明》</span>
 					<span class="sSpan1" @click="sBoxGoPdf(4)">《人身保险投保提示书》</span>
-					<span class="sSpan1" @click="sBoxGoPdf(5)">《投保人与被保人告知声明》</span>
+					<span class="sSpan1" @click="sBoxGoPdf(5)">《投保人与被保险人告知声明》</span>
 				</span>
 			</mt-popup>
 			<p class="btnBox clearFloat" :class="{btnBox1:btnBoxShow}">
@@ -499,7 +499,7 @@
 						},res =>{
 							console.log(res.data);
 						})
-			      		//被保人信息
+			      		//被保险人信息
 					  	this.nexusType = this.allData.insrntResp.relaToAppnt
 					  	if (this.nexusType == "00") {
 					  		this.nexus = "本人"
@@ -600,7 +600,7 @@
     		},
     		handleClickNext(){
     			if (this.sBoxShow == true) {
-    				Toast("请点击查看《投保须知》、《保险条款》、《人身保险投保提示书》、《责任免除条款》《银行自动转账授权声明》和《投保人与被保人告知声明》~")
+    				Toast("请点击查看《投保须知》、《保险条款》、《人身保险投保提示书》、《责任免除条款》《银行自动转账授权声明》和《投保人与被保险人告知声明》~")
     				return
     			}
     			var orderInfo ={
@@ -660,9 +660,6 @@
 	input, button {
 		outline: none;
 	}
-	input {
-		font-weight: 100;
-	}
 	input::-ms-clear {
 		display: none;
 		width: 0;
@@ -673,11 +670,9 @@
 	}
 	textarea::-webkit-input-placeholder, input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	.clearFloat:after {
 		height: 0;
@@ -803,7 +798,7 @@
 		height: 0.88rem;
 		line-height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	select{
 		padding: 0;
@@ -835,7 +830,7 @@
 		width: 2rem;
 		margin-right: 0.2rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	.sBox {
 		padding: 0 0.4rem;
@@ -912,7 +907,7 @@
 		width: 100%;
 		height: 0.88rem;
 		line-height: 0.88rem;
-		color: #666666;
+		color: #333333;
 		overflow: hidden;
 		border-bottom: solid 0.01rem #C8C7CC;
 		background: none;

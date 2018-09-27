@@ -1,5 +1,26 @@
 <template>
-	<div class="disBox">
+	<div class="my_body">
+		<div class="scrollDiv">
+			<Scroll :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" :bottomPullText='bottomText' :auto-fill="false" @bottom-status-change="handleBottomChange" ref="loadmore">
+				<div class="products">
+					<div class="clearFloat proContent" :class="art.atcStyle | layout" v-for="art in artList" @click="godetail(art.articleId)">
+						<img :src="art.picUrl" class="disImg" />
+						<div class="disText">
+							<p class="disTitle"><span>{{art.title}}</span></p>
+							<p class="disTitleDes">{{art.actDesc}}</p>
+							<p class="disTitleDes"><span>{{art.createTime}}</span><span class="sign" v-for="tag in art.tagList">{{tag.name}}</span></p>
+						</div>
+					</div>
+					<p class="noMore" v-show="noMoreShow">没有更多了~</p>
+					<p class="noCon" v-show="noShow">没有搜索到任何内容哦~</p>
+					<div v-show="loading" slot="bottom" class="loading">
+						加载中...
+					</div>
+				</div>
+			</Scroll>
+		</div>
+	</div>
+	<!--<div class="disBox">
 		<div class="studyDetail">
 			<div class="clearFloat proContent" :class="art.atcStyle | layout" v-for="art in artList" :key="art.articleId" @click="godetail(art.articleId)">
 				<img :src="art.picUrl" class="disImg" />
@@ -10,10 +31,11 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div>-->
 </template>
 
 <script>
+	import Scroll from '@/components/scroll.vue'
 	import { Toast } from 'mint-ui';
 	import { Indicator } from 'mint-ui';
 	export default {
@@ -22,25 +44,104 @@
 			return {
 				detailId: this.$route.query.detailId,
 				artList:[],
+				counte: 1,
+				num: 10,
+				scrollHeight: 0,
+                scrollTop: 0,
+                containerHeight: 0,
+                loading: false,
+                allLoaded: false,
+                bottomText: '上拉加载更多...',
+                bottomStatus: '',
+                pageNo: 1,
+                totalCount: '',
+                noMoreShow: false,
+				noShow: false,
 			}
 		},
+		components: {
+			Scroll: Scroll
+		},
 		created() {
-			this.detailAjax(this.detailId)
+			if (this.detailId) {
+				this.getList(this.detailId)
+			}
 		},
 		methods: {
-			detailAjax(id){
+			_scroll: function(ev) {
+				ev = ev || event;
+				ev.preventDefault();
+        		ev.stopPropagation();
+				this.scrollHeight = this.$refs.innerScroll.scrollHeight;
+				this.scrollTop = this.$refs.innerScroll.scrollTop;
+				this.containerHeight = this.$refs.innerScroll.offsetHeight;
+			},
+			loadBottom: function() {
+				this.loading = true;
 				var artInfo = {
-					"typeId": id
+					"typeId": this.detailId,
+					"pageIndex": this.counte,
+					"pageSize": this.num,
 				}
+				console.log(artInfo)
 				this.$http.post(this.$store.state.link + "/cnt/atc/selArticleList", artInfo)
 				.then(res => {
 					console.log(res.data)
 					if(res.data.code == "SYS_S_000") {
-						this.artList = res.data.output;
+						this.$nextTick(() => {
+							let arr = res.data.output;
+							this.artList = this.artList.concat(arr);
+							if(res.data.output.length < this.num) {
+								this.loading = false;
+								this.allLoaded = true;
+								this.noMoreShow = true;
+								this.serchText = ""
+								return;
+							}else{
+								this.counte++;
+							}
+							done()
+						})
 					}
-				}, res => {
-					console.log(res.data)
-				})
+				}, (response) => {
+					console.log('error');
+				});
+			},
+			handleBottomChange(status) {
+				this.bottomStatus = status;
+			},
+			getList() {
+				var artInfo = {
+					"typeId": this.detailId,
+					"pageIndex": 1,
+					"pageSize": this.num,
+				}
+				console.log(artInfo)
+				this.$http.post(this.$store.state.link + "/cnt/atc/selArticleList", artInfo)
+					.then(res => {
+						console.log(res.data)
+						if(res.data.code == "SYS_S_000") {
+							this.artList = res.data.output.slice(0, this.num);
+							if(res.data.output.length == 0) {
+								this.allLoaded = true;
+								this.noShow = true;
+								this.noMoreShow = false;
+								this.serchText = ""
+							} else if(res.data.output.length == 10) {
+								this.counte = 2;
+								this.noMoreShow = false;
+								this.noShow = false;
+								this.allLoaded = false;
+							} else if(res.data.output.length < 10) {
+								this.allLoaded = true;
+								this.noMoreShow = true;
+								this.noShow = false;
+								this.serchText = ""
+							}
+						}
+					}, res => {
+						console.log(res.data)
+					})
 			},
 			godetail(id){
 				console.log(id)
@@ -67,6 +168,12 @@
 </script>
 
 <style scoped="scoped">
+	.my_body {
+		position: absolute;
+		width: 100%;
+		min-height: 100%;
+		background: #FFFFFF;
+	}
 	.clearFloat:after {
 		height: 0;
 		display: block;
@@ -75,19 +182,23 @@
 		clear: both;
 		content: "";
 	}
-	.disBox{
-		position: absolute;
-		background: #FFFFFF;
+	.noCon {
 		width: 100%;
-		min-height: 100%;
+		height: 1rem;
+		line-height: 1rem;
+		margin-top: 1rem;
+		font-size: 0.332rem;
+		color: #E73748;
+		text-align: center;
 	}
-	.studyDetail {
-		padding-left: 0.32rem;
+	.products {
+		width: 6.86rem;
+		padding: 0 0.32rem;
+		background: #FFFFFF;
 	}
-	.proContent{
+	.proContent {
 		position: relative;
 		margin-top: 0.32rem;
-		overflow: hidden;
 	}
 	.imgUpTextDown {
 		height: 4.62rem;
@@ -100,9 +211,10 @@
 		display: block;
 		width: 6.86rem;
 		height: 3.2rem;
+		background: rgba(0,0,0,0.03);
 		margin: 0 auto;
 	}
-	.imgUpTextDown .disText{
+	.imgUpTextDown .disText {
 		position: absolute;
 		top: 3.32rem;
 		left: 0;
@@ -119,9 +231,10 @@
 		display: block;
 		width: 6.86rem;
 		height: 3.2rem;
+		background: rgba(0,0,0,0.03);
 		margin: 0 auto;
 	}
-	.textUpImgDown .disText{
+	.textUpImgDown .disText {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -163,9 +276,11 @@
 		z-index: 1;
 		display: block;
 		width: 2.14rem;
+		height: 2.14rem;
+		background: rgba(0,0,0,0.03);
 		margin: 0 auto;
 	}
-	.imgLeftTextRight .disText{
+	.imgLeftTextRight .disText {
 		position: absolute;
 		top: 0;
 		left: 2.76rem;
@@ -181,9 +296,11 @@
 		z-index: 1;
 		display: block;
 		width: 2.14rem;
+		height: 2.14rem;
+		background: rgba(0,0,0,0.03);
 		margin: 0 auto;
 	}
-	.textLeftImgRight .disText{
+	.textLeftImgRight .disText {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -192,7 +309,7 @@
 	.imgLeftTextRight .disTitle, .textLeftImgRight .disTitle {
 		width: 4.1rem;
 		height: 0.8rem;
-		line-height: 0.4rem;
+		line-height: 0.42rem;
 		margin-top: 0.02rem;
 		font-size: 0.32rem;
 		margin-bottom: 0.16rem;
@@ -200,21 +317,61 @@
 		color: #000000;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		display:-webkit-box; 
+		display: -webkit-box;
 		-webkit-box-orient: vertical;
-		-webkit-line-clamp:2;
+		-webkit-line-clamp: 2;
 	}
 	.imgLeftTextRight .disTitleDes, .textLeftImgRight .disTitleDes {
 		width: 4.1rem;
 		/*height: 0.64rem;*/
-		line-height: 0.32rem;
+		line-height: 0.34rem;
 		margin-bottom: 0.22rem;
 		font-size: 0.24rem;
 		color: #555555;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		display:-webkit-box; 
+		display: -webkit-box;
 		-webkit-box-orient: vertical;
-		-webkit-line-clamp:2;
+		-webkit-line-clamp: 2;
+	}
+	.noMore {
+		margin-top: 1rem;
+		height: 1rem;
+		line-height: 1rem;
+		font-size: 0.24rem;
+		color: #CCCCCC;
+		text-align: center;
+	}
+	.scrollDiv {
+		width: 100%;
+		height: 100%;
+		padding-bottom: 1rem;
+		background: #FFFFFF;
+		overflow: scroll;
+		-webkit-overflow-scrolling: touch;
+	}
+	.products {
+		padding-left: 0.3rem;
+		padding-bottom: 0.5rem;
+	}
+	.proContent{
+		margin-top: 0.24rem;
+		padding-right: 0.3rem;
+		overflow: hidden;
+	}
+	.loading {
+		width: 100%;
+		height: 0.8rem;
+		line-height: 0.8rem;
+		text-align: center;
+	}
+	.noCon {
+		width: 100%;
+		height: 1rem;
+		line-height: 1rem;
+		margin-top: 1rem;
+		font-size: 0.332rem;
+		color: #E73748;
+		text-align: center;
 	}
 </style>

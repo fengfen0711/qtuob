@@ -3,13 +3,13 @@
 		<div v-show="boxShow">
 			<div class="twoCon">
 				<p class="title_twoCon clearFloat">
-					<label class="title_twoCon2 left">被保人信息</label>
+					<label class="title_twoCon2 left">被保险人信息</label>
 					<span class="title_twoCon1 right" @click="toGoIdCard">身份证识别</span>
 				</p>
 				<div class="policyHolder">
 					<p class="inputGrop clearFloat">
 						<label class="inputLabel left">
-							<label class="star">*</label>投被保人关系</label>
+							<label class="star">*</label>投被保险人关系</label>
 						<select v-model="nexusType" class="inputText inputWidth left selectp" disabled="disabled">
 							<option selected="selected" value="tp">请选择</option>
 							<option :value="nexus.dicCode" v-for="nexus in nexusList">{{nexus.dicName}}</option>
@@ -713,10 +713,10 @@ export default {
 					Toast('请输入您的姓名');
 					return;
 			}else if(!myReg.test(this.appName)) {
-						Toast("被保人的姓名必须为汉字，并且需大于等于两个汉字")
+						Toast("被保险人的姓名必须为汉字，并且需大于等于两个汉字")
 						return
 			}else if(this.appName.length>50){
-						Toast("被保人的姓名必须小于50个汉字")
+						Toast("被保险人的姓名必须小于50个汉字")
 			}
 			if (this.cardType == "tp") {
 				Toast("请选择证件类型")
@@ -741,35 +741,35 @@ export default {
 			}
 			if(this.cardType == "L"){
 					if(this.IDnum.length >10 || this.IDnum.length <7 ){
-						Toast('被保人证件号码有误')
+						Toast('被保险人证件号码有误')
 						return
 					}
 					
 				}
 				if(this.cardType == "N"){
 					if(this.IDnum.length >20 || this.IDnum.length <3 ){
-						Toast('被保人证件号码有误')
+						Toast('被保险人证件号码有误')
 						return
 					}
 					
 				}
 				if(this.cardType == "P"){
 					if(this.IDnum.length >10 || this.IDnum.length <8 ){
-						Toast('被保人证件号码有误')
+						Toast('被保险人证件号码有误')
 						return
 					}
 					
 				}
 				if(this.cardType == "G" || this.cardType == "I"){
 					if(this.IDnum.length >18 || this.IDnum.length <10 ){
-						Toast('被保人证件号码有误')
+						Toast('被保险人证件号码有误')
 						return
 					}
 					
 				}
 				if(this.cardType == "S"){
 					if(this.IDnum.length !=15 ){
-						Toast('被保人证件号码有误')
+						Toast('被保险人证件号码有误')
 						return
 					}
 					
@@ -777,7 +777,7 @@ export default {
 				if(this.cardType == "Q"){
 					var regCard = /^[a-zA-Z\d]{11}$/;
 					if(!regCard.test(this.IDnum)){
-						Toast('被保人证件号码有误')
+						Toast('被保险人证件号码有误')
 						return
 					}
 					
@@ -923,7 +923,7 @@ export default {
 				"fullAddr": this.add, //通讯地址
 				"gender": this.gender, //性别 : M-男;F-女 ,
 				"incomeSource": incomeSource, //收入来源 ,
-				"insrntName": this.appName, //被保人姓名 ,
+				"insrntName": this.appName, //被保险人姓名 ,
 				"maritalStatus": this.marType, //婚姻状态 ,
 				"mobile": this.phone, //联系电话 
 				"nationality": this.reHighs, //国籍
@@ -941,14 +941,14 @@ export default {
 			if (this.$route.query.status == "2") {
 				var msg1 = [
 					{
-						"docFileName": "被保人身份证正面",//单证文件名 
+						"docFileName": "被保险人身份证正面",//单证文件名 
 						"docType": "00401011", //单证类型
 						"fileSerialNo": this.$route.query.insuredcardno,//文件序列号 : 文件在影像系统唯一标识 
 						"remark": "",//备注 
 						"showOrder": 3 //显示顺序
 					},
 					{
-						"docFileName": "被保人身份证反面",//单证文件名 
+						"docFileName": "被保险人身份证反面",//单证文件名 
 						"docType": "00401012", //单证类型
 						"fileSerialNo": this.$route.query.insuredsite,//文件序列号 : 文件在影像系统唯一标识 
 						"remark": "",//备注 
@@ -1074,10 +1074,6 @@ button {
 	outline: none;
 }
 
-input {
-	font-weight: 100;
-}
-
 input::-ms-clear {
 	display: none;
 	width: 0;
@@ -1091,12 +1087,10 @@ input::-ms-reveal {
 textarea::-webkit-input-placeholder,
 input::-webkit-input-placeholder {
 	color: #B2B2B2;
-	font-weight: 100;
 }
 
 input:-ms-input-placeholder {
 	color: #B2B2B2;
-	font-weight: 100;
 }
 
 select {
@@ -1238,13 +1232,13 @@ select {
 .inputText {
 	height: 0.88rem;
 	font-size: 0.28rem;
-	color: #666666;
+	color: #333333;
 }
 
 .inputText1 {
 	height: 0.68rem;
 	font-size: 0.28rem;
-	color: #666666;
+	color: #333333;
 }
 
 .inputText2 {
@@ -1379,7 +1373,7 @@ input[type=date]::-webkit-clear-button {
 	width: 2.7rem;
 	height: 0.88rem;
 	font-size: 0.28rem;
-	color: #666666;
+	color: #333333;
 	padding-left: 0;
 }
 

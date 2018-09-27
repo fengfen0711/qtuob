@@ -135,6 +135,9 @@
 		},
 
 		created() {
+			if (this.$route.query.token != undefined) {
+				window.localStorage.token = this.$route.query.token
+			}
 			var data = {
 				"userId": this.$route.query.userId,
 				"token": this.$route.query.token
@@ -177,6 +180,7 @@
 					this.amountGuarantee = res.data.output.totalInsAmt;
 					this.money = res.data.output.totalDissAmt;
 					this.itemData = res.data.output.prodList;
+					console.log(this.itemData)
 					for(var k = 0; k < this.itemData.length; k++) {
 						console.log("===2" + this.itemData[k].actFeeList[this.itemData[k].actFeeList.length - 1].actFee)
 						this.itemData[k].allMoney1 = this.accMul(parseFloat(this.itemData[k].actFeeList[this.itemData[k].actFeeList.length - 1].actFee), parseInt(this.itemData[k].actFeeList[this.itemData[k].actFeeList.length - 1].yearCode));
@@ -287,8 +291,8 @@
 	}
 	
 	.rd_div_proall {
-		width: 6.32rem;
-		height: 10.22rem;
+		width: 6.82rem;
+		height: 11rem;
 		background: url(/static/qijianwei/product_bg.png);
 		background-size: cover;
 		margin: 0 auto;
@@ -369,7 +373,7 @@
 	
 	.rd_div_termall1 {
 		width: 6rem;
-		height: 2.4rem;
+		/*height: 2.4rem;*/
 		overflow-y: scroll;
 	}
 	

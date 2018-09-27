@@ -32,6 +32,9 @@
 			}
 		},
 		created() {
+			if (this.$route.query.token != undefined) {
+				window.localStorage.token = this.$route.query.token
+			}
 			Indicator.open()
 			this.temCode = this.$route.query.temCode
 			var afterdata = {
@@ -155,7 +158,7 @@
 	
 	.after_color {
 		font-size: 0.22rem;
-		color: #666666
+		color: #333333
 	}
 	
 	.after_data {
@@ -166,7 +169,7 @@
 	
 	.after_content {
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		margin-top: 0.16rem;
 		line-height: 0.5rem;
 	}

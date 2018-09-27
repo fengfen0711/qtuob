@@ -51,7 +51,7 @@
 				codeShow: true,
 				count: '',
 				timer: null,
-				regPhone: /^(13|14|15|17|18)\d{9}$/,
+				regPhone: /^(13|14|15|16|17|18)\d{9}$/,
 				regPass: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,12}$/,
 				question: 0,
 				size: 0,

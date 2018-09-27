@@ -43,6 +43,9 @@
 			}
 		},
 		created() {
+			if (this.$route.query.token != undefined) {
+				window.localStorage.token = this.$route.query.token
+			}
 			this.detailAjax(this.$route.query.detailId, 1)
 			this.common.noShare();
 		},

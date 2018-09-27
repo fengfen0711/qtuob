@@ -17,7 +17,7 @@
 			<div class="policyHolder" v-show="policyHolderShow">
 				<p class="inputGrop clearFloat">
 
-					<label class="inputLabel3 left"><label class="startopacity left">*</label>与投保人关系</label>
+					<label class="inputLabel3 left"><label class="startopacity left">*</label>被保险人是投保人的</label>
 					<select v-model="nexusType" class="left inputText inputWidth" @change="nexChange" :disabled="disabled">z
 						<option :value="nexus.code" v-for="nexus in nexusList">{{nexus.name}}</option>
 					</select>
@@ -25,13 +25,13 @@
 				<p class="inputGrop clearFloat">
 
 					<label class="inputLabel3 left"><label class="startopacity left">*</label>姓名</label>
-					<input type="text" class="inputText left" maxlength="20" v-model="policyHolderName" placeholder="请输入真实姓名" :disabled="disabled" />
+					<input type="text" class="inputText inputWidth left" maxlength="20" v-model="policyHolderName" placeholder="请输入真实姓名" :disabled="disabled" />
 					<!--<span class="sumBtn">+</span>-->
 				</p>
 				<p class="inputGrop clearFloat">
 
 					<label class="inputLabel3 left"><label class="startopacity left">*</label>出生日期</label>
-					<input type="date" class="inputText dateInput left" v-model="birthDate" placeholder="请选择出生日期" :disabled="disabled" />
+					<input type="date" class="inputText inputWidth left" v-model="birthDate" placeholder="请选择出生日期" :disabled="disabled" />
 					<span class="dateBox1"></span>
 					<!--<img src="/static/img/upDown.png" class="upDownImg upDownImg2" />-->
 				</p>
@@ -39,7 +39,7 @@
 
 					<label class="inputLabel3 left"><label class="startopacity left">*</label>被保险人性别</label>
 					<span class="inputText inputSpan left">
-							<input type="text" class="inputText left" maxlength="20" v-model="gender" placeholder="请输入真实姓名" :disabled="disabled" />
+							<input type="text" class="inputText inputWidth left" maxlength="20" v-model="gender" placeholder="请输入真实姓名" :disabled="disabled" />
 							<!--<label class="labsex">{{gender}}</label>-->
 					</span>
 				</p>
@@ -54,12 +54,12 @@
 				<p class="inputGrop clearFloat">
 
 					<label class="inputLabel3 left"><label class="start left">*</label>证件号码</label>
-					<input @input="cardnum" type="text" maxlength="18" class="inputTextCard left" v-model="IDnum" placeholder="请输入证件号码" />
+					<input @input="cardnum" type="text" maxlength="18" class="inputTextCard inputWidth left" v-model="IDnum" placeholder="请输入证件号码" />
 				</p>
 				<p class="inputGrop clearFloat">
 					<label class="inputLabel3 left"><label class="start left">*</label>证件有效期至</label>
 					<span class="brspanbo " :class="{opa0:spanFlag}">请选择证件有效期</span>
-					<input type="date" id="dateTime1" class="inputText dateInput dateInput1 left" :class="{opa0:!spanFlag}" placeholder="请选择证件有效期" v-model="termValidityDate" @click="termValidityDateSel" @change="termValidityDateSel" />
+					<input type="date" id="dateTime1" class="inputText dateInput dateInput1 left" :class="{opa0:!spanFlag}"  v-model="termValidityDate" @click="termValidityDateSel" @change="termValidityDateSel" />
 					<span class="dateBox" @click="dateSel">
 						<img src="/static/img/sexNo.png" class="selImg" v-show="termValidityDateShow" />
 						<img src="/static/img/selected.png" class="selImg" v-show="!termValidityDateShow" />
@@ -93,17 +93,17 @@
 				</p>
 				<p class="inputGrop clearFloat">
 					<label class="inputLabel3 left"><label class="start left">*</label>手机号码</label>
-					<input type="tel" maxlength="11" class="inputText left" v-model="phone" placeholder="请输入手机号码" />
+					<input type="tel" maxlength="11" class="inputText inputWidth left" v-model="phone" placeholder="请输入手机号码" />
 				</p>
 				<p class="inputGrop clearFloat">
 
 					<label class="inputLabel3 left"><label class="startopacity left">*</label>固定电话</label>
-					<input type="tel" v-model="tel" maxlength="11" class="inputText left" placeholder="请输入固定电话" />
+					<input type="tel" v-model="tel" maxlength="19" class="inputText inputWidth left" placeholder="区号 - 号码 - 分机" />
 				</p>
 				<p class="inputGrop clearFloat">
 
 					<label class="inputLabel3 left"><label class="startopacity left">*</label>邮箱地址</label>
-					<input type="text" class="inputText left" v-model="email1" placeholder="请输入邮箱" />
+					<input type="text" class="inputText inputWidth left" v-model="email1" placeholder="请输入邮箱" />
 				</p>
 				<div class="inputGrop1 clearFloat">
 					<p class="inputselectP">
@@ -131,33 +131,33 @@
 				<p class="inputGrop clearFloat">
 
 					<label class="inputLabel3 left"><label class="start left">*</label>邮编</label>
-					<input type="text" maxlength="6" class="inputText left" v-model="zipCode " placeholder="请输入邮编" />
+					<input type="text" maxlength="6" class="inputText inputWidth left" v-model="zipCode " placeholder="请输入邮编" />
 				</p>
 				<p class="inputGrop clearFloat">
 
 					<label class="inputLabel3 left"><label class="start left">*</label>工作单位</label>
-					<input type="text" class="inputText left" v-model="work_address" placeholder="请输入工作单位" />
+					<input type="text" class="inputText inputWidth left" v-model="work_address" placeholder="请输入工作单位" />
 				</p>
 				<p class="inputGrop clearFloat">
 
 					<label class="inputLabel3 left"><label class="start left">*</label>职业</label>
-					<input type="text" class="inputText left" v-model="occName" placeholder="" :disabled="disabled" />
+					<input type="text" class="inputText inputWidth left" v-model="occName" placeholder="" :disabled="disabled" />
 				</p>
 
 				<p class="inputGrop clearFloat">
 
 					<label class="inputLabel3 left"><label class="start left">*</label>身高（cm）</label>
-					<input type="tel" maxlength="3" class="inputText left" v-model="reHigh" placeholder="请输入身高" />
+					<input type="tel" maxlength="3" class="inputText inputWidth left" v-model="reHigh" placeholder="请输入身高" />
 				</p>
 				<p class="inputGrop clearFloat">
 
 					<label class="inputLabel3 left"><label class="start left">*</label>体重（kg）</label>
-					<input type="tel" maxlength="3" class="inputText left" v-model="reWeight" placeholder="请输入体重" />
+					<input type="tel" maxlength="3" class="inputText inputWidth left" v-model="reWeight" placeholder="请输入体重" />
 				</p>
 				<p class="inputGrop clearFloat">
 
 					<label class="inputLabel3 left"><label class="start left">*</label>固定年收入(万元)</label>
-					<input type="tel" maxlength="11" v-model="pos_money" class="inputText left" placeholder="请输入固定年收入" />
+					<input type="tel" maxlength="11" v-model="pos_money" class="inputText inputWidth left" placeholder="请输入固定年收入" />
 				</p>
 			</div>
 		</div>
@@ -345,7 +345,7 @@
 								this.termValidityDate = res.data.output.insrntResp.certfEndTime //  证件有效期
 							}
 						} else {
-							this.spanFlag = false;
+							this.spanFlag = true;
 						}
 						this.birthDate = res.data.output.insrntResp.birthday; //出生年月日
 
@@ -722,6 +722,7 @@
 				var d = new Date;
 				var today = new Date(d.getFullYear(), d.getMonth(), d.getDate());
 				var reg = /\d+/g;
+				var regT = /^(0\d{2,3}-\d{7,8})(-\d{1,5})?$/ //固定号码
 				var temp = pdate.match(reg);
 				if(temp) {
 					var foday = new Date(temp[0], parseInt(temp[1]) - 1, temp[2]);
@@ -746,8 +747,8 @@
 				//身份证
 				var regCard = /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
 				//手机号
-				var regPh = /^1[0-9]{10}$/; //手机号
-				var regT = /^0\d{2,3}[1-9]\d{6,7}$/ //固定号码
+				var regPh = /^[1][3,4,5,6,7,8,9][0-9]{9}$/; //手机号
+				var regT = /^(0\d{2}-\d{8})|(0\d{3}-\d{7})(-\d{1,5})?$/ //固定号码
 				//邮箱
 				var regEmail = /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/; //邮箱地址
 				//邮编
@@ -845,8 +846,8 @@
 					Toast('手机号码格式不正确');
 					return;
 				}
-				if(this.telPhone == "" || this.telPhone == undefined) {} else {
-					if(!patrn.test(this.telPhone)) {
+				if(this.tel == "" || this.tel == undefined) {} else {
+					if(regT.test(this.tel)==false) {
 						Toast("固定号码格式不正确")
 						return;
 					}
@@ -947,12 +948,12 @@
 					"gender": this.allData.insrntResp.gender, //性别 : M-男;F-女 ,
 					"height": this.reHigh, //身高 ,
 					"incomeSource": this.currentIndex + 1, //收入来源 ,
-					"insrntName": this.policyHolderName, //被保人姓名 ,
-					//					"insuNo": "string", //被投保人编号 ,
-					//					"insuRelationToMaininsu": this.nexusType, //被保人与主被保人关系
-					//					"insuRelationToMaininsu": "00", //被保人与主被保人关系
+					"insrntName": this.policyHolderName, //被保险人姓名 ,
+					//					"insuNo": "string", //被保险人编号 ,
+					//					"insuRelationToMaininsu": this.nexusType, //被保险人与主被保险人关系
+					//					"insuRelationToMaininsu": "00", //被保险人与主被保险人关系
 					//					"language": "string", //语言 
-					//					"mainInsured": "0", //主被保人标志 ,
+					//					"mainInsured": "0", //主被保险人标志 ,
 					"maritalStatus": this.marType, //婚姻状态 ,
 					"mobile": this.phone, //联系电话 
 					"nationality": this.reHighs, //国籍
@@ -996,7 +997,12 @@
 						Indicator.close();
 						console.log("响应数据=====" + JSON.stringify(res.data))
 						if(res.data.code == "SYS_S_000") {
-							this.$router.push('/info3?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
+							if(this.occName.substring(0,2)=="军警"&&(this.cardType==0||this.cardType==4||this.cardType=="C"||this.cardType=="F")){
+								this.$router.push('/info3?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&Tjun="+this.$route.query.Tjun+ "&Bjun=Y&token=" + this.$route.query.token)	
+							}else{
+								this.$router.push('/info3?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&Tjun="+this.$route.query.Tjun+ "&Bjun=N&token=" + this.$route.query.token)	
+							}
+//							
 						} else {
 							Toast(res.data.desc);
 						}
@@ -1153,10 +1159,6 @@
 		outline: none;
 	}
 	
-	input {
-		font-weight: 100;
-	}
-	
 	input::-ms-clear {
 		display: none;
 		width: 0;
@@ -1170,12 +1172,10 @@
 	textarea::-webkit-input-placeholder,
 	input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	.labsex {
@@ -1203,7 +1203,7 @@
 	.brspanbo {
 		display: block;
 		position: absolute;
-		left: 2.3rem;
+		left: 2.8rem;
 		top: 0;
 		height: 0.88rem;
 		line-height: 0.88rem;
@@ -1213,6 +1213,7 @@
 	
 	.opa0 {
 		opacity: 0;
+		z-index: -1;
 	}
 	
 	.one {
@@ -1389,7 +1390,7 @@
 	
 	.inputLabel3 {
 		display: block;
-		width: 2.3rem;
+		width: 2.8rem;
 		height: 0.88rem;
 		line-height: 0.88rem;
 		font-weight: bold;
@@ -1408,7 +1409,7 @@
 	.inputText {
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		padding-left: 0;
 	}
 	
@@ -1416,7 +1417,7 @@
 		width: 2.7rem;
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		padding-left: 0;
 	}
 	
@@ -1424,7 +1425,7 @@
 		width: 3rem;
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.inpuDate {
@@ -1450,7 +1451,7 @@
 		z-index: 1;
 		display: block;
 		height: 0.87rem;
-		padding: 0 0.2rem;
+		padding-right: 0.2rem;
 		line-height: 0.88rem;
 		background: #FFFFFF;
 		border-left: solid 0.01rem #C8C7CC;
@@ -1458,9 +1459,9 @@
 	
 	.dateB {
 		position: absolute;
-		right: 1.78rem;
+		right: 1.35rem;
 		top: 0;
-		z-index: -1;
+		z-index: 3;
 		width: 0.4rem;
 		height: 0.87rem;
 		background: #FFFFFF;
@@ -1492,7 +1493,7 @@
 		width: 0.48rem;
 		height: 0.48rem;
 		margin-top: 0.2rem;
-		margin-right: 0.26rem;
+		/*margin-right: 0.26rem;*/
 	}
 	
 	.selectBox {
@@ -1505,9 +1506,9 @@
 		display: block;
 		width: 3.6rem;
 		height: 0.68rem;
-		margin-left: 2.04rem;
+		margin-left: 2.34rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		padding-left: 0;
 	}
 	
@@ -1516,7 +1517,7 @@
 	}
 	
 	.dateInput {
-		width: 2.7rem;
+		width: 2.6rem;
 	}
 	
 	.dateInput1 {
@@ -1525,11 +1526,11 @@
 	}
 	
 	.inputWidth {
-		width: 4.4rem;
+		width: 3.9rem;
 	}
 	
 	.inputWidth11 {
-		width: 4.4rem;
+		width:3.9rem;
 		overflow: hidden;
 		white-space: nowrap;
 		text-overflow: ellipsis;
@@ -1671,7 +1672,7 @@
 		margin-right: 0.233rem;
 	}*/
 	
-	.selectedSign {
+	.signBox span.selectedSign {
 		background: #54CCC1;
 		color: #FFFFFF;
 	}

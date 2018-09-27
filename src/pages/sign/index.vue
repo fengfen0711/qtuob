@@ -85,48 +85,14 @@
 				flagstatus: false,
 				phone: "",
 				name: "",
-				naarry: ""
-
+				naarry: "",
+				token: ''
 			}
 		},
 		created() {
 			this.size = document.documentElement.clientHeight
-
-			if(this.$route.query.brokerCode != "" && this.$route.query.brokerCode != null) {
-
-				this.index_invitecode = this.$route.query.brokerCode;
-				var data = {
-					"brokerCode": this.$route.query.brokerCode
-				}
-				Indicator.open();
-				this.$http.post(this.$store.state.link + "/core/broker/findByBrokerCode", data).then(res => {
-					Indicator.close();
-					console.log(res.data);
-					if(res.data.code == "SYS_S_000") {
-						this.index_phone = true;
-						this.code = this.$route.query.brokerCode
-						this.name=res.data.output.brokerName;
-						if(this.name.length >= 3) {
-
-							this.name = res.data.output.brokerName.replace(/^(.+).(.)$/, "$1**");
-						} else {
-
-							this.name = res.data.output.brokerName.replace(/^(.+)./, "$1*");
-						}
-						this.name = res.data.output.brokerName
-
-						this.phone = res.data.output.mobile.replace(/^(\d{3})\d{4}(\d+)/, "$1****$2");
-					} else if(res.data.code == "CORE_E_206") {
-						Toast(res.data.desc)
-					}
-				}, res => {
-					Indicator.close();
-					console.log("2===失败1" + res.data)
-				});
-			}
-
+			this.tokenFun();
 		},
-
 		mounted() {
 			const that = this
 			window.onresize = function temp() {
@@ -135,6 +101,70 @@
 			}
 		},
 		methods: {
+			tokenFun() {
+				if(this.$route.query.token == undefined) {
+					if(this.$route.query.token == "") {
+						var sceneInfo = {
+							"sceneCode": "s001"
+						}
+						this.$http.post(this.$store.state.link + '/sso/v2/applytoken', sceneInfo)
+							.then(res => {
+								Indicator.close()
+								console.log(res.data);
+								var dataCode = res.data.code;
+								if(dataCode == "SYS_S_000") {
+									window.localStorage.token = res.data.output.token;
+									this.$store.dispatch("changeToken", res.data.output.token);
+									this.init();
+								} else {
+									Toast(res.data.desc);
+									console.log(res.data.desc)
+								}
+							}, res => {
+								Indicator.close()
+								console.log(res.data);
+							})
+					} else {
+						window.localStorage.path = "wechat";
+						this.init();
+					}
+				} else {
+					window.localStorage.token = this.$route.query.token;
+					window.localStorage.path = "App";
+					this.$store.dispatch("changeToken", this.$route.query.token);
+					this.init();
+				}
+			},
+			init() {
+				if(this.$route.query.brokerCode != "" && this.$route.query.brokerCode != null) {
+					this.index_invitecode = this.$route.query.brokerCode;
+					var data = {
+						"brokerCode": this.$route.query.brokerCode
+					}
+					Indicator.open();
+					this.$http.post(this.$store.state.link + "/core/broker/findByBrokerCode", data).then(res => {
+						Indicator.close();
+						console.log(res.data);
+						if(res.data.code == "SYS_S_000") {
+							this.index_phone = true;
+							this.code = this.$route.query.brokerCode
+							this.name = res.data.output.brokerName;
+							if(this.name.length >= 3) {
+								this.name = res.data.output.brokerName.replace(/^(.+).(.)$/, "$1**");
+							} else {
+								this.name = res.data.output.brokerName.replace(/^(.+)./, "$1*");
+							}
+							this.name = res.data.output.brokerName;
+							this.phone = res.data.output.mobile.replace(/^(\d{3})\d{4}(\d+)/, "$1****$2");
+						} else if(res.data.code == "CORE_E_206") {
+							Toast(res.data.desc)
+						}
+					}, res => {
+						Indicator.close();
+						console.log("2===失败1" + res.data)
+					});
+				}
+			},
 			handleClickNext() {
 				if(this.code == "") {
 					Toast("请输入邀请码");
@@ -217,7 +247,6 @@
 		/*overflow: hidden;*/
 		font-family: "宋体";
 	}
-	
 	.bg {
 		position: fixed;
 		top: 0;
@@ -228,7 +257,6 @@
 		background-size: cover;
 		z-index: -1;
 	}
-	
 	.top {
 		width: 6.86rem;
 		height: 1.52rem;
@@ -238,7 +266,6 @@
 		margin-top: .38rem;
 		position: relative;
 	}
-	
 	.logo {
 		position: absolute;
 		bottom: .14rem;
@@ -246,7 +273,6 @@
 		height: .52rem;
 		left: 3.1rem;
 	}
-	
 	.title {
 		font-family: STSongti-SC-Regular;
 		font-size: .48rem;
@@ -255,14 +281,12 @@
 		text-align: center;
 		margin-top: .02rem;
 	}
-	
 	.code_w {
 		width: 5.6rem;
 		height: .8rem;
 		margin: 0 auto;
 		margin-top: 1.64rem;
 	}
-	
 	.code {
 		width: 5.6rem;
 		height: .8rem;
@@ -271,7 +295,6 @@
 		background-size: contain;
 		background-position-y: 100%;
 	}
-	
 	.yao {
 		float: left;
 		width: 1.46rem;
@@ -280,7 +303,6 @@
 		color: #000;
 		line-height: .8rem;
 	}
-	
 	.name {
 		width: 3.5rem;
 		height: .8rem;
@@ -292,7 +314,6 @@
 		margin: 0 auto;
 		/*line-height: .8rem;*/
 	}
-	
 	.que {
 		float: right;
 		width: .36rem;
@@ -300,7 +321,6 @@
 		margin-right: .2rem;
 		margin-top: .2rem;
 	}
-	
 	.btn {
 		width: 5.34rem;
 		height: 1.24rem;
@@ -315,7 +335,6 @@
 		line-height: 1.24rem;
 		font-size: .48rem;
 	}
-	
 	.bot {
 		width: 6.86rem;
 		position: absolute;
@@ -328,17 +347,14 @@
 		margin-top: 1.64rem;
 		overflow: hidden;
 	}
-	
 	.insuracce {
 		text-align: center;
 		line-height: .34rem;
 		margin-top: .12rem;
 	}
-	
 	body {
 		font-family: "宋体";
 	}
-	
 	.custseven_sattus {
 		position: fixed;
 		top: 0;
@@ -349,7 +365,6 @@
 		z-index: 100;
 		background: rgba(0, 0, 0, 0.20);
 	}
-	
 	.custseven_sattus1 {
 		position: fixed;
 		top: 0;
@@ -360,7 +375,6 @@
 		z-index: 100;
 		background: rgba(0, 0, 0, 0.20);
 	}
-	
 	.cs_div_centen {
 		overflow: hidden;
 		width: 5.42rem;
@@ -372,7 +386,6 @@
 		border-radius: 0.26rem;
 		position: relative;
 	}
-	
 	.cs_div_centen1 {
 		overflow: hidden;
 		width: 5.42rem;
@@ -384,7 +397,6 @@
 		border-radius: 0.26rem;
 		position: relative;
 	}
-	
 	.cs_div_opentitle {
 		width: 100%;
 		height: 0.36rem;
@@ -394,7 +406,6 @@
 		font-weight: bold;
 		margin-top: 0.32rem;
 	}
-	
 	.cs_div_openiput1 {
 		width: 4.76rem;
 		height: 1.23rem;
@@ -402,13 +413,11 @@
 		margin-top: 0.38rem;
 		padding: 0 0.3rem 0 0.3rem;
 	}
-	
 	.cust_p {
 		text-align: justify;
 		text-align: center;
 		line-height: 0.5rem;
 	}
-	
 	.cs_btn_bootom {
 		width: 5.42rem;
 		height: 0.89rem;
@@ -416,7 +425,6 @@
 		bottom: 0;
 		border-top: 0.01rem solid #CCCCCC;
 	}
-	
 	.cs_btn_cancercust {
 		display: block;
 		font-size: 0.32rem;

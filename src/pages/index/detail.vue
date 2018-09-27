@@ -51,12 +51,14 @@
 		<ShangHai v-show="shangHaiShow" :prodNo="prodNo,saleStatus,unSaleDes"></ShangHai>
 		<TianAn v-show="tianAnShow" :prodNo="prodNo,prodInfo,saleStatus,unSaleDes,cmpCode"></TianAn>
 		<ZhongHua v-show="zhongHuaShow" :prodNo="prodNo,saleStatus,unSaleDes,cmpCode" ></ZhongHua>
+		<ChangCheng v-show="ChangChengShow" :prodNo="prodNo,saleStatus,unSaleDes,cmpCode" ></ChangCheng>
 	</div>
 </template>
 
 <script>
 	import ShangHai from './buy/shangHai.vue'
 	import ZhongHua from './buy/zhongHua.vue'
+	import ChangCheng from './buy/changCheng.vue'
 	import TianAn from './buy/tianAn.vue'
 	import { Indicator } from 'mint-ui';
 	import { Swipe, SwipeItem } from 'mint-ui';
@@ -76,6 +78,7 @@
 				shangHaiShow: false,
 				tianAnShow: false,
 				zhongHuaShow: false,
+				ChangChengShow:false,
 				cmpCode: "",
 				prodNo: '',
 				prodInfo: [],
@@ -84,6 +87,9 @@
 			}
 		},
 		created() {
+			if (this.$route.query.token != undefined) {
+				window.localStorage.token = this.$route.query.token
+			}
 			this.prodCode = this.$route.query.prodCode
 			this.prodSaleCode = this.$route.query.prodSaleCode
 			this.getData()
@@ -100,7 +106,7 @@
 				Indicator.open()
 				this.$http.post(this.$store.state.link + '/prd/prod/saledetail', data).then(response => {
 //					console.log("asdas==" + JSON.stringify(response.data))
-//					console.log(response.data)
+					console.log(response.data)
 					this.prodInfo = response.data.output.prodInfo;
 					this.prodNo = response.data.output.prodInfo.prodNo;
 					this.cmpCode = response.data.output.prodInfo.cmpCode;
@@ -208,7 +214,8 @@
 		components: {
 			TianAn: TianAn,
 			ShangHai: ShangHai,
-			ZhongHua: ZhongHua
+			ZhongHua: ZhongHua,
+			ChangCheng: ChangCheng
 		},
 		watch: {
 			cmpCode: function(val) {
@@ -223,7 +230,11 @@
 //				} else {
 //					this.zhongHuaShow = false
 //				}
-//
+//				if(this.cmpCode == "000095") {
+//					this.ChangChengShow = true
+//				} else {
+//					this.ChangChengShow = false
+//				}
 //				if(this.cmpCode == "000303" && this.prodCode == "P000303010194") {
 //					this.shangHaiShow = true
 //				} else {

@@ -27,7 +27,8 @@
 				this.$router.push('/msgShow?prodCode=' +
 									this.$route.query.prodCode + '&prodNo=' +
 									this.$route.query.prodNo + '&orderNo=' +
-									this.$route.query.orderNo + '&cmpCode=' + this.$route.query.cmpCode);
+									this.$route.query.orderNo + '&cmpCode=' + 
+									this.$route.query.cmpCode+'&responseCode='+this.$route.query.responseCode);
 			},
 			pdfFile(){
 				var data = 	[

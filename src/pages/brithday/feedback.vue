@@ -88,7 +88,7 @@
 					if(response.data.code=="SYS_S_000"){
 						Indicator.close();
 						Toast("提交成功");
-						this.$router.push('/newIndex/mine')
+						this.$router.push('/mine')
 					}
 				}, response => {
 					Indicator.close()

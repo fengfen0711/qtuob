@@ -44,7 +44,7 @@
       			eyeShow:true,
       			phoneNum:'',
       			passWord:'',
-      			regPhone: /^(13|14|15|17|18)\d{9}$/,
+      			regPhone: /^(13|14|15|16|17|18)\d{9}$/,
 				regPass: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,12}$/,
 				question: 0,
 				size: 0,
@@ -110,7 +110,7 @@
 							console.log("store1==" + JSON.stringify(this.$store.state.userInfo))
 							console.log("store2==" + JSON.stringify(this.$store.state.brokerInfo))
 							window.localStorage.BrokerId = this.$store.state.brokerInfo.brokerId;
-							this.$router.push('/newIndex/home')
+							this.$router.push('/home')
 						} else {
 							Toast(response.data.desc);
 						}

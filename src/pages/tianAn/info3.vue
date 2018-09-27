@@ -17,7 +17,7 @@
 				</p>
 			</div>
 		</div>
-		<Beneficiary ref="getBen" @child_saya1="listenToMyChild1" @child_saya="listenToMyChild" v-for="(item,index) in addBen" :key="index" @deletId="deletBen" v-show="!policyHolderShow" v-bind:peopledetail="item,index,nexusList,couponList,benefitArr,nationalityarr,addData,addIndex"></Beneficiary>
+		<Beneficiary ref="getBen" @child_sayaa="listenToMyChild1" @child_saya="listenToMyChild" v-for="(item,index) in addBen" :key="index" @deletId="deletBen" v-show="!policyHolderShow" v-bind:peopledetail="item,index,nexusList,couponList,benefitArr,nationalityarr,addData,addIndex"></Beneficiary>
 		<p v-if="!addFlag" class="pushBox">
 			<span @click="addBen1('1')" class="pushBtn">添加受益人</span>
 		</p>
@@ -469,10 +469,31 @@
 								var relationToInsured = '';
 								if(this.addData1.applntResp.relationToInsured == "00") {
 									relationToInsured = "Y";
+									if(this.$route.query.Tjun=="Y"){
+										this.$router.push('/insuranceadvice?prodCode=' + this.$route.query.prodCode + "&relationToInsured=" + relationToInsured + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
+									}else{
+										this.$router.push('/informationinput?prodCode=' + this.$route.query.prodCode + "&relationToInsured=" + relationToInsured + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
+									}
 								} else {
 									relationToInsured = "N";
+									if(this.$route.query.Tjun=="Y"){
+										if(this.$route.query.Bjun=="Y"){
+											this.$router.push('/insuranceadvice1?prodCode=' + this.$route.query.prodCode + "&relationToInsured=" + relationToInsured + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
+										}else{
+											this.$router.push('/informationinputinsured?prodCode=' + this.$route.query.prodCode + "&relationToInsured=" + relationToInsured + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
+										}
+									}else{
+										if(this.$route.query.Bjun=="Y"){
+											this.$router.push('/informationinput?prodCode=' + this.$route.query.prodCode + "&relationToInsured=" + relationToInsured + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&Bjun=Y&token=" + this.$route.query.token)	
+										}else{
+											this.$router.push('/informationinput?prodCode=' + this.$route.query.prodCode + "&relationToInsured=" + relationToInsured + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&Bjun=N&token=" + this.$route.query.token)	
+										}
+										
+									}
+									
 								}
-								this.$router.push('/informationinput?prodCode=' + this.$route.query.prodCode + "&relationToInsured=" + relationToInsured + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
+								
+//								this.$router.push('/informationinput?prodCode=' + this.$route.query.prodCode + "&relationToInsured=" + relationToInsured + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
 
 								//								if(this.addData1.applntResp.relationToInsured == "00") {
 								//									this.$router.push('/insuranceadvice?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&code=" + "1" + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
@@ -691,10 +712,6 @@
 		outline: none;
 	}
 	
-	input {
-		font-weight: 100;
-	}
-	
 	input::-ms-clear {
 		display: none;
 		width: 0;
@@ -708,12 +725,10 @@
 	textarea::-webkit-input-placeholder,
 	input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	.clearFloat:after {
@@ -879,7 +894,7 @@
 	.inputText {
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.inpuDate {
@@ -942,7 +957,7 @@
 		height: 0.68rem;
 		margin-left: 2.04rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.pro {

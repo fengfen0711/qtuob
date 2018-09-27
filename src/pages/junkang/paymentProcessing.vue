@@ -20,7 +20,7 @@
                 <span class="ground_right">柴富强</span>
             </p>
             <p class="ground_writep">
-                <span class="ground_left">被投保人姓名</span>
+                <span class="ground_left">被保险人姓名</span>
                 <span class="ground_right">柴富强</span>
             </p>
             <p class="ground_writep">

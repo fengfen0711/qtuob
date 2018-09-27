@@ -6,12 +6,12 @@
 		</p>
 		<p class="reset">
 			<span class="left">+86</span>
-			<input class="right" v-model="newPhoneNum" type="number" placeholder="请输入新手机号码"/>
+			<input class="right" maxlength="11" v-model="newPhoneNum" type="number" placeholder="请输入新手机号码"/>
 		</p>
 		<p class="reset">
 			<span class="left">验证码</span>
-			<span class="code" v-show="show"  @click="getCode">{{resettxt}}</span>
-			<span class="code" v-show="!show"  @click="getCode">{{count}}s后重发</span>
+			<span class="code" v-show="show"  @click="handleClickGetCode">{{resettxt}}</span>
+			<span class="code" v-show="!show"  @click="handleClickGetCode">{{count}}秒后重发</span>
 			<!--<div class="getCode" @click="getCode" :class="{getCodeActive:active}" v-show="show">
 					{{resettxt}}
 				</div>
@@ -29,6 +29,8 @@
 
 <script>
 	import { Toast } from 'mint-ui';
+	import { Indicator } from 'mint-ui';
+	import { MessageBox } from 'mint-ui';
 	export default {
     	name: "Login",
     	data () {
@@ -39,23 +41,20 @@
       			code:"",
       			show: true,
 			   	count: '',
-			   	timer: null
+				oldtime: '',
+				newtime: '',
+			   	timer: null,
+			   	regPhone: /^(13|14|15|16|17|18)\d{9}$/,
       		}
     	},
     	methods:{
-    		handleClickPhone(){
-    			this.$router.push('/resetPassword')
-    		},
-    		handleClickPass(){
-    			this.$router.push('/resetPhone')
-    		},
     		handleClickNext(){
     			if(this.phoneNum==this.newPhoneNum){
     				Toast("新手机号与原手机号一致，请重新输入");
     			}else if(this.newPhoneNum==""){
-    				Toast("手机号不能为空");
+    				Toast("请输入您的新手机号");
     			}else if(this.code==""){
-    				Toast("验证码不能为空");
+    				Toast("请输入验证码");
     			}else{
     				var data={
 						"userId":localStorage.userId,
@@ -69,15 +68,34 @@
 	    			).then(response => {
 						console.log(response.data)
 						if(response.data.code=="SYS_S_000"){
-							this.$router.push('/logNew?phoneNum='+this.newPhoneNum)
+							MessageBox.confirm('',{
+							  	title: '提示',
+							  	message: '手机号修改成功',
+							  	confirmButtonText: '确定',  
+							  	showCancelButton: false
+							}).then(action => {
+								window.localStorage.phoneNum = this.newPhoneNum;
+								window.localStorage.removeItem("token");
+								window.localStorage.removeItem("userId");
+								if (this.$store.state.brokerInfo && this.$store.state.brokerInfo.brokerId) {
+									window.localStorage.removeItem("BrokerId");
+								}
+								this.$store.dispatch("changeLoginId", "0");
+								this.$store.dispatch("changeToken", '')
+								this.$store.dispatch("changeUserId", '')
+								this.$store.dispatch("changeUserInfoData", {})
+								this.$store.dispatch("changeBrokerInfoData", {})
+								this.getToken();
+								this.$router.push('/pasLog?phoneNum='+this.newPhoneNum)
+							})
 						}else{
 							Toast(response.data.desc);
+							console.log(response.data.desc);
 						}
 			        },response => {
 			        	console.log("ajax error");
 			      	});
     			}
-    			
     		},
     		handleGetCode(){
 				var data={
@@ -98,26 +116,75 @@
 		        	console.log("ajax error");
 		      	});
     		},
+    		handleClickGetCode() {
+				if(this.newPhoneNum == "") {
+					Toast('请输入您的手机号');
+				} else if(this.regPhone.test(this.newPhoneNum) == false) {
+					Toast('请输入正确的手机号');
+				} else if(this.newPhoneNum == this.phoneNum) {
+					Toast('新手机号与原手机号一致，请重新输入');
+				} else {
+					this.getCode();
+				}
+			},
     		getCode(){
-    			this.handleGetCode()
+    			if (this.show) {
+    				this.handleGetCode()
+					this.oldtime = new Date().getSeconds();
+					this.newtime = new Date().getSeconds();
+    			}
 		    	const TIME_COUNT = 60;
 		        if (!this.timer) {
 		        	Toast('验证码已发送至'+this.newPhoneNum+'请注意查收');
-			        this.count = TIME_COUNT;
+					this.count = TIME_COUNT-(this.newtime-this.oldtime);
 			        this.show = false;
 			        this.timer = setInterval(() => {
-			        if (this.count > 0 && this.count <= TIME_COUNT) {
-			            this.count--;
-			        } else {
-			        	this.resettxt="重新获取";
-			            this.show = true;
-			            clearInterval(this.timer);
-			            this.timer = null;
+						this.newtime = new Date().getSeconds();
+				        if (this.count > 0 && this.count <= TIME_COUNT) {
+				            if (this.newtime > this.oldtime) {
+								this.count = TIME_COUNT-(this.newtime-this.oldtime);
+								this.codeText = this.count + '秒后重发'
+							}
+							else if (this.newtime == this.oldtime) {
+								this.codeShow = true;
+								clearInterval(this.timer);
+								this.timer = null;
+								this.codeText = "获取验证码"
+							}else{
+								this.count = this.oldtime-this.newtime;
+								this.codeText = this.count + '秒后重发'
+							}
+				        } else {
+				        	this.resettxt="获取验证码";
+				            this.show = true;
+				            clearInterval(this.timer);
+				            this.timer = null;
 			            }
 			        }, 1000)
 		        }
+    		},
+    		getToken(){
+    			var sceneInfo = {
+					"sceneCode": "s001"
+				}
+	  			this.$http.post(this.$store.state.link + '/sso/v2/applytoken', sceneInfo)
+				.then(res =>{
+					Indicator.close()
+				    console.log(res.data);
+					var dataCode = res.data.code;
+					if (dataCode == "SYS_S_000") {
+						window.localStorage.token = res.data.output.token;
+						this.$store.dispatch("changeToken", res.data.output.token);
+						this.$store.dispatch("changeLoginId", res.data.output.userType);
+					}else{
+						Toast(res.data.desc);
+						console.log(res.data.desc)
+					}
+				},res =>{
+					Indicator.close()
+					console.log(res.data);
+				})
     		}
-			  
     	}
    }
 </script>
@@ -129,9 +196,6 @@
 	}
 	input, button {
 		outline: none;
-	}
-	input {
-		font-weight: 100;
 	}
 	input::-ms-clear {
 		display: none;

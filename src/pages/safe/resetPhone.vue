@@ -30,40 +30,35 @@
     		this.phoneNum=localStorage.getItem("phoneNum");
     	},
     	methods:{
-    		handleClickPhone(){
-    			this.$router.push('/resetPassword')
-    		},
-    		handleClickPass(){
-    			this.$router.push('/resetPhone')
-    		},
     		handleClickNext(){
     			if(this.phoneNum==""){
-    				Toast("手机号不能为空，请输入你的手机号");
+    				Toast("请输入您的手机号");
     			}else if(this.password==""){
-    				Toast("密码不能为空，请输入你的登录密码");
+    				Toast("请输入登录密码");
     			}else{
     				Indicator.open()
-	    			var data={
-		    			"loginNme":this.phoneNum,
-		    			"loginPwd":this.password,
-		    			"loginType":"A"
-		    		}
-	    			this.$http.post(this.$store.state.link+'/sso/dologin',data
-	    			).then(response => {
-	    				console.log(response.data)
-	    				Indicator.close()
-						if(response.data.code=="SYS_S_000"){
-							window.localStorage.token=response.data.output.token;
-							window.localStorage.userId=response.data.output.userId;
-							window.localStorage.phoneNum=this.phoneNum;
+    				var regInfo = {
+					  	"exSystem": "QTBApp",
+					  	"loginCome": "A",
+					  	"loginName": this.phoneNum,
+					  	"loginPwd": this.password,
+					  	"loginType": "2",
+					  	"smsCode": "",
+					  	"weChatInfo": this.wechatInfo
+					}
+//					console.log(regInfo)
+					this.$http.post(this.$store.state.link + '/sso/v2/dologin', regInfo).then(response => {
+						console.log(response.data)
+						Indicator.close()
+						if(response.data.code == "SYS_S_000") {
 							this.$router.push('/newPhone')
-						}else{
+						} else {
 							Toast(response.data.desc);
+							console.log(response.data.desc);
 						}
-			        },response => {
-			        	Indicator.close()
-			        	console.log("ajax error");
-			      	});
+					}, response => {
+						console.log("ajax error");
+					});
 			    }
     			
     		}
@@ -79,9 +74,6 @@
 	}
 	input, button {
 		outline: none;
-	}
-	input {
-		font-weight: 100;
 	}
 	input::-ms-clear {
 		display: none;

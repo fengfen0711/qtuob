@@ -148,7 +148,7 @@
 				</p>
 				<div class="recognizee">
 					<p class="inputGrop clearFloat">
-						<label class="inputLabel left">与投保人关系</label>
+						<label class="inputLabel left">被保险人是投保人的</label>
 						<select v-model="nexusType" class="left inputText inputWidth" @change="check_name('type')">
 							<option :value="nexus.code" v-for="nexus in nexusList">{{nexus.name}}</option>
 						</select>
@@ -196,7 +196,7 @@
 						<span class="inputTextRisk left">{{mainRisk.cvrgName}}</span>
 					</p>
 					<p class="inputGrop clearFloat">
-						<label class="inputLabel left">缴费期间</label>
+						<label class="inputLabel left">交费期间</label>
 						<select class="inputText inputWidth left " v-model="mainPayPeriodList" @change="Premium('01')">
 							<option :value="little.payNo" v-for="little in mainRisk.payPeriodList">{{little.payRmk}}</option>
 						</select>
@@ -215,11 +215,11 @@
 					</p>
 					<p v-if="numberFlag" class="inputGrop clearFloat">
 						<label class="inputLabel left">份数</label>
-						<input type="text" class="inputText inputWidth left" placeholder="请输入份数" v-model="amntNumber" @change="PremiumNumber" @blur="PremiumNumber" />
+						<input type="text" class="inputText inputWidth left" placeholder="请输入份数" v-model="amntNumber" @blur="PremiumNumber" />
 					</p>
 					<p class="inputGrop clearFloat">
-						<label class="inputLabel left">保额(元)</label>
-						<input type="text" class="inputText inputWidth left" name="text" id="text" placeholder="请输入保额" v-model="amnt" @blur="Premium" :disabled="!disabled1" />
+						<label class="inputLabel left">基本保险金额(元)</label>
+						<input type="text" class="inputText inputWidth left" name="text" id="text" placeholder="基本保险金额" v-model="amnt" @blur="Premium" :disabled="!disabled1" />
 					</p>
 					<p class="inputGrop clearFloat">
 						<label class="inputLabel left">保费(元)</label>
@@ -265,7 +265,7 @@
 				</p>
 
 				<p class="inputGrop clearFloat">
-					<label class="inputLabel2 left">首次应缴保费(元)</label>
+					<label class="inputLabel2 left">合计保费(元)</label>
 					<span class="inputText1 left">{{allYearFee}}</span>
 				</p>
 			</div>
@@ -276,7 +276,7 @@
 				<span class="sDes">我已阅读<span class="sSpan" @click.stop="sBoxGoPdf1(0)">《保险条款》</span>，将如实填写各项投保信息。</span>
 			</p>
 			<p v-show="hui" class="btnBox clearFloat">
-				<span class="btn btn1 left">保存并分享</span>
+				<span class="btn btn1 left" @click="handleClickBack">上一步</span>
 				<span class="btn left" @click="handleClickNextInterval">下一步</span>
 			</p>
 		</div>
@@ -344,15 +344,15 @@
 				nexusType: '0',
 				nexusList: [],
 				occupation: '请选择投保人职业',
-				occupation1: '请选择被保人职业',
+				occupation1: '请选择被保险人职业',
 				occupationcode: "", //投保人小类
-				occupation1code: "", //被保人小类
+				occupation1code: "", //被保险人小类
 				occupationName: "", //投保人小类名字
-				occupation1Name: "", //被保人小类名字
+				occupation1Name: "", //被保险人小类名字
 				parCode: "", //投保人大类
-				parCode1: "", //被保人大类
+				parCode1: "", //被保险人大类
 				occupationBigName: "", //投保人大类名字
-				occupation1BigName: "", //被保人大类名字
+				occupation1BigName: "", //被保险人大类名字
 				occupationIndex: '',
 				arrItem: [],
 				arrRiskfu: [],
@@ -366,8 +366,8 @@
 				gender1: 'M',
 				InsureName: '', //投保人姓名
 				InsureBr: '', //投保人生日
-				InsuredName: '', //被保人姓名
-				InsuredBr: '', //被保人生日
+				InsuredName: '', //被保险人姓名
+				InsuredBr: '', //被保险人生日
 				mainRisk: [],
 				mainPayPeriodList: '', //缴费期间
 				mainInsuPeriodList: '', //保险期间
@@ -411,12 +411,15 @@
 			var datew = datew.toString();
 			this.birth18 = datew
 			this.InsureBr = datew; //投保人生日
-			this.InsuredBr = datew; //被保人生日
+			this.InsuredBr = datew; //被保险人生日
 
 			this.init();
 			this.getClause();
 		},
 		methods: {
+			handleClickBack(){
+				window.history.go(-1)
+			},
 			getClause() {
 				var data = {
 					"prodCode": this.$route.query.prodCode
@@ -566,7 +569,7 @@
 						console.log("===" + JSON.stringify(res.data.output))
 						this.cvrgList_init(); //险种信息
 						this.occupation_init(); //职业信息
-						this.relationship(); //投被保人关系
+						this.relationship(); //投被保险人关系
 						var dataCode = res.data.code;
 						if(dataCode == "SYS_S_000") {
 							this.allDataInit = res.data.output;
@@ -603,7 +606,7 @@
 									this.automatic1 = false;
 								}
 							}
-							//被保人
+							//被保险人
 							if(res.data.output.applntResp.relationToInsured == "" || res.data.output.applntResp.relationToInsured == undefined) {} else {
 								//								this.nexusType = res.data.output.applntResp.relationToInsured;
 								if(this.nexusType == "00") { //是本人
@@ -687,7 +690,7 @@
 				this.InsuredName = "";
 				this.InsuredBr = "";
 				this.reSexShow = true;
-				this.occupation1 = "请选择被保人职业";
+				this.occupation1 = "请选择被保险人职业";
 			},
 			ievent(...data) { //子组件方法
 				//				console.log('allData:===1' + JSON.stringify(data)); // data为包含传过来所有数据的数组，第一个元素是对象，第二个元素是字符串
@@ -1085,7 +1088,7 @@
 					this.InsuredBr = datew;
 					this.reSexShow = false;
 					this.gender1 = "M";
-					this.occupation1 = "请选择被保人职业";
+					this.occupation1 = "请选择被保险人职业";
 					this.occupation1code = "";
 					this.parCode1 = "";
 					this.occupation1Name = "";
@@ -1412,6 +1415,7 @@
 											this.yearFee = this.allDataInit.cvrgResp[i].prem;
 											this.mainBirthAmtList = this.allDataInit.cvrgResp[i].fullBonusGetmode;
 											this.feeEdit = this.amnt; //下一步判断是否
+											this.amntNumber = this.allDataInit.cvrgResp[i].mult;
 										}
 									}
 								}
@@ -1453,36 +1457,39 @@
 					})
 			},
 			PremiumNumber() {
-				var patrn = /^[0-9]*$/;
-				if(this.amntNumber == "") {
-					return;
-				}
-				if(!patrn.test(this.amntNumber)) {
-					Toast("份数为纯数字")
-					return;
-				}
-				this.amnt = this.amntNumber;
 				this.Premium(); //按分数购买
 			},
 			Premium(index) {
 				if(index == "01") { //豁免险规则
 					this.arrListCheck1();
 				}
-				var patrn = /^[0-9]*$/;
-				if(!patrn.test(this.amnt)) {
-					Toast("保额必须为纯数字")
-					if(this.mainRisk.cvrgExtInfo.calcPremType == "2") {
-						this.yearFee = "";
-					} else if(this.mainRisk.cvrgExtInfo.calcPremType == "1") {
-						this.yearFee = "";
+				var patrn = /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/; //金额
+				if(this.mainRisk.cvrgCode == "C000018000004") {
+					var patrn1 = /^[0-9]*$/;
+					if(this.amntNumber == "") {
+						return;
 					}
-					this.totalPremium();
-					return;
+					if(!patrn1.test(this.amntNumber)) {
+						Toast("份数为纯数字")
+						return;
+					}
+					this.amnt = this.amntNumber * 1000;
+				} else {
+					if(this.amnt == "") {
+						return;
+					}
+					if(!patrn.test(this.amnt)) {
+						Toast("保额必须为纯数字")
+						if(this.mainRisk.cvrgExtInfo.calcPremType == "2") {
+							this.yearFee = "";
+						} else if(this.mainRisk.cvrgExtInfo.calcPremType == "1") {
+							this.yearFee = "";
+						}
+						this.totalPremium();
+						return;
+					}
 				}
 				//				if(this.amnt.toString().length >= 5) {
-				if(this.amnt == "") {
-					return;
-				}
 				var data;
 				if(this.mainRisk.cvrgExtInfo.calcPremType == "1") {
 					data = {
@@ -1530,14 +1537,19 @@
 						console.log("==222==" + JSON.stringify(res.data));
 						var dataCode = res.data.code;
 						if(dataCode == "SYS_S_000") {
-							this.feeEdit = this.amnt;
 							if(this.mainRisk.cvrgExtInfo.calcPremType == "2") {
 								this.yearFee = res.data.output.coverageFeeList[0].yearFee;
 								//								this.$store.dispatch("changeYearF",this.yearFee)
 							} else if(this.mainRisk.cvrgExtInfo.calcPremType == "1") {
-								this.yearFee = res.data.output.coverageFeeList[0].coverage;
-								//								this.$store.dispatch("changeYearF",this.yearFee)
+								//								if(this.mainRisk.cvrgCode == "C000018000004") {
+								//									this.yearFee = res.data.output.coverageFeeList[0].coverage;
+								//								} else {
+								this.amnt = res.data.output.coverageFeeList[0].coverage;
+								this.yearFee = res.data.output.coverageFeeList[0].yearFee;
+								//								}
+								this.$store.dispatch("changeYearF", this.yearFee)
 							}
+							this.feeEdit = this.amnt;
 							this.totalPremium();
 						} else {
 							if(this.mainRisk.cvrgExtInfo.calcPremType == "2") {
@@ -1594,6 +1606,8 @@
 				return returnAge;
 			},
 			handleClickNextInterval() {
+				console.log("1====" + this.feeEdit)
+				console.log("2====" + this.amnt)
 				if(this.feeEdit == this.amnt) {
 					this.handleClickNext();
 				} else {
@@ -1623,7 +1637,7 @@
 						return;
 					}
 					if(this.InsuredBr == "" || this.InsuredBr == undefined) {
-						Toast("被保人出生日期不得为空");
+						Toast("被保险人出生日期不得为空");
 						return;
 					}
 					var myDate = new Date();
@@ -1638,13 +1652,13 @@
 					var datew1 = datew.toString();
 					var d1 = datew.replace(/\-/g, "\/"); //今天
 					var d2 = this.InsureBr.replace(/\-/g, "\/"); //投保人
-					var d3 = this.InsuredBr.replace(/\-/g, "\/"); //被保人
+					var d3 = this.InsuredBr.replace(/\-/g, "\/"); //被保险人
 					if(datew != "" && this.InsureBr != "" && d1 <= d2) {
 						Toast('投保人出生日期不可以选择今天和今天之后')
 						return;
 					}
 					if(datew != "" && this.InsuredBr != "" && d1 <= d3) {
-						Toast('被保人出生日期不可以选择今天和今天之后')
+						Toast('被保险人出生日期不可以选择今天和今天之后')
 						return;
 					}
 					var re = /[^\u4e00-\u9fa5]/; //姓名校验
@@ -1661,15 +1675,15 @@
 						return;
 					}
 					if(this.InsuredName == "") {
-						Toast("被保人姓名不得为空");
+						Toast("被保险人姓名不得为空");
 						return;
 					}
 					if(re.test(this.InsuredName)) {
-						Toast("被保人姓名必须为纯中文");
+						Toast("被保险人姓名必须为纯中文");
 						return;
 					}
-					if(this.occupation1 == "请选择被保人职业") {
-						Toast("请选择被保人职业");
+					if(this.occupation1 == "请选择被保险人职业") {
+						Toast("请选择被保险人职业");
 						return;
 					}
 					if(this.amnt == "" || this.amnt == 0) {
@@ -1792,7 +1806,7 @@
 						"insuFlag": insuFlag,
 						"freqyNo": freqyNo,
 						"mult": this.amntNumber, //份数
-						"fullBonusGetmode": this.Premium
+						"fullBonusGetmode": this.mainBirthAmtList
 					}
 					this.cvrgReq.push(cvrgReqdata)
 					this.money1 = 0;
@@ -1824,6 +1838,7 @@
 					//							}
 					//						}
 					//					}
+					console.log(this.allDataInit)
 					if(this.allDataInit.applntResp != undefined) {
 						if(this.allDataInit.applntResp.applName == "" || this.allDataInit.applntResp.applName == undefined) {
 							addMainData = {
@@ -1832,7 +1847,7 @@
 								"amnt": this.money1, //保额
 								"deptCode": "000034", //机构代码   
 								"deptName": "", //机构名称
-								"agentDeptCode": this.$store.state.userInfo.brokerId, //代理机构
+								"agentDeptCode": this.$store.state.brokerInfo.brokerId, //代理机构
 								"expireProcessMode": "", //到期处理方式
 								"firstPremium": this.allYearFee, //首期保费 
 								"flightNo": "", //航班号 
@@ -1899,7 +1914,7 @@
 							"amnt": this.money1, //保额
 							"deptCode": "000034", //机构代码   
 							"deptName": "", //机构名称
-							"agentDeptCode": this.$store.state.userInfo.brokerId, //代理机构
+							"agentDeptCode": this.$store.state.brokerInfo.brokerId, //代理机构
 							"expireProcessMode": "", //到期处理方式
 							"firstPremium": this.allYearFee, //首期保费 
 							"flightNo": "", //航班号 
@@ -1984,7 +1999,7 @@
 								"occType": "", //职业大类 
 								"occTypeNo": "", //职业大类代码
 								"province": this.allDataInit.applntResp.province, //地址省
-								"relationToInsured": this.nexusType, //投保人与被保人关系  后期从接口拉取
+								"relationToInsured": this.nexusType, //投保人与被保险人关系  后期从接口拉取
 								"salary": this.allDataInit.applntResp.salary, //年收入
 								"tel": this.allDataInit.applntResp.tel, //固定电话
 								"weight": this.allDataInit.applntResp.weight, //体重
@@ -2040,7 +2055,7 @@
 								"gender": this.gender1, //性别 : M-男;F-女 ,
 								"height": this.allDataInit.insrntResp.height, //身高 ,
 								"incomeSource": this.allDataInit.insrntResp.incomeSource, //收入来源 ,
-								"insrntName": this.InsuredName, //被保人姓名 ,
+								"insrntName": this.InsuredName, //被保险人姓名 ,
 								"maritalStatus": this.allDataInit.insrntResp.maritalStatus, //婚姻状态 ,
 								"mobile": this.allDataInit.insrntResp.mobile, //联系电话 
 								"nationality": this.allDataInit.insrntResp.nationality, //国籍
@@ -2225,7 +2240,7 @@
 		height: 0.72rem;
 		padding-left: 0.24rem;
 		border: none;
-		color: #666666;
+		color: #333333;
 		/*background: #EEEEEE;*/
 		font-size: 0.34rem;
 		line-height: 0.44rem;
@@ -2501,10 +2516,6 @@
 		outline: none;
 	}
 	
-	input {
-		font-weight: 100;
-	}
-	
 	input::-ms-clear {
 		display: none;
 		width: 0;
@@ -2518,12 +2529,10 @@
 	textarea::-webkit-input-placeholder,
 	input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	.clearFloat:after {
@@ -2643,7 +2652,8 @@
 	
 	.inputLabel {
 		display: block;
-		width: 2.04rem;
+		/*width: 2.04rem;*/
+		width: 2.64rem;
 		height: 0.88rem;
 		line-height: 0.88rem;
 		font-weight: bold;
@@ -2653,7 +2663,7 @@
 	
 	.inputLabel2 {
 		display: block;
-		width: 2.2rem;
+		width: 2.64rem;
 		height: 0.88rem;
 		line-height: 0.88rem;
 		font-weight: bold;
@@ -2667,7 +2677,7 @@
 	.inputText {
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.inputSpan {
@@ -2724,16 +2734,16 @@
 		height: 0.88rem;
 		line-height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.inputTextRisk {
 		display: block;
-		width: 4.65rem;
+		width: 4.05rem;
 		/*height: 0.88rem;*/
 		line-height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		/*overflow: hidden;
 		text-overflow: ellipsis;
 		-o-text-overflow: ellipsis;*/
@@ -2741,11 +2751,11 @@
 	
 	.inputText2 {
 		display: block;
-		width: 4.6rem;
+		width: 4rem;
 		height: 0.88rem;
 		line-height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		overflow: hidden;
 		white-space: nowrap;
 	}
@@ -2759,7 +2769,8 @@
 	}
 	
 	.inputWidth {
-		width: 4.66rem;
+		/*width: 4.66rem;*/
+		width: 4.06rem;
 	}
 	
 	.inputWidth1 {

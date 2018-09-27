@@ -10,20 +10,20 @@
 				<!--姓名-->
 				<p class="inputGrop clearFloat">
 					<label class="inputLabel3 left"><label class="startopacity left">*</label>姓名</label>
-					<input type="text" class="inputText left" v-model="policyHolderName" placeholder="请输入真实姓名" :disabled="disabled" />
+					<input type="text" class="inputText inputWidth left" v-model="policyHolderName" placeholder="请输入真实姓名" :disabled="disabled" />
 					<!--<span class="sumBtn">+</span>-->
 				</p>
 				<!--生日日期-->
 				<p class="inputGrop clearFloat">
 					<label class="inputLabel3 left"><label class="startopacity left">*</label>出生日期</label>
-					<input type="date" class="inputText inputWidth left" v-model="birthDate" placeholder="请选择出生日期" :disabled="disabled" />
+					<input type="date" class="inputText inputWidth left" v-model="birthDate"  :disabled="disabled" />
 					<span class="dateBox1"></span>
 					<!--<img src="/static/img/upDown.png" class="upDownImg upDownImg2" />-->
 				</p>
 				<!--性别-->
 				<p class="inputGrop clearFloat">
 					<label class="inputLabel3 left"><label class="startopacity left">*</label>投保险人性别</label>
-					<input type="text" class="inputText left" v-model="sex" placeholder="" :disabled="disabled" />
+					<input type="text" class="inputText inputWidth left" v-model="sex" placeholder="" :disabled="disabled" />
 					<!--<span class="inputText inputSpan left">
 						<span class="sex sexM" @click="sexChose">
 							
@@ -46,7 +46,7 @@
 				<!--证件有效期-->
 				<p class="inputGrop clearFloat">
 					<label class="inputLabel3 left"><label class="start left">*</label>证件有效期至</label>
-					<span class="brspanbo dateInput" :class="{opa0:spanFlag}">请选择证件有效期</span>
+					<span class="brspanbo" :class="{opa0:spanFlag}">请选择证件有效期</span>
 					<input type="date" id="dateTime1" class="inputText dateInput dateInput1 left" :class="{opa0:!spanFlag}" placeholder="请选择证件有效期" v-model="termValidityDate" @click="termValidityDateSel" @change="termValidityDateSel" />
 					<span class="dateBox" @click="dateSel">
 						<img src="/static/img/sexNo.png" class="selImg" v-show="termValidityDateShow"/>
@@ -92,7 +92,7 @@
 				<!--固定电话-->
 				<p class="inputGrop clearFloat">
 					<label class="inputLabel3 left"><label class="startopacity left">*</label>固定电话</label>
-					<input type="tel" maxlength="11" class="inputText inputWidth left" placeholder="请输入固定电话" v-model="telPhone" />
+					<input type="tel" maxlength="19" class="inputText inputWidth left" placeholder="区号 - 号码 - 分机" v-model="telPhone" />
 				</p>
 				<!--邮箱地址-->
 				<p class="inputGrop clearFloat">
@@ -407,6 +407,13 @@
 						var dataCode = res.data.code;
 						if(dataCode == "SYS_S_000") {
 							this.couponList = res.data.output;
+							for(let i=0;i<res.data.output.length;i++){
+								if (res.data.output[i].code == "4") {
+									this.couponList.splice(i,1)
+								}else if (res.data.output[i].code == "F") {
+									this.couponList.splice(i,1)
+								}
+							}
 							if(this.allData.applntResp.certfType == "" || this.allData.applntResp.certfType == undefined) {
 								this.cardType = this.couponList[0].code;
 							} else {
@@ -728,8 +735,8 @@
 			handleClickNext() {
 				var patrn = /^[0-9]*$/;
 				var regCard = /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/; //证件
-				var regPh = /^1[0-9]{10}$/; //手机号
-				var regT = /^0\d{2,3}[1-9]\d{6,7}$/ //固定号码
+				var regPh = /^[1][3,4,5,6,7,8,9][0-9]{9}$/; //手机号
+				var regT = /^(0\d{2}-\d{8})|(0\d{3}-\d{7})(-\d{1,5})?$/ //固定号码
 				var reg = /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/; //邮箱地址
 				var rezipCode = /^[1-9][0-9]{5}$/; //邮编
 				var isNum = /^(([0-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/; //金额校验
@@ -826,7 +833,6 @@
 					Toast('手机号码格式不正确')
 					return;
 				}
-
 				if(this.reEmail == '' || this.reEmail == undefined) {
 					Toast('请输入邮箱')
 					return;
@@ -836,7 +842,7 @@
 					return;
 				}
 				if(this.telPhone == "" || this.telPhone == undefined) {} else {
-					if(!patrn.test(this.telPhone)) {
+					if(regT.test(this.telPhone)==false) {
 						Toast("固定号码格式不正确")
 						return;
 					}
@@ -947,8 +953,8 @@
 					"occTypeNo": "", //职业大类代码
 					//						"proposerNo": "string", //投保人编号 
 					"province": this.provinceType[0], //地址省
-					"relationToInsured": this.allData.applntResp.relationToInsured, //投保人与被保人关系  后期从接口拉取
-					//						"relationToInsured": "00", //投保人与被保人关系  后期从接口拉取
+					"relationToInsured": this.allData.applntResp.relationToInsured, //投保人与被保险人关系  后期从接口拉取
+					//						"relationToInsured": "00", //投保人与被保险人关系  后期从接口拉取
 					"salary": this.income, //年收入
 					//						"socialsecurityStatus": "Y", //社保状态 : Y-是;N-否 
 					"tel": this.telPhone, //固定电话
@@ -974,12 +980,12 @@
 					"gender": this.allData.applntResp.gender, //性别 : M-男;F-女 ,
 					"height": this.reHigh, //身高 ,
 					"incomeSource": this.currentIndex + 1, //收入来源 ,
-					"insrntName": this.policyHolderName, //被保人姓名 ,
-					//					"insuNo": "string", //被投保人编号 ,
-					//					"insuRelationToMaininsu": this.nexusType, //被保人与主被保人关系
-					//					"insuRelationToMaininsu": "00", //被保人与主被保人关系
+					"insrntName": this.policyHolderName, //被保险人姓名 ,
+					//					"insuNo": "string", //被保险人编号 ,
+					//					"insuRelationToMaininsu": this.nexusType, //被保险人与主被保险人关系
+					//					"insuRelationToMaininsu": "00", //被保险人与主被保险人关系
 					//					"language": "string", //语言 
-					//					"mainInsured": "0", //主被保人标志 ,
+					//					"mainInsured": "0", //主被保险人标志 ,
 					"maritalStatus": this.reMarry, //婚姻状态 ,
 					"mobile": this.phone, //联系电话 
 					"nationality": this.reHighs, //国籍
@@ -1058,9 +1064,17 @@
 						console.log(res.data)
 						if(res.data.code == "SYS_S_000") {
 							if(this.allData.applntResp.relationToInsured == "00") { //是本人
-								this.$router.push('/info3?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
+								if(this.occupation.substring(0,2)=="军警"&&(this.cardType==0||this.cardType=="C")){
+									this.$router.push('/info3?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&Tjun=Y&token=" + this.$route.query.token)
+								}else{
+									this.$router.push('/info3?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&Tjun=N&token=" + this.$route.query.token)
+								}
 							} else {
-								this.$router.push('/info2?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
+								if(this.occupation.substring(0,2)=="军警"&&(this.cardType==0||this.cardType=="C")){
+									this.$router.push('/info2?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&Tjun=Y&token=" + this.$route.query.token)
+								}else{
+									this.$router.push('/info2?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&Tjun=N&token=" + this.$route.query.token)
+								}
 							}
 						} else {
 							Toast(res.data.desc);
@@ -1154,10 +1168,6 @@
 		outline: none;
 	}
 	
-	input {
-		font-weight: 100;
-	}
-	
 	input::-ms-clear {
 		display: none;
 		width: 0;
@@ -1171,12 +1181,10 @@
 	textarea::-webkit-input-placeholder,
 	input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	.marleftall {
@@ -1361,7 +1369,7 @@
 	
 	.inputLabel3 {
 		display: block;
-		width: 2.3rem;
+		width: 2.6rem;
 		height: 0.88rem;
 		line-height: 0.88rem;
 		font-weight: bold;
@@ -1404,7 +1412,7 @@
 	.inputText {
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		padding-left: 0;
 	}
 	
@@ -1412,7 +1420,7 @@
 		width: 2.7rem;
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		padding-left: 0;
 	}
 	
@@ -1420,13 +1428,13 @@
 		width: 3rem;
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.inputText1 {
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		padding-left: 0;
 	}
 	
@@ -1453,7 +1461,7 @@
 		z-index: 1;
 		display: block;
 		height: 0.87rem;
-		padding: 0 0.2rem;
+		padding-right: 0.2rem;
 		line-height: 0.88rem;
 		background: #FFFFFF;
 		border-left: solid 0.01rem #C8C7CC;
@@ -1478,7 +1486,7 @@
 		width: 0.48rem;
 		height: 0.48rem;
 		margin-top: 0.2rem;
-		margin-right: 0.26rem;
+		/*margin-right: 0.26rem;*/
 	}
 	
 	.selectBox {
@@ -1491,9 +1499,9 @@
 		display: block;
 		width: 3.6rem;
 		height: 0.68rem;
-		margin-left: 2.04rem;
+		margin-left: 2.34rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.pro {
@@ -1509,7 +1517,7 @@
 	}
 	
 	.inputWidth {
-		width: 4.4rem;
+		width: 4.1rem;
 		/*background: #669900;*/
 	}
 	
@@ -1555,9 +1563,9 @@
 	
 	.dateB {
 		position: absolute;
-		right: 1.74rem;
+		right: 1.35rem;
 		top: 0;
-		z-index: -1;
+		z-index: 3;
 		width: 0.4rem;
 		height: 0.87rem;
 		background: #FFFFFF;
@@ -1612,7 +1620,7 @@
 	.brspanbo {
 		display: block;
 		position: absolute;
-		left: 2.3rem;
+		left: 2.6rem;
 		top: 0;
 		height: 0.88rem;
 		line-height: 0.88rem;

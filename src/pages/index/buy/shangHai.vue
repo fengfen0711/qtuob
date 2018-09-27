@@ -542,7 +542,7 @@
 						cancelButtonText: '暂不登录', 
 					  	showCancelButton: true
 					}).then(action => {
-						this.$router.push('/logNew')
+						this.$router.push('/regLog')
 					})
 				} else {
 		  			if(this.saleStatus == 1){
@@ -660,9 +660,6 @@
 	input, button {
 		outline: none;
 	}
-	input {
-		font-weight: 100;
-	}
 	input::-ms-clear {
 		display: none;
 		width: 0;
@@ -673,11 +670,9 @@
 	}
 	textarea::-webkit-input-placeholder, input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	.clearFloat:after {
 		height: 0;
@@ -747,7 +742,7 @@
 		float: left;
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	.inputSpan {
 		display: inline-block;
@@ -851,7 +846,7 @@
 		width: 3.6rem;
 		height: 0.68rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	.inputWidth {
 		width: 4.3rem;

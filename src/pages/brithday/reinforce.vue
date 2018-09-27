@@ -76,7 +76,9 @@
 			}
 		},
 		created() {
-			console.log(1)
+			if (this.$route.query.token != undefined) {
+				window.localStorage.token = this.$route.query.token
+			}
 			this.reinforce = localStorage.getItem("brokerCode");
 
 			this.weChat();
@@ -344,7 +346,7 @@
 	
 	.refion_invite_text {
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		width: 5.18rem;
 		height: 1.2rem;
 		margin-top: 2.3rem;

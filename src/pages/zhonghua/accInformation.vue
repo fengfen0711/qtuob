@@ -88,7 +88,7 @@
 				pdf: '',
 				pdfFlag: true,
 				showPdf: false,
-				bankNumber: '6228480402560000', //银行卡
+				bankNumber: '6228481200290317812', //银行卡
 				sBoxShow: true,
 				falg: true, //是否查看条款标志
 				paycard: "", //付款账号
@@ -519,10 +519,6 @@
 		outline: none;
 	}
 	
-	input {
-		font-weight: 100;
-	}
-	
 	input::-ms-clear {
 		display: none;
 		width: 0;
@@ -536,12 +532,10 @@
 	textarea::-webkit-input-placeholder,
 	input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	.clearFloat:after {
@@ -648,7 +642,7 @@
 	.inputText {
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		padding-left: 0;
 	}
 	
@@ -656,7 +650,7 @@
 		width: 3rem;
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	select {
@@ -692,13 +686,13 @@
 		height: 0.68rem;
 		margin-left: 2.04rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		padding-left: 0;
 	}
 	
 	..inputText13 {
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.inputWidth {

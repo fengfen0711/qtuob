@@ -3,7 +3,7 @@
 		<p class="eplocy_content">电子投保单内容</p>
 		<iframe :src="tmFmsUrl" id="iframe"></iframe>
 		<span class="epolicy_span" @click="handleClick">
-			被保人人脸识别及签字
+			被保险人人脸识别及签字
        	</span>
 	</div>
 	
@@ -27,7 +27,8 @@
 				this.$router.push('/faceInsured?prodCode=' +
 									this.$route.query.prodCode + '&prodNo=' +
 									this.$route.query.prodNo + '&orderNo=' +
-									this.$route.query.orderNo + '&cmpCode=' + this.$route.query.cmpCode);
+									this.$route.query.orderNo + '&cmpCode=' + 
+									this.$route.query.cmpCode+"&responseCode="+this.$route.query.responseCode);
 			},
 			pdfFile(){
 				var data = 	[

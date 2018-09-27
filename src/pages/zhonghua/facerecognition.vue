@@ -16,7 +16,7 @@
 		<div class="face_div1">
 			<div class="facesign" @click="handleClickSign">
 			<!--<p class="mem"></p>-->
-			<img v-if="sign" class="signPhoto" :src="signPhoto" :code="code" alt="" />投保人签字
+			<img v-if="sign" class="signPhoto" :src="signPhoto" :code="code1" alt="" />投保人签字
 			</div>
 			
 		</div>
@@ -52,6 +52,8 @@
 		name: "Feedsubmit",
 		data() {
 			return {
+				isPhoto:false,
+				isSign:false,
 				points: [],
 				canvasTxt: null,
 				startX: 0,
@@ -65,11 +67,12 @@
 				isDown: false,
 				mask: false,
 				code: "",
+				code1:"",
 				sign: false,
 				flag: false,
 				headerImage: '/static/img/zhonghua/takephoto.png',
 				status:false,
-				
+				allData:{}
 				
 				
 			}
@@ -79,8 +82,41 @@
 			canvas.height = this.$refs.canvasHW.offsetHeight
 			canvas.width = this.$refs.canvasHW.offsetWidth
 			this.canvasTxt = canvas.getContext("2d");
+			this.canvasTxt.lineWidth=5;
+			this.canvasTxt.fillStyle = "#FFFFFF";
+			this.canvasTxt.fillRect(0, 0, this.$refs.canvasF.width, this.$refs.canvasF.height);
+		},
+		created() {
+			this.echo();
 		},
 		methods: {
+			echo() {
+				var data = {
+					"token": this.$store.state.token,
+					"userId": this.$store.state.userId,
+					"head": {
+						"channelCode": "qtb_h5",
+						"deptCode": this.$route.query.cmpCode,
+						"oprCode": this.$store.state.userId,
+						"prodCode": this.$route.query.prodCode
+					},
+					//					"opt": "INSRNT",
+					"opt": "ALL",
+					"pkgNo": this.$route.query.orderNo, //订单号
+				}
+				console.log("==请求" + JSON.stringify(data));
+				this.$http.post(this.$store.state.link5 + '/trd/order/v1/queryorder', data)
+					.then(res => {
+						console.log("==成功" + JSON.stringify(res.data));
+						Indicator.close();
+						if(res.data.code == "SYS_S_000") {
+							this.allData = res.data.output;
+						}
+					}, res => {
+						Indicator.close();
+						console.log("==失败" + JSON.stringify(res.data));
+					})
+			},
 			//上一步
 			handleClickLast(){
 //				this.$router.push('/epolicy');
@@ -88,11 +124,50 @@
 			},
 			//下一步
 			handleClickNext(){
-				this.$router.push('/epolicp?prodCode=' +
+				if(this.isPhoto == false){
+					Toast('请先拍照')
+				}else if(this.isSign == false){
+					Toast('请先签字')
+				}else{
+					var data={
+						"token": this.$store.state.token,
+								"userId": this.$store.state.userId,
+								"head": { 
+									"channelCode": "qtb_h5",
+									"deptCode": "000300",
+									"oprCode": this.$store.state.userId,
+									"prodCode": this.$route.query.prodCode,
+								},
+								"mark": "UC",	
+								"opt": "DOC",
+								"pkgNo": this.$route.query.orderNo,
+								"docReq": [{
+										"docFileName": "投保人签字",
+										"docType": "062",
+										"fileSerialNo": this.code1,
+										"remark": "正",
+										"showOrder": 2
+								}
+								],
+					}
+					Indicator.open();
+					this.$http.post(this.$store.state.link5 + '/trd/order/v1/saveorder', data)
+							.then(res => {
+							Indicator.close();
+							console.log(res.data)
+							if (res.data.code == "SYS_S_000") {
+								this.$router.push('/epolicp?prodCode=' +
 									this.$route.query.prodCode + '&prodNo=' +
 									this.$route.query.prodNo + '&orderNo=' +
-									this.$route.query.orderNo + '&cmpCode=' + this.$route.query.cmpCode);
-				console.log(111)
+									this.$route.query.orderNo + '&cmpCode=' + this.$route.query.cmpCode+"&responseCode="+this.$route.query.responseCode);
+							} else {
+								Toast(res.data.desc);
+							}
+						}, res => {
+							Indicator.close();
+						})
+				
+				}
 			},
 			upload(e) {
 				Indicator.open()
@@ -155,12 +230,57 @@
 						if(res.data.code == "SYS_S_000") {
 								this.code = res.data.output[0].fileSerialNo
 								this.status = true;
+								this.isPhoto = true
+								this.addImgFace();
 								console.log(this.status)
 								
 						}
 					}, res => {
 						Indicator.close();
 						console.log("==2" + res.data);
+					})
+			},
+			addImgFace() {
+				Indicator.open();
+				var imgFormat = "";
+				if(this.code.length > 3) {
+					imgFormat = this.code.substr(this.code.length - 3, this.code.length - 1)
+				}
+				console.log(this.allData)
+				var addData = {
+					"cardId": this.allData.insrntResp.certfCode,
+					"head": {
+						"oprStep": "",
+						"channelCode": "qtb_h5",
+						"deptCode": this.$route.query.cmpCode,
+						"oprCode": this.$store.state.userId,
+						"prodCode": this.$route.query.prodCode
+					},
+					"imgData": this.code,
+					"imgFormat": imgFormat,
+					"name": this.allData.insrntResp.insrntName,
+					"pkgNo": this.$route.query.orderNo
+				}
+				console.log("==请求==" + JSON.stringify(addData))
+				//				this.$http.post("http://192.168.171.12:9009/doc/v1/checkdoc", addData)
+				this.$http.post(this.$store.state.link5 + '/trd/doc/v1/checkdoc', addData)
+					.then(res => {
+						console.log("===成功==" + JSON.stringify(res.data));
+						Indicator.close();
+						if(res.data.code == "SYS_S_000") {
+							if(res.data.output.responseCode == "000000") {
+								this.status = true
+							} else {
+								this.headerImage = "/static/img/zhonghua/takephoto.png";
+								this.code = "";
+								Toast(res.data.output.responseMsg)
+							}
+						}
+					}, res => {
+						this.headerImage = "/static/img/zhonghua/takephoto.png";
+						this.code = "";
+						console.log("===失败==" + JSON.stringify(res.data));
+						Indicator.close();
 					})
 			},
 			rotateImg(img, direction, canvas) {
@@ -303,13 +423,14 @@
 					this.sign = true
 					this.mask = false
 					//										this.blur = false
-					this.pushImg(image.src)
+//					this.pushImg(image.src)
+					this.pushImg(this.$refs.canvasF.toDataURL("image/jpeg"))
 				} else {
 					Toast("请签名后提交")
 				}
 
 			},
-			//移动设备事件
+				//移动设备事件
 			touchStart(ev) {
 				ev = ev || event;
 				ev.preventDefault();
@@ -451,9 +572,9 @@
 					.then(res => {
 						console.log(res.data)
 						if(res.data.code == "SYS_S_000") {
-							this.code = res.data.output[0].fileSerialNo
-							console.log(this.code)
-
+							this.code1 = res.data.output[0].fileSerialNo
+							console.log(this.code1)
+							this.handSign(data.split(",")[1]);
 						} else {
 							Toast("上传发生错误，请重新上传")
 						}
@@ -465,6 +586,32 @@
 					})
 
 			},
+			handSign(addData){	
+				Indicator.open();
+				var data = {
+					  "code": addData
+					}
+				console.log("1===="+JSON.stringify(data))
+				this.$http.post('http://192.168.171.12:9016/testwrite',data)
+					.then(res => {
+						Indicator.open();
+						console.log("2===="+JSON.stringify(res.data))
+						if(res.data.code == "SYS_S_000") {
+							Toast('识别成功'+res.data.output.resultWord)
+							this.isSign = true;
+						} else {
+							Toast('识别失败'+res.data.output.resultWord)
+						}
+
+						Indicator.close();
+					}, res => {
+						Indicator.close();
+						Toast('3==='+res.data.output.resultWord)
+						console.log("3===="+JSON.stringify(res.data))
+						Indicator.close();
+						console.log("上传图片错误");
+					})
+			}
 		}
 			
 		  
@@ -588,7 +735,7 @@
 		width: 100%;
 		height: 100%;
 		position: relative;
-		z-index: 100;
+		/*z-index: 100;*/
 	}
 	.signatureBox {
 		position: fixed;

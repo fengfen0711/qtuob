@@ -15,6 +15,11 @@
 				</div>
 			</div>
 			<div class="index_top">
+				<div class="my_div_itemall" @click="myIncome">
+					<img class="my_img_itemicon" src="/static/imgNew/icon_wallet3.png" />
+					<div class="my_img_itemname">我的收入</div>
+					<img class="my_img_itemnext" src="/static/imgNew/icon_next3.png" />
+				</div>
 				<div class="my_div_itemall" @click="mylifeorder">
 					<img class="my_img_itemicon" src="/static/imgNew/icon_order3.png" />
 					<div class="my_img_itemname">我的投保单</div>
@@ -60,7 +65,6 @@
 				mark_flag: true,
 				cust_status: true,
 				indexstatus: true,
-				phoneNum1: "010-86220865",
 				failure: "",
 				signText:"立即申请",
 				signStatus:'',
@@ -68,8 +72,9 @@
 			}
 		},
 		created() {
+			window.localStorage.removeItem("queryDate");
 			this.getBroInfo()
-			this.old();
+			this.old()
 			this.common.noShare()
 		},
 		methods: { //方法
@@ -84,7 +89,7 @@
 				Indicator.open();
 				this.$http.post(this.$store.state.link + "/pct/seloneselfinfo", data).then(res => {
 					Indicator.close();
-//					console.log(res.data)
+					console.log(res.data)
 					if(res.data.code == "SYS_S_000") {
 						if(res.data.output.headImg && res.data.output.headImg != "") {
 							this.headImg = res.data.output.headImg;
@@ -92,7 +97,6 @@
 						if (res.data.output.absName && res.data.output.absName != "") {
 							this.nickName = res.data.output.absName;
 						}
-						window.localStorage.BrokerId = res.data.output.brokerId;
 					} else {
 						if(res.data.desc != undefined) {
 							console.log(res.data.desc)
@@ -108,7 +112,7 @@
 	  		path(pathAdd){
 	  			if (this.signStatus == "ZS") {
 					this.$router.push(pathAdd)
-				} else  if (this.signStatus == "") {
+				} else if (this.signStatus == "") {
 					MessageBox.confirm('',{
 					  	title: '提示',
 					  	message: '您尚未与上海明大保险经纪有限公司签约，无法使用此功能。',
@@ -117,9 +121,8 @@
 					  	showCancelButton: true
 					}).then(action => {
 						this.$router.push('/guader')
-						this.quit()
 					})
-				} else  if (this.signStatus == "NE" || this.signStatus == "CE" || this.signStatus == "ZE") {
+				} else if (this.signStatus == "NE" || this.signStatus == "CE" || this.signStatus == "ZE") {
 					MessageBox.confirm('',{
 					  	title: '提示',
 					  	message: '您的签约审核失败，是否修改信息',
@@ -129,7 +132,7 @@
 					}).then(action => {
 						this.$router.push('/failindex?brokerId='+ this.$store.state.brokerInfo.brokerId+'&failure=' + this.failure)//审核失败
 					})
-				} else  if (this.signStatus == "TN" || this.signStatus == "CN" || this.signStatus == "ZN") {
+				} else if (this.signStatus == "TN" || this.signStatus == "CN" || this.signStatus == "ZN") {
 					MessageBox.confirm('',{
 					  	title: '提示',
 					  	message: '您的签约合伙人正在审核中，不要着急哦',
@@ -142,41 +145,42 @@
 				}
 	  		},
 	  		getBroInfo(){
-	  			if (this.$store.state.brokerInfo.isSignEnum == 'Y' && this.$store.state.brokerInfo.brokerCode != '') {
+  				if (this.$store.state.loginId == "2") {
 					this.signImg = '/static/imgNew/label43.png';
 				}else{
-		  			var broInfo = {
-						"brokerId": this.$store.state.brokerInfo.brokerId,
-					}
-	//	  			console.log(this.$store.state.brokerInfo.brokerId)
-					this.$http.post(this.$store.state.link + "/core/broker/brokerRegStatus", broInfo)
-					.then(res => {
-						console.log(res.data)
-						if(res.data.code == "SYS_S_000") {
-							if (res.data.output.brokerReg && res.data.output.brokerReg.regStatus) {
-								if (res.data.output.brokerReg.status == 'Y') {
-									this.signStatus = res.data.output.brokerReg.regStatus
-									this.failure = res.data.output.tblBrokerRegHis.regRemarks;
-									this.signClick();
-								}
-							}else{
-								this.signStatus = ""
-							}
+					if (this.$store.state.brokerInfo && this.$store.state.brokerInfo.brokerId) {
+						var broInfo = {
+							"brokerId": this.$store.state.brokerInfo.brokerId,
 						}
-					}, res => {
-						console.log(res.data)
-					})
+			  			console.log(broInfo)
+						this.$http.post(this.$store.state.link + "/core/broker/brokerRegStatus", broInfo)
+						.then(res => {
+							console.log(res.data)
+							if(res.data.code == "SYS_S_000") {
+								if (res.data.output.brokerReg && res.data.output.brokerReg.regStatus) {
+									if (res.data.output.brokerReg.status == 'Y') {
+										this.signStatus = res.data.output.brokerReg.regStatus
+										this.failure = res.data.output.tblBrokerRegHis.regRemarks;
+										this.signClick();
+									}
+								}else{
+									this.signStatus = ""
+								}
+							}
+						}, res => {
+							console.log(res.data)
+						})
+					}
 				}
 	  		},
 			proginquiry() {
-				if (this.$store.state.brokerInfo.isSignEnum == 'Y' && this.$store.state.brokerInfo.brokerCode != '') {
+				if (this.$store.state.loginId == "2") {
 					this.$router.push('/step?brokerId='+ this.$store.state.brokerInfo.brokerId)
 				}else{
 					if (this.signStatus == "ZS") {
 						this.$router.push('/step?brokerId='+ this.$store.state.brokerInfo.brokerId)//已签约并审核成功
 					} else  if (this.signStatus == "") {
 						this.$router.push('/guader')
-						this.quit()
 					} else  if (this.signStatus == "NE" || this.signStatus == "CE" || this.signStatus == "ZE") {
 						this.$router.push('/failindex?brokerId='+ this.$store.state.brokerInfo.brokerId+'&failure=' + this.failure)//审核失败
 					} else  if (this.signStatus == "TN" || this.signStatus == "CN" || this.signStatus == "ZN") {
@@ -187,19 +191,14 @@
 			userinfo() {
 				this.$router.push('/userNew')
 			},
+			myIncome(){
+				this.$router.push('/income')
+			},
 			mylifeorder() {
 				this.$router.push('/mylifeOrder')
-//				MessageBox.confirm('',{
-//				  	title: '温馨提示',
-//				  	message: '我们正在努力中，敬请期待~',
-//				  	confirmButtonText: '确定',
-//				  	showCancelButton: false
-//				}).then(action => {
-//					
-//				})
 			},
 			myConfirmation() {
-				if (this.$store.state.brokerInfo.isSignEnum == 'Y' && this.$store.state.brokerInfo.brokerCode != '') {
+				if (this.$store.state.loginId == "2") {
 					this.$router.push('/custConfirmation')
 				}else{
 					this.path('/custConfirmation')
@@ -212,7 +211,7 @@
 				this.$router.push('/mineSet')
 			},
 			signClick(){
-				if (this.$store.state.brokerInfo.isSignEnum == 'Y' && this.$store.state.brokerInfo.brokerCode != '') {
+				if (this.$store.state.loginId == "2") {
 					this.signImg = '/static/imgNew/label43.png';
 				}else{
 					if (this.signStatus == "ZS") {
@@ -225,36 +224,6 @@
 						this.signImg = '/static/imgNew/label23.png';
 					}
 				}
-			},
-			quit() {
-				var data = {
-					"loginNme": this.$store.state.userInfo.userPhone,
-					"loginType": "A",
-					"token": this.$store.state.token,
-					"userId": this.$store.state.userId
-				};
-				this.$http.post(this.$store.state.link + "/sso/dologout", data).then(res => {
-					Indicator.close();
-//					console.log(res.data)
-					if(res.data.code == "SYS_S_000") {
-						window.localStorage.removeItem("phoneNum");
-						window.localStorage.removeItem("token");
-						this.$store.dispatch("changeToken", '')
-						this.$store.dispatch("changeUserId", '')
-						this.$store.dispatch("changeUserInfoData", {})
-						this.$store.dispatch("changeBrokerInfoData", {})
-					} else {
-						window.localStorage.removeItem("phoneNum");
-						window.localStorage.removeItem("token");
-						this.$store.dispatch("changeToken", '')
-						this.$store.dispatch("changeUserId", '')
-						this.$store.dispatch("changeUserInfoData", {})
-						this.$store.dispatch("changeBrokerInfoData", {})
-					}
-				}, res => {
-					Indicator.close();
-					console.log(res.data)
-				})
 			},
 		}
 	}
@@ -276,8 +245,10 @@
 		content: "";
 	}
 	.blur_all {
+		position: absolute;
 		width: 100%;
 		height: 100%;
+		background: #FFFFFF;
 	}
 	.blur_all1 {
 		background-attachment: fixed;

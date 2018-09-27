@@ -118,7 +118,7 @@ export default {
 			sexShow: true,
 			longShow: true,
 			valiuntil: true, //证件有效期至
-			insured: "N",//是被保人的
+			insured: "N",//是被保险人的
 			benname: "",//姓名
 			bencard: "N",//证件类型
 			bencardnum: "",//证件号码
@@ -427,7 +427,7 @@ export default {
 			var regEn = /[`~!@#$%^&*()_+<>?:"{},.\/;'[\]]/im,
     			regCn = /[·！#￥（——）：；“”‘、，|《。》？、【】[\]]/im;
 			if (this.insured == "N") {
-				Toast("是被保人的关系不能为空");
+				Toast("是被保险人的关系不能为空");
 				this.$emit('child_saya1', true);
 				return;
 			} else if (this.benname == "") {
@@ -488,7 +488,7 @@ export default {
 
 			var bnfReq = {
 				"age": this.jsGetAge(this.bendata),
-				"relatoInsured": this.insured, //受益人是被保人关系
+				"relatoInsured": this.insured, //受益人是被保险人关系
 				"bnfName": this.benname, //受益人姓名
 				"certfType": this.bencard, //证件类型
 				"certfCode": this.bencardnum, //证件号码
@@ -572,10 +572,6 @@ button {
 	outline: none;
 }
 
-input {
-	font-weight: 100;
-}
-
 input::-ms-clear {
 	display: none;
 	width: 0;
@@ -589,12 +585,10 @@ input::-ms-reveal {
 textarea::-webkit-input-placeholder,
 input::-webkit-input-placeholder {
 	color: #B2B2B2;
-	font-weight: 100;
 }
 
 input:-ms-input-placeholder {
 	color: #B2B2B2;
-	font-weight: 100;
 }
 
 select {
@@ -699,7 +693,7 @@ select {
 .inputText {
 	height: 0.88rem;
 	font-size: 0.28rem;
-	color: #666666;
+	color: #333333;
 }
 
 .inputSpan {

@@ -28,15 +28,18 @@
 						<div class="prd_div_itemtopright">
 							<p class="prd_div_name">{{item.prodSaleName}}</p>
 							<p class="prd_div_describe">{{item.prodRecmd}}</p>
+							<p>
+								<span class="prd_div_bottom">
+									<img class="prd_img_hot" src="/static/imgNew/hot3.png" />
+									<img class="prd_img_hot" src="/static/imgNew/new3.png" />
+									<img class="prd_img_hot" src="/static/imgNew/tj3.png" />
+								</span>
+							</p>
 						</div>
 					</div>
 					<div class="btomBox">
 						<span class="prd_div_itemcompany">{{item.deptAbr}}</span>
-						<span class="prd_div_bottom">
-							<img class="prd_img_hot" src="/static/imgNew/hot3.png" />
-							<img class="prd_img_hot" src="/static/imgNew/new3.png" />
-							<img class="prd_img_hot" src="/static/imgNew/tj3.png" />
-						</span>
+						
 						<span class="prd_div_rb">
 							<span v-if="show_money(item.minPrice)" class="prd_div_money">￥</span>
 							<span class="prd_div_money1">{{item.minPrice}}</span>
@@ -123,6 +126,7 @@
 					}],
 					"tmpType": ""
 				}
+				console.log(JSON.stringify(data))
 				Indicator.open();
 				this.$http.post(this.$store.state.link + "/prd/prod/tagprodsalelist", data).then(res => {
 					Indicator.close();
@@ -273,7 +277,7 @@
 		position: relative;
 		display: inline-block;
 		height: 0.88rem;
-		line-height: 0.88rem;
+		line-height: 1rem;
 		margin: 0 0.5em;
 		font-size: 0.32rem;
 		font-weight: bold;
@@ -288,8 +292,8 @@
 		position: relative;
 		display: inline-block;
 		height: 0.88rem;
-		line-height: 0.88rem;
-		margin: 0 0.5em;
+		line-height: 1rem;
+		margin: 0 0.2rem;
 		font-size: 0.3rem;
 		color: #222222;
 		text-align: center;
@@ -321,9 +325,9 @@
 	}
 	.prd_div_itemall {
 		position: relative;
-		height: 2.03rem;
+		height: 2.01rem;
 		padding-top: 0.32rem;
-		border-bottom: solid 0.01rem #CCCCCC;
+		border-bottom: solid 0.01rem #D8D8D8;
 	}
 	
 	.prd_div_itemtop {
@@ -338,6 +342,7 @@
 		width: 2.68rem;
 		height: 1.46rem;
 		border-radius: 0.08rem;
+		background: rgba(0,0,0,0.03);
 	}
 	
 	.prd_div_itemtopright {
@@ -360,8 +365,10 @@
 	
 	.prd_div_describe {
 		width: 4rem;
-		line-height: 0.32rem;
-		margin-top: 0.16rem;
+		height: 0.64rem;
+		line-height: 0.34rem;
+		margin-top: 0.1rem;
+		margin-bottom: 0.06rem;
 		font-size: 0.24rem;
 		color: #969696;
 		overflow: hidden;
@@ -381,9 +388,9 @@
 	
 	.prd_div_bottom {
 		display: block;
-		float: left;
+		/*float: left;*/
 		height: 0.32rem;
-		margin-left: 0.35rem;
+		/*margin-left: 0.35rem;*/
 	}
 	.btomBox {
 		margin-top: 0.12rem;

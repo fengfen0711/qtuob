@@ -131,7 +131,7 @@
 		},
 		methods: { //方法
 			toNew() {
-				this.$router.push('/newIndex/home')
+				this.$router.push('/home')
 			},
 			notcan() {
 				this.indexstatus = true;

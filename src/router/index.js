@@ -1,11 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Index from '@/pages/index/index'
-import Login from '@/pages/login/index'
-import Register from '@/pages/login/register'
-import Code from '@/pages/login/code'
 import Forget from '@/pages/login/forget'
-import Password from '@/pages/login/password'
 import Manage from '@/pages/manage/index'
 import Brithdayfall from '@/pages/brithday/brithdayfall'
 import Preview from '@/pages/brithday/preview'
@@ -13,21 +8,17 @@ import MatchReport from '@/pages/brithday/matchReport'
 import Labelmanagement from '@/pages/brithday/label_management'
 import Workbench from '@/pages/brithday/workbench'
 import About_qtb from '@/pages/my/about_qtb'
-import Afternoon from '@/pages/index/afternoon'
 import Feedback from '@/pages/brithday/feedback'
 import Confirmed from '@/pages/my/confirmed'
 import Reinforce from '@/pages/brithday/reinforce'
 import PreferentialRecommendation from '@/pages/qijianwei/preferentialRecommendation'
 import RecommendedDetails from '@/pages/qijianwei/recommendedDetails'
-import My from '@/pages/index/index_my'
-import Produch from '@/pages/index/produch'
 import CustConfirmation from '@/pages/my/custConfirmation'
 import Safe from '@/pages/safe/index'
 import ResetPassword from '@/pages/safe/resetPassword'
 import ResetPhone from '@/pages/safe/resetPhone'
 import NewPhone from '@/pages/safe/newPhone'
 import Detail from '@/pages/index/detail'
-import UserInfo from '@/pages/my/userInfo'
 import CustConfirmationdetails from '@/pages/my/custConfirmationdetails'
 import All from '@/pages/manage/all'
 import Information from '@/pages/manage/information'
@@ -126,24 +117,27 @@ import ViewVideo from '@/pages/junkang/viewVideo' //影像资料
 
 
 //。。。。改版App
-import NewIndex from '@/pages/newApp/bottom'
+import Index from '@/pages/newApp/bottom'
 import MineSet from '@/pages/newApp/mineSet'
 import ArtDetail from '@/pages/newApp/artDetail'
-import ArtDetailT from '@/pages/newApp/artDetailT'
 import Home from "@/pages/newApp/index.vue"
 import Product from "@/pages/newApp/product.vue"
 import Descover from "@/pages/newApp/descover.vue"
-import Descover1 from "@/pages/newApp/descover1.vue"
-import DescoverT from "@/pages/newApp/descoverT.vue"
+import Study from "@/pages/newApp/descover/study.vue"
+import Recommend from "@/pages/newApp/descover/recommend.vue"
 import Mine from "@/pages/newApp/mine.vue"
 import StudyDetail from "@/pages/newApp/descover/studyDetail.vue"
 import Tool from "@/pages/newApp/lookAhead/tool.vue"
 import Company from "@/pages/newApp/lookAhead/company.vue"
 import Rule from "@/pages/newApp/lookAhead/rule.vue"
-import RegNew from "@/pages/newApp/login/regNew.vue"
-import LogNew from "@/pages/newApp/login/logNew.vue"
+import RegLog from "@/pages/newApp/login/regLog.vue"
+import PasLog from "@/pages/newApp/login/pasLog.vue"
 import RewNew from "@/pages/newApp/login/rewNew.vue"
+import SetPass from "@/pages/newApp/login/setPass.vue"
 import UserNew from "@/pages/newApp/userInfo.vue"
+import SetPassword from '@/pages/safe/setPassword'
+import Income from '@/pages/newApp/income/index'
+import IncomeDetail from '@/pages/newApp/income/incomeDetail'
 
 //.......中华
 import Resultfeedback from '@/pages/zhonghua/resultfeedback'
@@ -174,22 +168,59 @@ import InformationCon from '@/pages/zhonghua/informationCon' //信息确认
 import PayBank from '@/pages/zhonghua/payBank' //原卡支付
 import PayBank_Error from '@/pages/zhonghua/payBank_Error' //新卡支付
 import PdfFile from '@/pages/zhonghua/pdfFile' //银行卡信息阅览
+
+//.......长城
+import InsuranceTips from '@/pages/changcheng/insuranceTips' //人身投保提示书
+import DataUpload from '@/pages/changcheng/dataUpload' //人身投保提示书
+import AccountInfo from '@/pages/changcheng/accountInfo' //账户信息
+import BenProp from '@/pages/changcheng/benProp' //受益人
+import Verification from '@/pages/changcheng/verification' //投保人身份验证
+import SignPdf from '@/pages/changcheng/signPdf' //单证签字
+import BrokNot from '@/pages/changcheng/brokNot' //经纪人告知书
+import BasicInformation from '@/pages/changcheng/basicInformation' //基本信息
+import InsuranceProducts from '@/pages/changcheng/insuranceProducts' //投保产品
+import PolicyHolders from '@/pages/changcheng/policyHolders' //投保人
+import InsuredPerson from '@/pages/changcheng/insuredPerson' //被保人
+import DataPreview from '@/pages/changcheng/dataPreview' //资料预览
+import BenefitShow from '@/pages/changcheng/benefitShow' //利益展示
+import OutcomeFeedback from '@/pages/changcheng/outcomeFeedback' //结果反馈--签字成功
+import OutcomeFileback from '@/pages/changcheng/outcomeFileback' //结果反馈--页面失效
+import OutcomePaySuccess from '@/pages/changcheng/outcomePaySuccess' //结果反馈--支付结果（成功、失败）
+import UnderResult from '@/pages/changcheng/underResult'//结果反馈--核保失败
+import SubmitResult from '@/pages/changcheng/submitResult'//结果反馈--提交成功
+import ShareResult from '@/pages/changcheng/shareResult'//结果反馈--分享成功
+import HolderInform from '@/pages/changcheng/HolderInform'//投保人告知
+import InsuranceInform from '@/pages/changcheng/InsuranceInform'//被保人告知
+
+//......网销报备
+import Zhongyin from '@/pages/index/active/zhongyin' //中银
+import Xinhua from '@/pages/index/active/xinhua' //新华
+import ActiveDetail from '@/pages/index/active/active_detail' //新华
+import Yiwai from '@/pages/index/active/yiwai' //意外
+import Muying from '@/pages/index/active/muying' //母婴
+import ActiveList from '@/pages/index/active/activeList' //网销列表
+import ActiveSafe from '@/pages/index/active/safe' //账户安心
+import Fly from '@/pages/index/active/fly' //航空意外
+import Bus from '@/pages/index/active/bus' //公共交通意外伤害保险
+import Bai from '@/pages/index/active/bai' //泰康在线
+import Overseas from '@/pages/index/active/overseas' //海外医疗
+
 Vue.use(Router)
 
 export default new Router({
 	routes: [
-		//	{
-		//    path: '/',
-		//    name: 'AauthorizationCallback',
-		//    component: AauthorizationCallback,
-		//    meta:{
-		//    	title:"趣投保"
-		//    }
-		//  },
+//			{
+//		    path: '/',
+//		    name: 'AauthorizationCallback',
+//		    component: AauthorizationCallback,
+//		    meta:{
+//		    	title:"趣投保"
+//		    }
+//		  },
 		{
-			path: '/newIndex',
-			name: 'newIndex',
-			component: NewIndex,
+			path: '/',
+			name: 'index',
+			component: Index,
 			children: [{
 				path: 'home',
 				name: 'home',
@@ -210,14 +241,25 @@ export default new Router({
 				component: Descover,
 				meta: {
 					title: "发现"
-				}
-			}, {
-				path: 'descover1',
-				name: 'descover1',
-				component: Descover1,
-				meta: {
-					title: "发现"
-				}
+				},
+				children: [
+					{
+						path: 'recommend',
+						name: 'recommend',
+						component: Recommend,
+						meta: {
+							title: "趣推荐"
+						},
+					},
+					{
+						path: 'study',
+						name: 'study',
+						component: Study,
+						meta: {
+							title: "趣学习"
+						},
+					}
+				]
 			},{
 				path: 'mine',
 				name: 'mine',
@@ -234,14 +276,7 @@ export default new Router({
 			meta: {
 				title: "详情信息"
 			}
-		}, {
-				path: '/descoverT',
-				name: 'descoverT',
-				component: DescoverT,
-				meta: {
-					title: "发现"
-				}
-			},
+		},
 		{
 			path: '/mineSet',
 			name: 'mineSet',
@@ -254,14 +289,6 @@ export default new Router({
 			path: '/artDetail',
 			name: 'artDetail',
 			component: ArtDetail,
-			meta: {
-				title: "详情"
-			}
-		},
-		{
-			path: '/artDetailT',
-			name: 'artDetailT',
-			component: ArtDetailT,
 			meta: {
 				title: "详情"
 			}
@@ -291,19 +318,27 @@ export default new Router({
 			}
 		},
 		{
-			path: '/regNew',
-			name: 'regNew',
-			component: RegNew,
+			path: '/setPass',
+			name: 'setPass',
+			component: SetPass,
 			meta: {
-				title: "趣投保-注册"
+				title: "设置密码"
 			}
 		},
 		{
-			path: '/logNew',
-			name: 'logNew',
-			component: LogNew,
+			path: '/pasLog',
+			name: 'pasLog',
+			component: PasLog,
 			meta: {
-				title: "趣投保-登录"
+				title: "密码登录"
+			}
+		},
+		{
+			path: '/regLog',
+			name: 'regLog',
+			component: RegLog,
+			meta: {
+				title: "注册登录"
 			}
 		},
 		{
@@ -321,50 +356,32 @@ export default new Router({
 			meta: {
 				title: "个人中心"
 			}
-//		},
-//		{
-//			path: '/',
-//			name: 'index',
-//			component: Index,
-//			meta: {
-//				title: "趣投保"
-//			}
-//		}, {
-//			path: '/login',
-//			name: 'login',
-//			component: Login,
-//			meta: {
-//				title: "登录"
-//			}
-//		}, {
-//			path: '/register',
-//			name: 'register',
-//			component: Register,
-//			meta: {
-//				title: "注册"
-//			}
-//		}, {
-//			path: '/code',
-//			name: 'code',
-//			component: Code,
-//			meta: {
-//				title: "密码"
-//			}
-//		}, {
-//			path: '/forget',
-//			name: 'forget',
-//			component: Forget,
-//			meta: {
-//				title: "找回密码"
-//			}
-//		}, {
-//			path: '/password',
-//			name: 'password',
-//			component: Password,
-//			meta: {
-//				title: "重置密码"
-//			}
-		}, {
+		},
+		{
+			path: '/setPassword',
+			name: 'setPassword',
+			component: SetPassword,
+			meta: {
+				title: "设置登录密码"
+			}
+		},
+		{
+			path: '/income',
+			name: 'income',
+			component: Income,
+			meta: {
+				title: "我的收入"
+			}
+		},
+		{
+			path: '/incomeDetail',
+			name: 'incomeDetail',
+			component: IncomeDetail,
+			meta: {
+				title: "收入明细"
+			}
+		},
+		{
 			path: '/manage',
 			name: 'manage',
 			component: Manage,
@@ -410,13 +427,6 @@ export default new Router({
 			meta: {
 				title: "关于趣投保"
 			}
-//		}, {
-//			path: '/afternoon',
-//			name: 'afternoon',
-//			component: Afternoon,
-//			meta: {
-//				title: "早午晚报"
-//			}
 		}, {
 			path: '/feedback',
 			name: 'feedback',
@@ -446,20 +456,6 @@ export default new Router({
 			meta: {
 				title: "详情预览"
 			}
-//		}, {
-//			path: '/my',
-//			name: 'my',
-//			component: My,
-//			meta: {
-//				title: "我的"
-//			}
-//		}, {
-//			path: '/produch',
-//			name: 'produch',
-//			component: Produch,
-//			meta: {
-//				title: "产品列表"
-//			}
 		}, {
 			path: '/custConfirmation',
 			name: 'custConfirmation',
@@ -502,13 +498,6 @@ export default new Router({
 			meta: {
 				title: "产品详情"
 			}
-//		}, {
-//			path: '/userInfo',
-//			name: 'userInfo',
-//			component: UserInfo,
-//			meta: {
-//				title: "个人信息"
-//			}
 		}, {
 			path: '/custConfirmationdetails',
 			name: 'custConfirmationdetails',
@@ -1163,7 +1152,7 @@ export default new Router({
 			name: 'feedbackpayment',
 			component: Feedbackpayment,
 			meta: {
-				title: "支付失败"
+				title: "支付结果"
 			}
 		}, {
 			path: '/feedsubmit',
@@ -1320,6 +1309,83 @@ export default new Router({
 				title: "声明和授权"
 			}
 		},{
+			path: '/zhongyin',
+			name: 'zhongyin',
+			component: Zhongyin,
+			meta: {
+				title: "产品介绍"
+			}
+		},{
+			path: '/xinhua',
+			name: 'xinhua',
+			component: Xinhua,
+			meta: {
+				title: "产品介绍"
+			}
+		},{
+			path: '/active_detail',
+			name: 'active_detail',
+			component: ActiveDetail,
+			meta: {
+				title: "保障范围"
+			}
+		},{
+			path: '/yiwai',
+			name: 'yiwai',
+			component: Yiwai,
+			meta: {
+				title: "产品介绍"
+			}
+		},{
+			path: '/muying',
+			name: 'muying',
+			component: Muying,
+			meta: {
+				title: "产品介绍"
+			}
+		},{
+			path: '/activeList',
+			name: 'activeList',
+			component: ActiveList,
+			meta: {
+				title: "产品列表"
+			}
+		},{
+			path: '/activeSafe',
+			name: 'activeSafe',
+			component: ActiveSafe,
+			meta: {
+				title: "产品介绍"
+			}
+		},{
+			path: '/fly',
+			name: 'fly',
+			component: Fly,
+			meta: {
+				title: "产品介绍"
+			}
+		},{
+			path: '/bus',
+			name: 'bus',
+			component: Bus,
+			meta: {
+				title: "产品介绍"
+			}
+		},{
+			path: '/bai',
+			name: 'bai',
+			component: Bai,
+			meta: {
+				title: "产品介绍"
+			}
+		},{
+			path: '/overseas',
+			name: 'overseas',
+			component: Overseas,
+			meta: {
+				title: "产品介绍"
+			}
+		},{
 			path: '/payBank',
 			name: 'payBank',
 			component: PayBank,
@@ -1329,10 +1395,158 @@ export default new Router({
 		},{
 			path: '/payBank_Error',
 			name: 'payBank_Error',
-			component: PayBank,
+			component: PayBank_Error,
 			meta: {
 				title: "新卡支付"
 			}
+		},{
+			path: '/insuranceTips',
+			name: 'insuranceTips',
+			component: InsuranceTips,
+			meta: {
+				title: "人身投保提示书"
+			}
+		},{
+			path: '/dataUpload',
+			name: 'dataUpload',
+			component: DataUpload,
+			meta: {
+				title: "资料上传"
+			}
+		},{
+			path: '/accountInfo',
+			name: 'accountInfo',
+			component: AccountInfo,
+			meta: {
+				title: "账户信息"
+			}
+		},{
+			path: '/brokNot',
+			name: 'brokNot',
+			component: BrokNot,
+			meta: {
+				title: "经纪人告知书"
+			}
+		},{
+			path: '/benProp',
+			name: 'benProp',
+			component: BenProp,
+			meta: {
+				title: "受益人信息填写"
+			}
+		},{
+			path: '/verification',
+			name: 'verification',
+			component: Verification,
+			meta: {
+				title: "投保人身份验证"
+			}
+		},{
+			path: '/signPdf',
+			name: 'signPdf',
+			component: SignPdf,
+			meta: {
+				title: "单证签字"
+			}
+		},{
+			path: '/basicInformation',
+			name: 'basicInformation',
+			component: BasicInformation,
+			meta: {
+				title: "基本信息"
+			}
+		},{
+			path: '/insuranceProducts',
+			name: 'insuranceProducts',
+			component: InsuranceProducts,
+			meta: {
+				title: "投保产品"
+			}
+		},{
+			path: '/policyHolders',
+			name: 'policyHolders',
+			component: PolicyHolders,
+			meta: {
+				title: "投保人"
+			}
+		},{
+			path: '/insuredPerson',
+			name: 'insuredPerson',
+			component: InsuredPerson,
+			meta: {
+				title: "被保人"
+			}
+		},{
+			path: '/dataPreview',
+			name: 'dataPreview',
+			component: DataPreview,
+			meta: {
+				title: "资料预览"
+			}
+		},{
+			path: '/benefitShow',
+			name: 'benefitShow',
+			component: BenefitShow,
+			meta: {
+				title: "利益展示"
+			}
+		},{		
+			path: '/outcomeFeedback',
+			name: 'outcomeFeedback',
+			component:OutcomeFeedback,
+			meta: {
+				title: "结果反馈"
+			}
+		},{
+			path: '/outcomeFileback',
+			name: 'outcomeFileback',
+			component:OutcomeFileback,
+			meta: {
+				title: "结果反馈"
+			}
+		},{
+			path: '/outcomePaySuccess',
+			name: 'outcomePaySuccess',
+			component:OutcomePaySuccess,
+			meta: {
+				title: "结果反馈"
+			}
+		},{
+			path: '/underResult',
+			name: 'underResult',
+			component:UnderResult,
+			meta: {
+				title: "结果反馈"
+			}
+		},{
+			path: '/submitResult',
+			name: 'submitResult',
+			component:SubmitResult,
+			meta: {
+				title: "结果反馈"
+			}
+		},{
+			path: '/shareResult',
+			name: 'shareResult',
+			component:ShareResult,
+			meta: {
+				title: "结果反馈"
+			}
+		},{
+			path: '/insuranceInform',
+			name: 'InsuranceInform',
+			component:InsuranceInform,
+			meta: {
+				title: "被保人告知"
+			}
+		},{
+			path: '/holderInform',
+			name: 'HolderInform',
+			component:HolderInform,
+			meta: {
+				title: "投保人告知"
+			}
 		}
+		
 	]
 })

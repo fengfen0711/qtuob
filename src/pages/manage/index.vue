@@ -282,10 +282,10 @@
 				});
 			},
 			handleClickshare() {
-				this.$router.push('/produch')
+				this.$router.push('/product')
 			},
 			handleClickconfirm() {
-				if (this.$store.state.brokerInfo.isSignEnum == 'Y' && this.$store.state.brokerInfo.brokerCode != '') {
+				if (this.$store.state.loginId == "2") {
 					window.localStorage.custName=this.list.custName
 					this.$router.push('/custConfirmation?custId='+this.$route.query.custId)
 				}else{

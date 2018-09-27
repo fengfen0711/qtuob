@@ -2,9 +2,9 @@
 	<div class="one" style=" -webkit-tap-highlight-color: transparent; -webkit-focus-ring-color: transparent;">
 		<div class="titleFont">
 			本人特此声明：<br/>
-			本人已亲自面见投保人和被投保人，就投保单的告知<br/>
-			事项逐一向投保人和被投保人当面询问，并见证投保<br/>
-			人和被投保人在投保单上签字。<br/>
+			本人已亲自面见投保人和被保险人，就投保单的告知<br/>
+			事项逐一向投保人和被保险人当面询问，并见证投保<br/>
+			人和被保险人在投保单上签字。<br/>
 			此外，本人还核对了其身份证件且证实本表格所列情<br/>
 			况与投保单表格中的陈述一致，如有不实见证或报告，<br/>
 			本人愿意承担相应法律责任。
@@ -115,10 +115,6 @@
 		outline: none;
 	}
 	
-	input {
-		font-weight: 100;
-	}
-	
 	input::-ms-clear {
 		display: none;
 		width: 0;
@@ -132,12 +128,10 @@
 	textarea::-webkit-input-placeholder,
 	input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	.clearFloat:after {
@@ -222,7 +216,7 @@
 	.inputText {
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		margin-bottom: 0.2rem;
 	}
 

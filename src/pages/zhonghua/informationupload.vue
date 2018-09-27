@@ -14,22 +14,8 @@
 					</div>
 				</div>
 			</div>
-			<!--<div class="information_div_all infor_margin">
-				<p class="infornation_p">投保人{{applicant}}证件</p>
-				<div class="inforUpload_img">
-					<div id="" class="inforUpload_up">
-						<img :src="c" class="inforUpload_up_img" />
-						<input class="file" type="file" accept="image/*" name="file" @change="upload" code="3">
-					</div>
-					<div id="" class="inforUpload_up inforUpload_right">
-						<img :src="d" class="inforUpload_up_img" />
-						<input class="file" type="file" accept="image/*" name="file" @change="upload" code="4">
-					</div>
-
-				</div>
-			</div>-->
 			<div class="information_div_all infor_margin">
-				<p class="infornation_p">被保人 {{insrntresp}}证件</p>
+				<p class="infornation_p">被保险人 {{insrntresp}}证件</p>
 				<div class="inforUpload_img">
 					<div id="" class="inforUpload_up">
 						<img :src="e" class="inforUpload_up_img" />
@@ -71,9 +57,9 @@
 				d1: "",
 				e1: "",
 				f1: "",
-				applicant:"", //投保人姓名
-				insrntresp:"",//被保人姓名
-				docResp:[] //图片地址
+				applicant: "", //投保人姓名
+				insrntresp: "", //被保险人姓名
+				docResp: [] //图片地址
 			}
 		},
 		created() {
@@ -98,11 +84,11 @@
 				this.$http.post(this.$store.state.link5 + "/trd/order/v1/queryorder", data).then(res => {
 					Indicator.close();
 					console.log(res.data);
-					if(res.data.code == "SYS_S_000"){
-					this.applicant=res.data.output.applntResp.applName;
-					this.insrntresp=res.data.output.insrntResp.insrntName
-					this.docResp=res.data.output.docResp
-					console.log(this.docResp)
+					if(res.data.code == "SYS_S_000") {
+						this.applicant = res.data.output.applntResp.applName;
+						this.insrntresp = res.data.output.insrntResp.insrntName
+						this.docResp = res.data.output.docResp
+						console.log(this.docResp)
 					}
 
 				}, res => {
@@ -145,15 +131,15 @@
 								self.a = this.result;
 							} else if(code == 2) {
 								self.b = this.result
-							} 
-//							else if(code == 3) {
-//								self.c = this.result
-//							} else if(code == 4) {
-//								self.d = this.result
-//							} 
+							}
+							//							else if(code == 3) {
+							//								self.c = this.result
+							//							} else if(code == 4) {
+							//								self.d = this.result
+							//							} 
 							else if(code == 5) {
 								self.e = this.result
-							}else if(code == 6){
+							} else if(code == 6) {
 								self.f = this.result
 							}
 
@@ -166,15 +152,15 @@
 									self.a = data;
 								} else if(code == 2) {
 									self.b = data
-								} 
-//								else if(code == 3) {
-//									self.c = data
-//								} else if(code == 4) {
-//									self.d = data
-//								}
+								}
+								//								else if(code == 3) {
+								//									self.c = data
+								//								} else if(code == 4) {
+								//									self.d = data
+								//								}
 								else if(code == 5) {
 									self.e = data
-								}else if(code == 6){
+								} else if(code == 6) {
 									self.f = data
 								}
 								self.postImg(data, code);
@@ -226,7 +212,7 @@
 						],
 						"uploadType": "2029"
 					}
-				}else if(code == 6) {
+				} else if(code == 6) {
 					var base64Info = {
 						"fileType": a,
 						"imgList": [
@@ -245,12 +231,12 @@
 								this.a1 = res.data.output[0].fileSerialNo
 							} else if(code == 2) {
 								this.b1 = res.data.output[0].fileSerialNo
-							} 
-//							else if(code == 3) {
-//								this.c1 = res.data.output[0].fileSerialNo
-//							} else if(code == 4) {
-//								this.d1 = res.data.output[0].fileSerialNo
-//							} 
+							}
+							//							else if(code == 3) {
+							//								this.c1 = res.data.output[0].fileSerialNo
+							//							} else if(code == 4) {
+							//								this.d1 = res.data.output[0].fileSerialNo
+							//							} 
 							else if(code == 5) {
 								this.e1 = res.data.output[0].fileSerialNo
 							} else if(code == 6) {
@@ -379,7 +365,7 @@
 			},
 			//上一步
 			handleClickLast() {
-					window.history.go(-1)
+				window.history.go(-1)
 			},
 			//下一步
 			handleClickNext() {
@@ -388,68 +374,70 @@
 					Toast("请上传投保人身份证正面");
 				} else if(this.b1 == "") {
 					Toast("请上传投保人身份证反面");
-				} 
-//				else if(this.c1 == "") {
-//					Toast("请上传投保人银行卡正面");
-//				} else if(this.d1 == "") {
-//					Toast("请上传投保人银行卡反面");
-//				} 
-				else if(this.e1 == "") {
-					Toast("请上传被保人身份证反面");
+				} else if(this.e1 == "") {
+					Toast("请上传被保险人身份证反面");
 				} else if(this.f1 == "") {
-					Toast("请上传被保人身份证反面");
-				}
-				else {
-				var data = {
-					  "docType": "00401010",
-					  "head": {
-					    "channelCode": "qtb_h5",
-					    "deptCode": this.$route.query.cmpCode,
-					    "oprCode": this.$store.state.userId,
-					    "prodCode":this.$route.query.prodCode
-					  },
-					  "token": this.$store.state.token,
+					Toast("请上传被保险人身份证反面");
+				} else {
+					var data = {
+						"token": this.$store.state.token,
 						"userId": this.$store.state.userId,
-					  "imgBase64s": [
-					    {
-					      "path": this.a1
-					    },
-					    {
-					    	"path": this.b1
-					    },
-					    {
-					    	 "path": this.e1	
-					    },
-					    {
-					    	"path": this.f1	
-					    },
-					  ],
-					  "imgFormat": "jpg",
-					  "pkgNo": this.$route.query.orderNo
+						"head": { 
+							"channelCode": "qtb_h5",
+							"deptCode": "000300",
+							"oprCode": this.$store.state.userId,
+							"prodCode": this.$route.query.prodCode,
+						},
+						"mark": "UC",
+						"opt": "DOC",
+						"pkgNo": this.$route.query.orderNo,
+						"docReq": [{
+								"docFileName": "投保人身份证正面",
+								"docType": "00401010",
+								"fileSerialNo": this.a1,
+								"remark": "正",
+								"showOrder": 1
+							},
+							{
+								"docFileName": "投保人身份证反面",
+								"docType": "00401010",
+								"fileSerialNo": this.b1,
+								"remark": "反",
+								"showOrder": 2
+							},
+							{
+								"docFileName": "被保险人身份证正面", //单证文件名 
+								"docType": "00401010", //单证类型
+								"fileSerialNo": this.e1, //文件序列号 : 文件在影像系统唯一标识 
+								"remark": "", //备注 
+								"showOrder": 3 //显示顺序
+							},
+							{
+								"docFileName": "被保险人身份证反面", //单证文件名 
+								"docType": "00401010   ", //单证类型
+								"fileSerialNo": this.f1, //文件序列号 : 文件在影像系统唯一标识 
+								"remark": "", //备注 
+								"showOrder": 4 //显示顺序
+							}
+						],
 					}
-								
-				console.log(JSON.stringify(data))
-				Indicator.open();
-				this.$http.post("http://192.168.171.12:9009" + '/doc/v1/uploaddoc', data)
+					Indicator.open();
+					this.$http.post(this.$store.state.link5 + '/trd/order/v1/saveorder', data)
 						.then(res => {
 							Indicator.close();
 							console.log(res.data)
-							var dataCode = res.data.code;
-							if(dataCode == "SYS_S_000") {
-								 this.$router.push('/msgBook?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode  + "&prodNo=" + this.$route.query.prodNo);
-
+							if(res.data.code == "SYS_S_000") {
+								this.$router.push('/msgBook?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&prodNo=" + this.$route.query.prodNo + "&responseCode=1");
 							} else {
 								Toast(res.data.desc);
 							}
 						}, res => {
 							Indicator.close();
-							console.log(res.data);
 						})
-
-				}  
+				}
 			},
 		}
-		}
+	}
 </script>
 
 <style scoped="scoped">

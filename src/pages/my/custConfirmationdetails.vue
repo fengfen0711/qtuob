@@ -49,7 +49,9 @@
 			}
 		},
 		created() {
-
+			if (this.$route.query.token != undefined) {
+				window.localStorage.token = this.$route.query.token
+			}
 			this.pkInsureId = this.$route.query.pkInsureId;
 			this.h5Url = this.$route.query.h5Url;
 			this.beforeOrderStatus = this.$route.query.beforeOrderStatus;

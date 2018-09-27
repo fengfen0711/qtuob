@@ -4,8 +4,12 @@
 			<span class="left">修改手机号码</span>
 			<img class="my_img_itemnext" src="/static/imgNew/icon_next3.png" />
 		</p>
-		<p class="reset" @click="handleClickPhone">
+		<p class="reset" @click="handleClickPhone" v-show="passShow">
 			<span class="left">修改登录密码</span>
+			<img class="my_img_itemnext" src="/static/imgNew/icon_next3.png" />
+		</p>
+		<p class="reset" @click="handleClickFirstPass" v-show="!passShow">
+			<span class="left">设置登录密码</span>
 			<img class="my_img_itemnext" src="/static/imgNew/icon_next3.png" />
 		</p>
 	</div>
@@ -17,7 +21,15 @@
     	name: "Safe",
     	data () {
       		return {
+      			passShow: true,
       		}
+    	},
+    	created() {
+    		if (this.$store.state.userInfo.isHasPwd == "N") {
+    			this.passShow = false;
+    		}else{
+    			this.passShow = true;
+    		}
     	},
     	methods:{
     		handleClickPhone(){
@@ -25,8 +37,10 @@
     		},
     		handleClickPass(){
     			this.$router.push('/resetPhone')
-    		}
-			  
+    		},
+			handleClickFirstPass(){
+				this.$router.push('/setPassword')
+			}
     	}
    }
 </script>

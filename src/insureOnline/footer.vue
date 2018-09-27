@@ -40,8 +40,8 @@
 				    ]
 	  			}
 	  			console.log(JSON.stringify(saveInfo))
-//	  			this.$http.post(this.$store.state.link+'/trd/order/v1/saveorder', saveinfo)
-  				this.$http.post('http://192.168.171.12:9009/order/v1/saveorder', saveinfo)
+	  			this.$http.post(this.$store.state.link+'/trd/order/v1/saveorder', saveinfo)
+//				this.$http.post('http://192.168.171.12:9009/order/v1/saveorder', saveinfo)
 				.then(res =>{
 				    console.log(res.data);
 					var dataCode = res.data.code;
@@ -73,9 +73,6 @@
 	input, button {
 		outline: none;
 	}
-	input {
-		font-weight: 100;
-	}
 	input::-ms-clear {
 		display: none;
 		width: 0;
@@ -86,11 +83,9 @@
 	}
 	textarea::-webkit-input-placeholder, input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	.clearFloat:after {
 		height: 0;

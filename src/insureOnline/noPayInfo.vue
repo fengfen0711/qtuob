@@ -193,7 +193,7 @@
 						<label class="inputLabel left">受益人{{index+1}}</label>
 					</p>
 					<p class="inputGrop clearFloat">
-						<label class="inputLabel left">与被保人关系</label>
+						<label class="inputLabel left">与被保险人关系</label>
 						<span class="inputText left">{{item.relatoInsured}}</span>
 					</p>
 					<p class="inputGrop clearFloat">
@@ -280,9 +280,11 @@
 </template>
 
 <script>
+    import { Dictionaries } from "../assets/js/counry.js";
 	import { Toast } from 'mint-ui'
 	import { Indicator } from 'mint-ui'
 	import { MessageBox } from 'mint-ui'
+	
 	export default {
 		name: "NoPayInfo",
 		data() {
@@ -365,12 +367,24 @@
 				agentCode: "", //代理人代码
 				zipCode: "", //邮编
 				serviceAddress: "", //服务地址
-				applNo: "" //投保单号
+				applNo: "", //投保单号
+				dictionaries: "", //数据字典
+				cardTypenum:"" //证件类型
+				
 
 			}
 		},
 		created() {
 			this.noPaystatus();
+			if(localStorage.dataList != undefined) {
+				this.dictionaries = JSON.parse(localStorage.dataList)
+				this.cardTypenum=this.dictionaries.certfType.codeList
+			} else {
+				var _this = this
+				Dictionaries(this.$store.state.link).then((res) => {
+					_this.dictionaries = res.output
+				})
+			}
 
 		},
 		methods: {
@@ -390,8 +404,9 @@
 				}
 				Indicator.open();
 				console.log(JSON.stringify(data))
+
 				this.$http.post(this.$store.state.link + '/trd/insplyquery/v1/pkgquerydata', data)
-									//this.$http.post(this.$store.state.link5 + '/trd/insplyquery/v1/pkgquerydata', data)
+
 					.then(res => {
 						Indicator.close();
 						console.log(res.data)
@@ -422,8 +437,8 @@
 				}
 				console.log(data);
 				Indicator.open();
-
-				this.$http.post(this.$store.state.link5 + "/trd/order/v1/queryorder", data).then(response => {
+				this.$http.post(this.$store.state.link + "/trd/order/v1/queryorder", data).then(response => {
+					  //this.$http.post(this.$store.state.link5 + "/trd/order/v1/queryorder", data).then(response => {
 					console.log(response.data);
 					Indicator.close();
 					if(response.data.code == "SYS_S_000") {
@@ -520,6 +535,30 @@
 									this.bnfResp[i].relatoInsured = "其他";
 								} else if(this.bnfResp[i].relatoInsured == "07") {
 									this.bnfResp[i].relatoInsured = "保单服务人员";
+								}
+							} else if(response.data.output.mainResp.cmpCode == "000300") {
+								if(this.bnfResp[i].relatoInsured == "G") {
+									this.bnfResp[i].relatoInsured = "父亲";
+								} else if(this.bnfResp[i].relatoInsured == "H") {
+									this.bnfResp[i].relatoInsured = "母亲";
+								} else if(this.bnfResp[i].relatoInsured == "C") {
+									this.bnfResp[i].relatoInsured = "子女";
+								} else if(this.bnfResp[i].relatoInsured == "I") {
+									this.bnfResp[i].relatoInsured = "祖父母";
+								} else if(this.bnfResp[i].relatoInsured == "J") {
+									this.bnfResp[i].relatoInsured = "兄弟姐妹";
+								} else if(this.bnfResp[i].relatoInsured == "K") {
+									this.bnfResp[i].relatoInsured = "孙子女";
+								} else if(this.bnfResp[i].relatoInsured == "L") {
+									this.bnfResp[i].relatoInsured = "朋友";
+								} else if(this.bnfResp[i].relatoInsured == "E") {
+									this.bnfResp[i].relatoInsured = "雇主";
+								} else if(this.bnfResp[i].relatoInsured == "M") {
+									this.bnfResp[i].relatoInsured = "雇佣";
+								} else if(this.bnfResp[i].relatoInsured == "F") {
+									this.bnfResp[i].relatoInsured = "其他";
+								} else if(this.bnfResp[i].relatoInsured == "P") {
+									this.bnfResp[i].relatoInsured = "借贷关系";
 								}
 							}
 						}
@@ -686,7 +725,7 @@
 
 							} else if(response.data.output.mainResp.cmpCode == "000303") {
 
-							}else if(response.data.output.mainResp.cmpCode == "000300"){
+							} else if(response.data.output.mainResp.cmpCode == "000300") {
 								this.receipt = true;
 							}
 
@@ -752,7 +791,7 @@
 								//							this.seereceipt();
 							} else if(response.data.output.mainResp.cmpCode == "000303") {
 
-							}else if(response.data.output.mainResp.cmpCode == "000300"){
+							} else if(response.data.output.mainResp.cmpCode == "000300") {
 								this.receipt = true;
 							}
 
@@ -807,7 +846,17 @@
 						} else if(response.data.output.applntResp.gender == "F") {
 							this.sexplicant = "女"
 						}
-						this.documenttype = response.data.output.applntResp.certfType;
+						
+						if(this.$route.query.deptCode == "000300"){
+							this.documenttype = response.data.output.applntResp.certfType;
+							for(var i=0 ;i<this.cardTypenum.length;i++){
+								if(this.cardTypenum[i].dicCode==this.documenttype){
+									this.documenttype=this.cardTypenum[i].dicName
+								}
+							}
+						}else{
+							this.documenttype = response.data.output.applntResp.certfType; //证件类型
+						}
 						this.cardnum = response.data.output.applntResp.certfCode;
 						if(response.data.output.applntResp.certfEnduringFlag == "Y") {
 							this.certificate = "永久有效";
@@ -825,6 +874,7 @@
 						}
 						Indicator.open();
 						this.$http.post(this.$store.state.link + '/dic/findChinaByOrgCode', reproinfo)
+						  //this.$http.post(this.$store.state.link5 + '/dic/findChinaByOrgCode', reproinfo)
 							.then(res => {
 								var dataCode = res.data.code;
 								Indicator.close();
@@ -851,6 +901,7 @@
 						console.log(recityinfo)
 						Indicator.open();
 						this.$http.post(this.$store.state.link + '/dic/findChinaByOrgCode', recityinfo)
+
 							.then(res => {
 								Indicator.close();
 								var dataCode = res.data.code;
@@ -877,6 +928,7 @@
 
 						}
 						Indicator.open();
+						  //this.$http.post(this.$store.state.link5 + '/dic/findChinaByOrgCode', recountyinfo)
 						this.$http.post(this.$store.state.link + '/dic/findChinaByOrgCode', recountyinfo)
 							.then(res => {
 								Indicator.close();
@@ -1019,6 +1071,47 @@
 								this.relefirder = "保单服务人员";
 								this.recognizeeChild = true;
 							}
+						} else if(response.data.output.mainResp.cmpCode == "000300") {
+							if(response.data.output.insrntResp.relaToAppnt == "A") {
+								this.relefirder = "本人";
+								this.recognizeeChild = false;
+							} else if(response.data.output.insrntResp.relaToAppnt == "B") {
+								this.relefirder = "配偶";
+								this.recognizeeChild = true;
+							} else if(response.data.output.insrntResp.relaToAppnt == "D") {
+								this.relefirder = "父母";
+								this.recognizeeChild = true;
+							} else if(response.data.output.insrntResp.relaToAppnt == "G") {
+								this.relefirder = "父亲";
+								this.recognizeeChild = true;
+							} else if(response.data.output.insrntResp.relaToAppnt == "H") {
+								this.relefirder = "母亲";
+								this.recognizeeChild = true;
+							} else if(response.data.output.insrntResp.relaToAppnt == "C") {
+								this.relefirder = "子女";
+								this.recognizeeChild = true;
+							} else if(response.data.output.insrntResp.relaToAppnt == "I") {
+								this.relefirder = "祖父母";
+								this.recognizeeChild = true;
+							} else if(response.data.output.insrntResp.relaToAppnt == "J") {
+								this.relefirder = "兄弟姐妹";
+								this.recognizeeChild = true;
+							} else if(response.data.output.insrntResp.relaToAppnt == "K") {
+								this.relefirder = "孙子女";
+								this.recognizeeChild = true;
+							} else if(response.data.output.insrntResp.relaToAppnt == "L") {
+								this.relefirder = "朋友";
+								this.recognizeeChild = true;
+							} else if(response.data.output.insrntResp.relaToAppnt == "E") {
+								this.relefirder = "雇主";
+								this.recognizeeChild = true;
+							} else if(response.data.output.insrntResp.relaToAppnt == "M") {
+								this.relefirder = "雇佣";
+								this.recognizeeChild = true;
+							} else if(response.data.output.insrntResp.relaToAppnt == "F") {
+								this.relefirder = "其他";
+								this.recognizeeChild = true;
+							}
 						}
 
 						if(response.data.output.mainResp.cmpCode == "000034") {
@@ -1108,7 +1201,17 @@
 						} else if(response.data.output.insrntResp.gender == "F") {
 							this.noPaysex = "女";
 						}
-						this.certfType = response.data.output.insrntResp.certfType;
+						if(this.$route.query.deptCode == "000300"){
+							this.certfType = response.data.output.insrntResp.certfType;
+							for(var i=0 ;i<this.cardTypenum.length;i++){
+								if(this.cardTypenum[i].dicCode==this.certfType){
+									this.certfType=this.cardTypenum[i].dicName
+								}
+							}
+						}else{
+							this.certfType = response.data.output.insrntResp.certfType; //证件类型
+						}
+						
 						this.beicardnum = response.data.output.insrntResp.certfCode;
 						if(response.data.output.insrntResp.certfEnduringFlag == "Y") {
 							this.beidata = "永久有效";
@@ -1136,6 +1239,7 @@
 							"dicReq": this.$route.query.deptCode
 						}
 						Indicator.open();
+						 // this.$http.post(this.$store.state.link5 + '/dic/findCertiTypeByOrgCode', noPay_data)
 						this.$http.post(this.$store.state.link + '/dic/findCertiTypeByOrgCode', noPay_data)
 							.then(res => {
 								Indicator.close();
@@ -1156,23 +1260,34 @@
 											this.beneficiarycard == res.data.output[j].certifiName;
 										}
 										for(let i = 0; i < this.bnfResp.length; i++) {
-											if(this.bnfResp[i].certfType == res.data.output[j].certifiCode) {
-												this.bnfResp[i].certfType = res.data.output[j].certifiName;
+											if(this.$route.query.deptCode == "000300"){
+												for(var i=0 ;i<this.cardTypenum.length;i++){
+													if(this.cardTypenum[i].dicCode==this.bnfResp[i].certfType){
+														this.bnfResp[i].certfType=this.cardTypenum[i].dicName
+													}
+												}
+											}else{
+												if(this.bnfResp[i].certfType == res.data.output[j].certifiCode) {
+													this.bnfResp[i].certfType = res.data.output[j].certifiName;
 
+												}	
 											}
+											
 										}
+										//this.documenttype = response.data.output.applntResp.certfType;
+							
 
 									}
 								} else {
-									Toast(res.data.desc);
+//									Toast(res.data.desc);
 								}
 							}, res => {
 
-								console.log(res.data);
+								//console.log(res.data);
 							})
 
 					} else {
-						Toast(response.data.desc);
+//						Toast(response.data.desc);
 					}
 				}, response => {
 					Indicator.close();
@@ -1246,16 +1361,21 @@
 			//原卡支付,新卡支付
 			originalpayss(index) {
 				if(this.$route.query.deptCode == "000300") {
-					if(this.index == 'Y'){
+					if(index == 'Y') {
 						this.$router.push('/payBank?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.pkgNo + "&cmpCode=" + this.$route.query.deptCode + "&prodNo=" + this.prodNo + "&userId=" + this.$store.state.userId + "&token=" + this.$store.state.token + "&status=" + index)
-					} else if(this.index == 'N'){
+					} else if(index == 'N') {
 						this.$router.push('/payBank_Error?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.pkgNo + "&cmpCode=" + this.$route.query.deptCode + "&prodNo=" + this.prodNo + "&userId=" + this.$store.state.userId + "&token=" + this.$store.state.token + "&status=" + index)
 					}
-					
-				} else if(this.$route.query.deptCode == "000303"){
+				} else if(this.$route.query.deptCode == "000034") {
+					if(index == 'Y') {
+						this.$router.push('/payInfo_tianError?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.pkgNo + "&cmpCode=" + this.$route.query.deptCode + "&prodNo=" + this.prodNo + "&userId=" + this.$store.state.userId + "&token=" + this.$store.state.token + "&status=" + index)
+					} else if(index == 'N') {
+						this.$router.push('/payInfo_tianError?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.pkgNo + "&cmpCode=" + this.$route.query.deptCode + "&prodNo=" + this.prodNo + "&userId=" + this.$store.state.userId + "&token=" + this.$store.state.token + "&status=" + index)
+					}
+				} else if(this.$route.query.deptCode == "000303") {
 					this.$router.push('/payInfo_tianError?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.pkgNo + "&cmpCode=" + this.$route.query.deptCode + "&prodNo=" + this.prodNo + "&userId=" + this.$store.state.userId + "&token=" + this.$store.state.token + "&status=" + index)
 				}
-				
+
 			},
 
 			//支付
@@ -1433,20 +1553,28 @@
 					"plcyNo": this.policyno
 				}
 
+
 				Indicator.open();
 				this.$http.post(this.$store.state.link + "/trd/receipt/v1/query", seedata)
+					 // this.$http.post(this.$store.state.link5+ "/trd/receipt/v1/query", seedata)
 					.then(res => {
 						Indicator.close();
 						var dataCode = res.data.code;
 						console.log(res.data)
+						console.log(dataCode)
 						if(dataCode == "SYS_S_000") {
-							this.$router.push('/enter1?phonenum=' + this.phonenum + "&address=" + this.detailaddres + "&agentName=" + this.agentName + "&appName=" + this.nameapplicant + "&applNo=" + this.applNo + "&brokerId=" + this.agentCode + "&pkgNo=" + this.$route.query.pkgNo + "&zipCode=" + this.zipCode + "&deptCode=" + this.$route.query.deptCode + "&prodCode=" + this.$route.query.prodCode + "&serviceAddress=" + this.serviceAddress + "&policyno=" + this.policyno);
+							if(this.$route.query.deptCode == "000034") {
+								this.$router.push('/enter1?phonenum=' + this.phonenum + "&agentName=" + this.agentName + "&appName=" + this.nameapplicant + "&applNo=" + this.applNo + "&brokerId=" + this.agentCode + "&pkgNo=" + this.$route.query.pkgNo + "&zipCode=" + this.zipCode + "&deptCode=" + this.$route.query.deptCode + "&prodCode=" + this.$route.query.prodCode + "&policyno=" + this.policyno + "&address=" + this.detailaddres + "&serviceAddress=" + this.serviceAddress);
+							} else if(this.$route.query.deptCode == "000300") {
+								this.$router.push('/receipt?pkgNo=' + this.$route.query.pkgNo + "&deptCode=" + this.$route.query.deptCode + "&prodCode=" + this.$route.query.prodCode + "&policyno=" + this.policyno)
+							}
 						} else if(dataCode == "TRD_E_903") {
 							//this.$router.push('/enter1?phonenum='+this.phonenum+"&address="+this.detailaddres+"&agentName="+this.agentName+"&appName="+this.nameapplicant+"&applNo="+this.applNo+"&brokerId="+this.agentCode+"&pkgNo="+this.$route.query.pkgNo+"&zipCode="+this.zipCode+"&deptCode="+this.$route.query.deptCode+"&prodCode="+this.$route.query.prodCode+"&serviceAddress="+this.serviceAddress+"&policyno="+this.policyno);
 							Toast(res.data.desc);
 							document.getElementById("tab5").disabled = "true"
-						} else {
+						}else {
 							Toast(res.data.desc);
+
 						}
 					}, res => {
 						Indicator.close();
@@ -1621,10 +1749,6 @@
 		outline: none;
 	}
 	
-	input {
-		font-weight: 100;
-	}
-	
 	input::-ms-clear {
 		display: none;
 		width: 0;
@@ -1638,12 +1762,10 @@
 	textarea::-webkit-input-placeholder,
 	input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	.clearFloat:after {
@@ -1774,14 +1896,14 @@
 		height: 0.8rem;
 		line-height: 0.8rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.inputText11 {
 		/*height: 1rem;*/
 		line-height: 0.4rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.selected {
@@ -1808,7 +1930,7 @@
 		height: 0.88rem;
 		margin-right: 0.2rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.sBox {

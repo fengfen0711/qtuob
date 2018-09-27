@@ -21,7 +21,28 @@
 			}
 		},
 		created() {
-			this.titleAjax()
+			if(this.$route.query.path == "ming"){
+				var sceneInfo = {
+					"sceneCode": "s001"
+				}
+	  			this.$http.post(this.$store.state.link + '/sso/v2/applytoken', sceneInfo)
+				.then(res =>{
+				    console.log(res.data);
+					var dataCode = res.data.code;
+					if (dataCode == "SYS_S_000") {
+						window.localStorage.token = res.data.output.token;
+						this.$store.dispatch("changeToken", res.data.output.token);
+						this.titleAjax()
+					}else{
+						Toast(res.data.desc);
+						console.log(res.data.desc)
+					}
+				},res =>{
+					console.log(res.data);
+				})
+			}else{
+				this.titleAjax()
+			}
 		},
 		methods: {
 			titleAjax() {
@@ -38,13 +59,13 @@
 								if (this.companyList[i].compCode == "plan") {
 									this.companyList.splice(i,1)
 								}
-								else if (this.companyList[i].compCode == "commission") {
-									if (this.status == 'ZS' || (this.$store.state.brokerInfo.isSignEnum == 'Y' && this.$store.state.brokerInfo.brokerCode != '')) {
-										
-									}else{
-										this.companyList.splice(i,1)
-									}
-								}
+//								else if (this.companyList[i].compCode == "commission") {
+//									if (this.status == 'ZS' || (this.$store.state.brokerInfo.isSignEnum == 'Y' && this.$store.state.brokerInfo.brokerCode != '')) {
+//										
+//									}else{
+//										this.companyList.splice(i,1)
+//									}
+//								}
 							}
 						}
 					}, res => {

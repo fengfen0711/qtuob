@@ -1,31 +1,41 @@
 <template>
-	<div class="disBox">
-		<div class="moduleBox">
-			<div class="module clearFloat" v-for="mod in moduleList" :key="mod.typeId" @click="toDetail(mod.typeId)">
-				<span class="imgBox">
-					<img :src="mod.typePic" class="iconImg" />
-				</span>
-				<div class="textBox">
-					<p class="textTitle">{{mod.name}}</p>
-					<p class="textDes">{{mod.typeDesc}}</p>
+	<div class="scrollDiv">
+		<Scroll :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" :bottomPullText='bottomText' :auto-fill="false" @bottom-status-change="handleBottomChange" ref="loadmore">
+			<div class="moduleBox">
+				<div class="module clearFloat" v-for="mod in moduleList" :key="mod.typeId" @click="toDetail(mod.typeId)">
+					<span class="imgBox">
+						<img :src="mod.typePic" class="iconImg" />
+					</span>
+					<div class="textBox">
+						<p class="textTitle">{{mod.name}}</p>
+						<p class="textDes">{{mod.typeDesc}}</p>
+					</div>
 				</div>
 			</div>
-		</div>
-		<p class="productsTitle">
-			<span class="proTitText">频道精选</span>
-		</p>
-		<div class="clearFloat proContent" :class="art.atcStyle | layout" v-for="art in artList" :key = "art.articleId" @click="godetail(art.articleId)">
-			<img :src="art.picRul" class="disImg" />
-			<div class="disText">
-				<p class="disTitle">{{art.title}}</p>
-				<p class="disTitleDes">{{art.atcDesc}}</p>
-				<p class="disTitleDes">{{art.createDatetime}}<span class="sign">{{art.typeName}}</span></p>
+			<p class="productsTitle">
+				<span class="proTitText">频道精选</span>
+			</p>
+			<div class="proBox">
+				<div class="clearFloat proContent" :class="art.atcStyle | layout" v-for="art in artList" @click="godetail(art.articleId)">
+					<img :src="art.picUrl" class="disImg" />
+					<div class="disText">
+						<p class="disTitle">{{art.title}}</p>
+						<p class="disTitleDes">{{art.actDesc}}</p>
+						<p class="disTitleDes disTitleDes1"><span>{{art.createTime}}</span><span class="sign" v-for="tag in art.tagList">{{tag.name}}</span></p>
+					</div>
+				</div>
+				<p class="noMore" v-show="noMoreShow">没有更多了~</p>
+				<p class="noCon" v-show="noShow">没有搜索到任何内容哦~</p>
+				<div v-show="loading" slot="bottom" class="loading">
+					加载中...
+				</div>
 			</div>
-		</div>
+		</Scroll>
 	</div>
 </template>
 
 <script>
+	import Scroll from '@/components/scroll.vue'
 	import { Toast } from 'mint-ui';
 	import { Indicator } from 'mint-ui';
 	export default {
@@ -36,12 +46,29 @@
 				serchText: '',
 				artList:[],
 				moduleList:[],
-				serchList:'',
+				counte: 1,
+				num: 10,
+				scrollHeight: 0,
+                scrollTop: 0,
+                containerHeight: 0,
+                loading: false,
+                allLoaded: false,
+                bottomText: '上拉加载更多...',
+                bottomStatus: '',
+                pageNo: 1,
+                totalCount: '',
+                noMoreShow: false,
+				noShow: false,
 			}
 		},
 		created() {
-			this.studyAjax(this.id)
-			this.studyListAjax()
+			if (this.id) {
+				this.studyAjax(this.id)
+			}
+			this.getList()
+		},
+		components: {
+			Scroll: Scroll
 		},
 		computed: {
 			listenstage() {
@@ -49,6 +76,79 @@
 			}
 		},
 		methods: {
+			_scroll: function(ev) {
+				ev = ev || event;
+				ev.preventDefault();
+        		ev.stopPropagation();
+				this.scrollHeight = this.$refs.innerScroll.scrollHeight;
+				this.scrollTop = this.$refs.innerScroll.scrollTop;
+				this.containerHeight = this.$refs.innerScroll.offsetHeight;
+			},
+			loadBottom: function() {
+				this.loading = true;
+				var artInfo = {
+					"typeId": "0-4",
+					"pageIndex": this.counte,
+					"pageSize": this.num,
+				}
+				console.log(artInfo)
+				this.$http.post(this.$store.state.link + "/cnt/atc/selArticleList", artInfo)
+				.then(res => {
+					console.log(res.data)
+					if(res.data.code == "SYS_S_000") {
+						this.$nextTick(() => {
+							let arr = res.data.output;
+							this.artList = this.artList.concat(arr);
+							if(res.data.output.length < this.num) {
+								this.loading = false;
+								this.allLoaded = true;
+								this.noMoreShow = true;
+								return;
+							}else{
+								this.counte++;
+							}
+							done()
+						})
+					}
+				}, (response) => {
+					console.log('error');
+				});
+			},
+			handleBottomChange(status) {
+				this.bottomStatus = status;
+			},
+			getList() {
+				var artInfo = {
+					"typeId": "0-4",
+					"pageIndex": 1,
+					"pageSize": this.num,
+				}
+				this.$http.post(this.$store.state.link + "/cnt/atc/selArticleList", artInfo)
+					.then(res => {
+						console.log(res.data)
+						if(res.data.code == "SYS_S_000") {
+							this.artList = res.data.output.slice(0, this.num);
+							if(res.data.output.length == 0) {
+								this.allLoaded = true;
+								this.noShow = true;
+								this.noMoreShow = false;
+								this.serchText = ""
+							} else if(res.data.output.length == 10) {
+								this.counte = 2;
+								this.noMoreShow = false;
+								this.noShow = false;
+								this.allLoaded = false;
+							} else if(res.data.output.length < 10) {
+								this.allLoaded = true;
+								this.noMoreShow = true;
+								this.noShow = false;
+								this.serchText = ""
+							}
+						}
+					}, res => {
+						console.log(res.data)
+					})
+			},
 			studyAjax(id){
 				var artInfo = {
 					"parTypeId": id
@@ -58,23 +158,6 @@
 					console.log(res.data)
 					if(res.data.code == "SYS_S_000") {
 						this.moduleList = res.data.output.articleTypeRespList;
-					}
-				}, res => {
-					console.log(res.data)
-				})
-			},
-	  		studyListAjax(){
-				var artInfo = {
-					"isStick": "y",
-					"sence": "s0002",
-					"length":0,
-					"start": 0
-				}
-				this.$http.post(this.$store.state.link + "/cnt/atc/queryAtcShow", artInfo)
-				.then(res => {
-					console.log(res.data)
-					if(res.data.code == "SYS_S_000") {
-						this.artList = res.data.output.data;
 					}
 				}, res => {
 					console.log(res.data)
@@ -108,8 +191,14 @@
 		watch:{
 			listenstage : function (ov,nv) {
 				if (this.$store.state.serchInfo.titlePath == "study") {
-					this.serchList = this.$store.state.serchInfo.serchList;
-//					this.artList = this.serchList;
+					this.id = this.$store.state.serchInfo.titleId;
+					if (this.$store.state.serchInfo.serchId == 1) {
+						this.serchText = this.$store.state.serchInfo.serchText;
+						this.getList(1)
+					}else{
+						this.serchText = this.$store.state.serchInfo.serchText;
+						this.getList()
+					}
 				}
 			}
 		}
@@ -124,6 +213,18 @@
 		visibility: hidden;
 		clear: both;
 		content: "";
+	}
+	.scrollDiv {
+		position: absolute;
+		left: 0;
+		top: 0.8rem;
+		width: 7.18rem;
+		height: 100%;
+		padding-left: 0.32rem;
+		padding-bottom: 1rem;
+		background: #FFFFFF;
+		overflow: scroll;
+		-webkit-overflow-scrolling: touch;
 	}
 	.productsTitle {
 		height: 0.36rem;
@@ -156,6 +257,7 @@
 		display: block;
 		width: 6.86rem;
 		height: 3.2rem;
+		background: rgba(0,0,0,0.03);
 		margin: 0 auto;
 	}
 	.imgUpTextDown .disText{
@@ -175,6 +277,7 @@
 		display: block;
 		width: 6.86rem;
 		height: 3.2rem;
+		background: rgba(0,0,0,0.03);
 		margin: 0 auto;
 	}
 	.textUpImgDown .disText{
@@ -219,6 +322,8 @@
 		z-index: 1;
 		display: block;
 		width: 2.14rem;
+		height: 2.14rem;
+		background: rgba(0,0,0,0.03);
 		margin: 0 auto;
 	}
 	.imgLeftTextRight .disText{
@@ -237,6 +342,8 @@
 		z-index: 1;
 		display: block;
 		width: 2.14rem;
+		height: 2.14rem;
+		background: rgba(0,0,0,0.03);
 		margin: 0 auto;
 	}
 	.textLeftImgRight .disText{
@@ -248,7 +355,7 @@
 	.imgLeftTextRight .disTitle, .textLeftImgRight .disTitle {
 		width: 4.1rem;
 		height: 0.8rem;
-		line-height: 0.4rem;
+		line-height: 0.42rem;
 		margin-top: 0.02rem;
 		font-size: 0.32rem;
 		margin-bottom: 0.16rem;
@@ -262,8 +369,8 @@
 	}
 	.imgLeftTextRight .disTitleDes, .textLeftImgRight .disTitleDes {
 		width: 4.1rem;
-		/*height: 0.64rem;*/
-		line-height: 0.32rem;
+		/*height: 0.58rem;*/
+		line-height: 0.34rem;
 		margin-bottom: 0.22rem;
 		font-size: 0.24rem;
 		color: #555555;
@@ -318,5 +425,19 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+	.loading {
+		width: 100%;
+		height: 0.8rem;
+		line-height: 0.8rem;
+		text-align: center;
+	}
+	.noMore {
+		margin-top: 1rem;
+		height: 1rem;
+		line-height: 1rem;
+		font-size: 0.24rem;
+		color: #CCCCCC;
+		text-align: center;
 	}
 </style>

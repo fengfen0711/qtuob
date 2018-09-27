@@ -8,7 +8,7 @@
 			<div class="policyHolder">
 				<p class="inputGrop clearFloat">
 					<label class="inputLabel3 left">付款银行</label>
-					<select name="name_car" class="left inputText inputWidth" v-model="paycard" @change="paycardxx">
+					<select name="name_car" class="left inputText inputWidth" v-model="paycard" @change="paycardxx" disabled="disabled">
 						<option value="q">请选择</option>
 						<option :value="item.dicCode" v-for="item in paycardlist">{{item.deptDicName}}</option>
 					</select>
@@ -18,11 +18,11 @@
 						<label class="inputLabel left">开户省市</label>
 						<!--</p>
 						<p class="inputP1 clearFloat">-->
-						<select class="left inputText13 inputWidth1 sele" v-model="provicecounty" @change="county">
+						<select class="left inputText13 inputWidth1 sele" v-model="provicecounty" @change="county" disabled="disabled">
 							<option value="q">请选择</option>
 							<option :value="item.cnCode" v-for="item in provicecity">{{item.cnName}}</option>
 						</select>
-						<select class="left inputText13 inputWidth1 inputWidth2 sele" v-model="countypriy">
+						<select class="left inputText13 inputWidth1 inputWidth2 sele" v-model="countypriy" disabled="disabled">
 							<option value="q">请选择</option>
 							<option :value="item.cnCode" v-for="item in countylist">{{item.cnName}}</option>
 						</select>
@@ -30,29 +30,29 @@
 				</div>
 				<p class="inputGrop clearFloat">
 					<label class="inputLabel3 left">支付方式</label>
-					<select name="name_car" class="left inputText inputWidth" v-model="paycardTypes">
+					<select name="name_car" class="left inputText inputWidth" v-model="paycardTypes" disabled="disabled">
 						<option value="q">请选择</option>
 						<option :value="item.dicCode" v-for="item in paycardType">{{item.deptDicName}}</option>
 					</select>
 				</p>
 				<p class="inputGrop clearFloat">
 					<label class="inputLabel3 left">银行卡号</label>
-					<input type="text" maxlength="23" class="inputTextCard left" placeholder="请输入付款账号" v-model="bankNumber" @input="checknumber" />
+					<input type="text" maxlength="23" class="inputTextCard left" placeholder="请输入付款账号" v-model="bankNumber" @input="checknumber" disabled="disabled" />
 				</p>
 				<p class="inputGrop clearFloat">
 					<label class="inputLabel3 left">持卡人</label>
-					<input type="text" class="inputText left" maxlength="20" placeholder="请输入真实姓名" v-model="cardname" readonly="readonly" />
+					<input type="text" class="inputText left" maxlength="20" placeholder="请输入真实姓名" v-model="cardname" readonly="readonly" disabled="disabled" />
 				</p>
 				<p class="inputGrop clearFloat">
 					<label class="inputLabel3 left">证件类型</label>
-					<select name="name_car" class="left inputText inputWidth" v-model="idcard" @change="cardtype">
+					<select name="name_car" class="left inputText inputWidth" v-model="idcard" @change="cardtype" disabled="disabled">
 						<option value="q">请选择</option>
 						<option :value="item.dicCode" v-for="item in idcardlist">{{item.dicName}}</option>
 					</select>
 				</p>
 				<p class="inputGrop clearFloat">
 					<label class="inputLabel3 left">证件号码</label>
-					<input type="text" class="inputTextCard left" placeholder="请输入证件号码" v-model="cardnum" maxlength="18" v-on:input="cardnumtype" readonly="readonly" />
+					<input type="text" class="inputTextCard left" placeholder="请输入证件号码" v-model="cardnum" maxlength="18" v-on:input="cardnumtype" readonly="readonly" disabled="disabled" />
 				</p>
 			</div>
 
@@ -91,7 +91,7 @@
 				pdf: '',
 				pdfFlag: true,
 				showPdf: false,
-				bankNumber: '6228480402560000', //银行卡
+				bankNumber: '', //银行卡
 				sBoxShow: true,
 				falg: true, //是否查看条款标志
 				paycard: "", //付款账号
@@ -158,7 +158,7 @@
 					"tmId": "TM0009"
 				}]
 				console.log("请求==" + JSON.stringify(data))
-				this.$http.post(this.$store.state.link + '/css/css/queryTemplateByTmIdList', data)
+				this.$http.post(this.$store.state.link5 + '/css/css/queryTemplateByTmIdList', data)
 					.then(res => {
 						var dataCode = res.data.code;
 						if(dataCode == "SYS_S_000") {
@@ -335,37 +335,38 @@
 			// },
 			//下一步
 			handleClickGoPay() {
-				var re = /[^\u4e00-\u9fa5]/; //姓名校验
-				var num = /^\d*$/; //全数字
-				var strBin = "10,18,30,35,37,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,58,60,62,65,68,69,84,87,88,94,95,98,99";
-				if(this.paycard == "q") {
-					Toast("请选择付款银行");
-				} else if(this.provicecounty == "q") {
-					Toast("请选择省");
-				} else if(this.countypriy == "q") {
-					Toast("请选择市");
-				} else if(this.paycardTypes == "q") {
-					Toast("请选择支付方式");
-				} else if(this.bankNumber == "") {
-					Toast("请填写银行卡号");
-				} else if(this.bankNumber.replace(/\s/g, "").length < 16 || this.bankNumber.replace(/\s/g, "").length > 19) {
-					Toast("银行卡号长度必须在16到19之间");
-					return;
-				}
+				// var re = /[^\u4e00-\u9fa5]/; //姓名校验
+				// var num = /^\d*$/; //全数字
+				// var strBin = "10,18,30,35,37,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,58,60,62,65,68,69,84,87,88,94,95,98,99";
+				// if(this.paycard == "q") {
+				// 	Toast("请选择付款银行");
+				// } else if(this.provicecounty == "q") {
+				// 	Toast("请选择省");
+				// } else if(this.countypriy == "q") {
+				// 	Toast("请选择市");
+				// } else if(this.paycardTypes == "q") {
+				// 	Toast("请选择支付方式");
+				// } else if(this.bankNumber == "") {
+				// 	Toast("请填写银行卡号");
+				// } else if(this.bankNumber.replace(/\s/g, "").length < 16 || this.bankNumber.replace(/\s/g, "").length > 19) {
+				// 	Toast("银行卡号长度必须在16到19之间");
+				// 	return;
+				// }
 				//				else if(!num.exec(this.bankNumber)) {
 				//					Toast("银行卡号必须是纯数字");
 				//				}
-				else if(strBin.indexOf(this.bankNumber.substring(0, 2)) == -1) {
-					Toast("银行卡号开头6位不符合规范");
-				} else if(this.cardname.length <= 1) {
-					Toast("持卡人姓名格式不正确");
-				} else if(re.test(this.cardname)) {
-					Toast("持卡人姓名必须为纯中文");
-				} else if(this.idcard == "q") {
-					Toast("请选择证件类型");
-				} else if(this.cardnum == "") {
-					Toast("证件号码不能为空");
-				} else if(this.falg == true) {
+				// else if(strBin.indexOf(this.bankNumber.substring(0, 2)) == -1) {
+				// 	Toast("银行卡号开头6位不符合规范");
+				// } else if(this.cardname.length <= 1) {
+				// 	Toast("持卡人姓名格式不正确");
+				// } else if(re.test(this.cardname)) {
+				// 	Toast("持卡人姓名必须为纯中文");
+				// } else if(this.idcard == "q") {
+				// 	Toast("请选择证件类型");
+				// } else if(this.cardnum == "") {
+				// 	Toast("证件号码不能为空");
+				// } else 
+				if(this.falg == true) {
 					Toast("请先勾选声明与授权协议书");
 				} else {
 
@@ -532,10 +533,6 @@
 		outline: none;
 	}
 	
-	input {
-		font-weight: 100;
-	}
-	
 	input::-ms-clear {
 		display: none;
 		width: 0;
@@ -549,12 +546,10 @@
 	textarea::-webkit-input-placeholder,
 	input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	.clearFloat:after {
@@ -661,7 +656,7 @@
 	.inputText {
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		padding-left: 0;
 	}
 	
@@ -669,7 +664,7 @@
 		width: 3rem;
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	select {
@@ -705,13 +700,13 @@
 		height: 0.68rem;
 		margin-left: 2.04rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		padding-left: 0;
 	}
 	
 	..inputText13 {
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.inputWidth {
@@ -801,11 +796,11 @@
 		/*	color: #EB7760;*/
 		width: 2rem;
 		height: 0.88rem;
-		margin-left: 0.16rem;
+		margin-left: 0.2rem;
 	}
 	
 	.inputWidth2 {
-		margin-left: 0.5rem;
+		margin-left: 0.45rem;
 	}
 	
 	.sBox {

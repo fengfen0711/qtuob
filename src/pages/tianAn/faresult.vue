@@ -32,7 +32,7 @@
 		},
 		methods: {
 			again() {
-				this.$router.push('/produch')
+				this.$router.push('/product')
 			},
 			backhome() {
 				this.$router.push('/')

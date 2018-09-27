@@ -67,7 +67,7 @@
 		font-size: 0.44rem;
 		line-height: 3em;
 		text-align: center;
-		border: 0.01rem solid #666666;
+		border: 0.01rem solid #333333;
 	}
 	.babe2{
 		float: left;
@@ -78,7 +78,7 @@
 		font-size: 0.44rem;
 		line-height: 3em;
 		text-align: center;
-		border-right: 0.01rem solid #666666;
+		border-right: 0.01rem solid #333333;
 	}
 	.babe3{
 		float: left;

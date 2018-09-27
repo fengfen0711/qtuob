@@ -4,17 +4,17 @@
 			<Pdf :pdf="pdf" @pdfClose="pdfClose"></Pdf>
 		</div>
 		<div :class="{center:blur} ">
+			<div ref="item" :code="item.tmFmsUrl" class="tain_p_topitem " v-for="(item,index) in cardPDFArray" @click="select_item($event,index)">
+				<img ref="test" class="tain_img_topitemleft" src="/static/img/icon_select1_focus.png" />
+				<span class="tain_span_nameitem">{{item.tmName}}</span>
+				<img class="tain_img_topitemright" src="/static/qijianwei/btn_next.png" />
+			</div>
 			<div class="sign" @click="handleClickSign(1)">
 				<img v-if="sign" ref="tou" :src="signPhoto" :code="code" alt="" /> 投保人签字区域
 			</div>
 			<div class="success" @click="handleClickSuc">签字完成</div>
 			<div class="list">
-				投保人本人已经确认并阅读<span @click="cardPDF">《银行卡信息修改授权说明》</span>，签字确保上述信息的真实、将在 30日内通知贵机构，否则本人承担由此造成的不利 后果。
-			</div>
-			<div ref="item" :code="item.msg" class="tain_p_topitem " v-for="(item,index) in alldata" @click="select_item($event,index)">
-				<img ref="test" class="tain_img_topitemleft" src="/static/img/icon_select1_focus.png" />
-				<span class="tain_span_nameitem">{{item.name}}</span>
-				<img class="tain_img_topitemright" src="/static/qijianwei/btn_next.png" />
+				签名即表示本人已详细阅读并同意上述所有集成了电子签名的单证内容
 			</div>
 			<div class="btn">
 				<!--<div class="last" @click="back">上一步</div>-->
@@ -43,7 +43,7 @@
 	import { Indicator } from 'mint-ui';
 	import { MessageBox } from 'mint-ui';
 	export default {
-		name: "Code",
+		name: "bankCardEnter",
 		data() {
 			return {
 				points: [],
@@ -66,7 +66,7 @@
 				index: "",
 				photo: "",
 				alldata: [{
-					"name": '银行卡信息修改授权说明',
+					"name": '首期交费信息变更申请书',
 					"msg": ""
 				}],
 				addData: [],
@@ -102,17 +102,25 @@
 				this.$refs.bg.style.position = "absolute"
 			},
 			init() {
-				var data = [{
-					"tmId": "TM0003"
-				}]
+				var data = {
+				  "pkgNo": this.$route.query.orderNo,
+				  "sceneCode": "SC0001"
+				}
 				Indicator.open();
-				this.$http.post(this.$store.state.link + '/css/css/queryTemplateByTmIdList', data)
+				this.$http.post(this.$store.state.link + '/css/css/queryTmIdUrlByPS', data)
 					.then(res => {
 						Indicator.close();
 						console.log("==222==" + JSON.stringify(res.data));
 						var dataCode = res.data.code;
 						if(dataCode == "SYS_S_000") {
-							this.cardPDFArray = res.data.output;
+							var arr=[]
+							for(var i=0,j=res.data.output.length;i<j;i++){
+								if(res.data.output[i].tmId=="TM0010"){
+									res.data.output[i].tmName="首期交费信息变更申请书"
+									arr.push(res.data.output[i])
+								}
+							}
+							this.cardPDFArray = arr
 						} else {
 							Toast(res.data.desc);
 						}
@@ -143,7 +151,10 @@
 						console.log("==222==" + JSON.stringify(res.data));
 						var dataCode = res.data.code;
 						if(dataCode == "SYS_S_000") {
-							this.cardPDFArray = res.data.output.pdfURL;
+							Toast("签字完成")
+							this.photo = true
+//							this.addData.length=1
+//							this.cardPDFArray = res.data.output.pdfURL;
 							console.log(this.cardPDFArray)
 						} else {
 							Toast(res.data.desc);
@@ -153,13 +164,15 @@
 						console.log(res.data);
 					})
 			},
-			cardPDF() {
-				for(var i = 0; i < this.cardPDFArray.length; i++) {
-					if(this.cardPDFArray[i].tmId == "TM0003") {
-						this.pdfFlag = false
-						this.pdf = this.cardPDFArray[i].tmFmsUrl;
-					}
-				}
+			cardPDF(data) {
+				this.pdfFlag = false
+				this.pdf = data
+//				for(var i = 0; i < this.cardPDFArray.length; i++) {
+//					if(this.cardPDFArray[i].tmId == "TM0010") {
+//						this.pdfFlag = false
+//						this.pdf = this.cardPDFArray[i].tmFmsUrl;
+//					}
+//				}
 
 			},
 			handleClickSuc() {
@@ -169,31 +182,10 @@
 					Toast("请签字")
 				}
 			},
-			select_item(e, index) {
-				if(this.photo) {
+			select_item(e, index) { 
 					this.addData.push(index);
 					e.currentTarget.getElementsByClassName('tain_img_topitemleft')[0].style.opacity = 1;
-					if(e.currentTarget.getElementsByClassName('tain_img_topitemright')[0].src.indexOf("downImg") != -1) {
-						this.alldata[index].msg = ""
-					} else {
-						this.alldata[index].msg = this.session
-					}
-
-					//					window.localStorage.photo1 = this.signPhoto
-					//					window.localStorage.photo2 = this.signPhoto1
-					//					window.localStorage.photo = this.photo
-					//					window.localStorage.addData = JSON.stringify(this.addData)
-					if(index == 0) {
-						this.cardPDF();
-					} else if(index == 1) {
-						this.cardPDF1();
-					} else if(index == 2) {
-						this.cardPDF2();
-					}
-					//					window.location.href = e.currentTarget.getAttribute('code')
-				} else {
-					Toast("请点击签字完成")
-				}
+					this.cardPDF(e.currentTarget.getAttribute('code')); 
 
 			},
 			back() {
@@ -202,22 +194,29 @@
 			next() {
 
 				var docReq = [];
-				var obj1 = {
-					"docFileName": "投保人签字", //单证文件名 
-					"docType": "014", //单证类型
-					"fileSerialNo": this.code, //文件序列号 : 文件在影像系统唯一标识 
-					"remark": "", //备注 
-					"showOrder": 16 //显示顺序
+				if(this.code!=""){
+					var obj1 = {
+						"docFileName": "投保人签字", //单证文件名 
+						"docType": "014", //单证类型
+						"fileSerialNo": this.code, //文件序列号 : 文件在影像系统唯一标识 
+						"remark": "", //备注 
+						"showOrder": 16 //显示顺序
+					}
+					docReq.push(obj1);
+				}else if(this.code1!=""){
+					var obj2 = {
+						"docFileName": "被保险人签字", //单证文件名 
+						"docType": "014", //单证类型
+						"fileSerialNo": this.code1, //文件序列号 : 文件在影像系统唯一标识 
+						"remark": "", //备注 
+						"showOrder": 17 //显示顺序
+					}
+					docReq.push(obj2);
 				}
-				var obj2 = {
-					"docFileName": "被保人签字", //单证文件名 
-					"docType": "014", //单证类型
-					"fileSerialNo": this.code1, //文件序列号 : 文件在影像系统唯一标识 
-					"remark": "", //备注 
-					"showOrder": 17 //显示顺序
-				}
-				docReq.push(obj1);
-				docReq.push(obj2);
+				
+				
+				
+				
 				var data = {
 					"token": this.$route.query.token,
 					"userId": this.$route.query.userId,
@@ -233,14 +232,14 @@
 					"pkgNo": this.$route.query.orderNo, //订单号
 					"docReq": docReq
 				}
+				console.log(docReq)
 				console.log("==111==" + JSON.stringify(data));
 				this.$http.post(this.$store.state.link + '/trd/order/v1/saveorder', data)
 					.then(res => {
 						console.log("==222==" + JSON.stringify(res.data));
 						var dataCode = res.data.code;
 						if(dataCode == "SYS_S_000") {
-							this.photo = true
-							Toast("签字完成")
+//							this.photo = true
 							this.init1();
 						} else {
 							Toast(res.data.desc);
@@ -250,25 +249,29 @@
 					})
 			},
 			queryOrder() {
-				if(this.addData.length != 1) {
-					Toast("请依次阅读投保文件")
+//				this.payAjax()
+				if(!this.photo) {
+					Toast("请点击签字完成")
 				} else {
 					this.payAjax()
 
 				}
 			},
 			handleClickSign(a) {
-				if(this.index == a) {
-					this.index = a
-				} else {
-					this.index = a
-					this.overwrite()
+				if(this.addData.length==this.cardPDFArray.length){
+					if(this.index == a) {
+						this.index = a
+					} else {
+						this.index = a
+						this.overwrite()
+					}
+	
+					this.$refs.bg.style.position = "fixed"
+					this.mask = true
+					this.blur = true
+				}else{
+					Toast("签字前，请依次预览以上文件")
 				}
-
-				this.$refs.bg.style.position = "fixed"
-				this.mask = true
-				this.blur = true
-
 			},
 			//电脑设备事件
 			mouseDown(ev) {
@@ -283,6 +286,7 @@
 					console.log(obj);
 					this.startX = obj.x;
 					this.startY = obj.y;
+					this.canvasTxt.lineWidth = 5;
 					this.canvasTxt.beginPath();
 					this.canvasTxt.moveTo(this.startX, this.startY);
 					this.canvasTxt.lineTo(obj.x, obj.y);
@@ -304,6 +308,7 @@
 					console.log(obj)
 					this.startX = obj.x;
 					this.startY = obj.y;
+					this.canvasTxt.lineWidth = 5;
 					this.canvasTxt.beginPath();
 					this.canvasTxt.moveTo(this.startX, this.startY);
 					this.canvasTxt.lineTo(obj.x, obj.y);
@@ -323,6 +328,7 @@
 					};
 					this.moveY = obj.y;
 					this.moveX = obj.x;
+					this.canvasTxt.lineWidth = 5;
 					this.canvasTxt.beginPath();
 					this.canvasTxt.moveTo(this.startX, this.startY);
 					this.canvasTxt.lineTo(obj.x, obj.y);
@@ -344,6 +350,7 @@
 					};
 					this.moveY = obj.y;
 					this.moveX = obj.x;
+					this.canvasTxt.lineWidth = 5;
 					this.canvasTxt.beginPath();
 					this.canvasTxt.moveTo(this.startX, this.startY);
 					this.canvasTxt.lineTo(obj.x, obj.y);
@@ -363,6 +370,7 @@
 						x: ev.offsetX,
 						y: ev.offsetY
 					};
+					this.canvasTxt.lineWidth = 5;
 					this.canvasTxt.beginPath();
 					this.canvasTxt.moveTo(this.startX, this.startY);
 					this.canvasTxt.lineTo(obj.x, obj.y);
@@ -386,6 +394,7 @@
 						x: ev.targetTouches[0].clientX,
 						y: ev.targetTouches[0].clientY - 30
 					};
+					this.canvasTxt.lineWidth = 5;
 					this.canvasTxt.beginPath();
 					this.canvasTxt.moveTo(this.startX, this.startY);
 					this.canvasTxt.lineTo(obj.x, obj.y);
@@ -607,7 +616,7 @@
 	.btn {
 		width: 100%;
 		height: 0.88rem;
-		margin: 2.02rem auto 0rem;
+		margin: 1.02rem auto 0rem;
 	}
 	
 	.last {
@@ -821,7 +830,7 @@
 	}
 	
 	.list span {
-		color: #5bcdc3;
+		/*color: #5bcdc3;*/
 	}
 	
 	.tain_p_topitem {

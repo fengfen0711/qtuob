@@ -11,7 +11,7 @@
 			<img class="imgLeftPdf" src="../../../static/img/zhonghua/zhPdfIcon.png" />
 			<span class="spanTitleName">电子投保单</span>
 			<img class="imgsuccess" src="../../../static/img/zhonghua/success.png" />
-			<span class="spanInsureName1">投保人暨被保人签名</span>
+			<span class="spanInsureName1">投保人暨被保险人签名</span>
 			<img class="imgNext" src="../../../static/img/zhonghua/imgNext.png" />
 		</p>
 		<div class="feed_div">
@@ -41,37 +41,70 @@ export default {
 		}
 	},
 	created() {
-		//console.log(this.$store.state.zhOrderState)
+		//this.underwriting();
 		var data = {
-					"token": this.$store.state.token,
-					"userId": this.$store.state.userId,
-					"head": {
-						"channelCode": "qtb_h5",
-						"deptCode": this.$route.query.cmpCode,
-						"oprCode": this.$store.state.userId,
-						"prodCode": this.$route.query.prodCode,
-					},
-					"opt": "ALL",
-					"pkgNo": this.$route.query.orderNo,
+			"token": this.$store.state.token,
+			"userId": this.$store.state.userId,
+			"head": {
+				"channelCode": "qtb_h5",
+				"deptCode": this.$route.query.cmpCode,
+				"oprCode": this.$store.state.userId,
+				"prodCode": this.$route.query.prodCode,
+			},
+			"opt": "ALL",
+			"pkgNo": this.$route.query.orderNo,
 
+		}
+		this.$http.post(this.$store.state.link5 + '/trd/order/v1/queryorder', data)
+			.then(res => {
+				console.log(res.data);
+				var dataCode = res.data.code;
+				//console.log("www====" + JSON.stringify(res.data));
+				if (dataCode == "SYS_S_000") {
+
+				} else {
+					Toast(res.data.desc);
 				}
-
-					this.$http.post(this.$store.state.link5 + '/trd/order/v1/queryorder', data)
-					.then(res => {
-						console.log(res.data);
-						var dataCode = res.data.code;
-						console.log("www====" + JSON.stringify(res.data));
-						//console.log(res.data.output.cvrgResp[0].payNo);
-						if(dataCode == "SYS_S_000") {
-							
-						} else {
-							Toast(res.data.desc);
-						}
-					}, res => {
-						console.log(res.data);
-					})
+			}, res => {
+				console.log(res.data);
+			})
 	},
 	methods: {
+		underwriting(){
+				var data = {
+					  "head": {
+					    "channelCode": "qtb_h5",
+					    "deptCode": this.$route.query.cmpCode,
+					    "oprCode": this.$store.state.userId,
+					    "prodCode":this.$route.query.prodCode
+					  },
+					    "token": this.$store.state.token,
+						"userId": this.$store.state.userId,
+					   
+					  "pkgNo": this.$route.query.orderNo
+					}
+								
+				console.log(JSON.stringify(data))
+				Indicator.open();
+				this.$http.post("http://192.168.171.12:9009" + '/doc/v1/uploaddoc', data)
+						.then(res => {
+							Indicator.close();
+							console.log(res.data)
+							var dataCode = res.data.code;
+							console.log(res.data)
+							if(dataCode == "SYS_S_000") {
+								 
+
+							} else {
+								Toast(res.data.desc);
+							}
+						}, res => {
+							Indicator.close();
+							console.log(res.data);
+						})
+
+				
+		},
 		goAccInformation() {
 			window.history.go(-1)
 		},
@@ -98,12 +131,22 @@ export default {
 						console.log(this.$store.state.zhOrderState)
 						if (res.data.output.uwStatus == this.$store.state.zhOrderState.AUC) {
 							Toast("核保成功");
-							this.$router.push('/informationCon?prodCode='+ this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&prodNo=" + this.$route.query.prodNo);
-						} else if (res.data.output.uwStatus == this.$store.state.zhOrderState.AUT) {
-							this.wrap_aut = false;
-						} else {
-							this.$router.push('/relayfeedback');
+							this.$router.push('/informationCon?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&prodNo=" + this.$route.query.prodNo);
 						}
+						else if (res.data.output.uwStatus == this.$store.state.zhOrderState.AUF) {
+							Toast(res.data.output.message)
+							// this.wrap_aut = false;
+						}
+						else if (res.data.output.uwStatus == this.$store.state.zhOrderState.HUS) {
+//							Toast(res.data.output.message)
+							this.wrap_aut = false;
+						}
+						else if (res.data.output.uwStatus == this.$store.state.zhOrderState.AUT) {
+							Toast(res.data.output.message)
+						}
+						// else {
+						// 	this.$router.push('/relayfeedback?prodCode='+ this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&prodNo=" + this.$route.query.prodNo);
+						// }
 					}
 				}, res => {
 					Indicator.close();
@@ -111,11 +154,42 @@ export default {
 				})
 			//				this.$router.push('/informationCon')
 		},
+
 		goFeedsubmit() {
-			this.$router.push('/feedsubmit');
+			var data = {
+						  "head": {
+						   "channelCode": "qtb_h5",
+							"deptCode": this.$route.query.cmpCode,
+							"oprCode": this.$store.state.userId,
+							"prodCode": this.$route.query.prodCode,
+//							
+						  },
+						 "pkgNo": this.$route.query.orderNo, //订单号
+//						 "docUploadStatus":this.$route.query.responseCode,
+					}	
+					console.log(JSON.stringify(data))
+			this.$http.post(this.$store.state.link5 + "/trd/uc/v1/underwriting", data)
+				.then(res => {
+					console.log(res.data)
+					if(res.data.code == "SYS_S_000"){
+						if(res.data.output.uwStatus=="HUF"){
+							Toast("人工核保失败")
+						}else if(res.data.output.uwStatus=="HUC"){
+							this.$router.push('/feedsubmit');
+						}
+					}
+					
+				}, res => {
+					Indicator.close();
+					console.log(res.data);
+				})
+			//			
 		},
 		goFee() {
-			this.$router.push('/fee');
+			this.$router.push('/fee?prodCode=' +
+				this.$route.query.prodCode + '&prodNo=' +
+				this.$route.query.prodNo + '&orderNo=' +
+				this.$route.query.orderNo + '&cmpCode=' + this.$route.query.cmpCode);
 		},
 	}
 }

@@ -475,7 +475,7 @@
 					}
 					docReq.push(obj3);
 					var obj4 = {
-						"docFileName": "被保人身份证正面", //单证文件名 
+						"docFileName": "被保险人身份证正面", //单证文件名 
 						"docType": "014", //单证类型
 						"fileSerialNo": this.d1, //文件序列号 : 文件在影像系统唯一标识 
 						"remark": "", //备注 
@@ -485,7 +485,7 @@
 					if(this.Bf){
 						if(this.e1!=""){
 							var obj5 = {
-								"docFileName": "被保人身份证反面", //单证文件名 
+								"docFileName": "被保险人身份证反面", //单证文件名 
 								"docType": "014", //单证类型
 								"fileSerialNo": this.e1, //文件序列号 : 文件在影像系统唯一标识 
 								"remark": "", //备注 

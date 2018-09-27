@@ -26,7 +26,7 @@
 				</select>
 			</p>
 			<p v-if="edu" class="inputGrop clearFloat">
-				<!--<label class="inputLabel left">保额(元)</label>-->
+				<!--<label class="inputLabel left">基本保险金额(元)</label>-->
 				<label class="inputLabel left">{{peopledetail.cvrgCode | filAmntTitle}}</label>
 				<input ref="inputs" type="text" class="inputText inputWidth left" name="text" id="text" :placeholder="peopledetail.cvrgCode | filAmnt" @blur="Premium('7')" v-model="addamnt" :disabled="riskAmnt" />
 			</p>
@@ -69,18 +69,18 @@
 		filters: {
 			filAmnt: function(value) {
 				if(value == "C000034010290") { //费用医疗
-					return '请输入保额'
+					return '请输入基本保险金额'
 				} else if(value == "C000034010291") { //费用医疗
 					return '请输入份数'
 				} else {
-					return '请在主险保额处输入保额'
+					return '请在主险基本保险金额处输入基本保险金额'
 				}
 			},
 			filAmntTitle: function(value) {
 				if(value == "C000034010291") { //津贴医疗
 					return '份数'
 				} else {
-					return '保额(元)'
+					return '基本保险金额(元)'
 				}
 			},
 			//			editAmnt: function(value) {
@@ -301,7 +301,7 @@
 				var data = {
 					"mainCvrgNo": this.mainCvrgno, //每个险种都要
 					"cvrgShortName": this.peopledetail.cvrgShortName,
-					"amnt": this.addamnt, //保额 
+					"amnt": this.addamnt, //基本保险金额 
 					"prem": this.yeeFee, //保费  
 					"cvrgNo": this.peopledetail.cvrgNo,
 					"cvrgCode": this.peopledetail.cvrgCode, //险种编码 
@@ -363,8 +363,8 @@
 						}
 					}
 					if(!patrn.test(this.addamnt)) {
-						console.log("===保额" + this.addamnt)
-						Toast("保额必须为纯数字")
+						console.log("===基本保险金额" + this.addamnt)
+						Toast("基本保险金额必须为纯数字")
 						if(this.peopledetail.cvrgExtInfo.calcPremType == "2") {
 							this.yeeFee = "";
 							this.peopledetail.yeeFee = ""
@@ -405,7 +405,7 @@
 					}
 					if(this.edu) {
 
-						if(this.peopledetail.cvrgExtInfo.calcPremType == "1") { //保费算保额
+						if(this.peopledetail.cvrgExtInfo.calcPremType == "1") { //保费算基本保险金额
 
 							data = {
 								"list": [{
@@ -427,7 +427,7 @@
 									"isWho": this.nexusType
 								}]
 							}
-						} else if(this.peopledetail.cvrgExtInfo.calcPremType == "2") { //保额算保费
+						} else if(this.peopledetail.cvrgExtInfo.calcPremType == "2") { //基本保险金额算保费
 
 							data = {
 								"list": [{
@@ -452,7 +452,7 @@
 						}
 					} else {
 						//						console.log(this.peopledetail.cvrgExtInfo.calcPremType)
-						//						if(this.peopledetail.cvrgExtInfo.calcPremType == "1") { //保费算保额
+						//						if(this.peopledetail.cvrgExtInfo.calcPremType == "1") { //保费算基本保险金额
 						//													console.log('s')
 
 						//						console.log("总费==" + JSON.stringify(this.additionalRiskEcho))
@@ -483,7 +483,7 @@
 							}]
 						}
 						console.log("豁免C===" + JSON.stringify(data))
-						//						} else if(this.peopledetail.cvrgExtInfo.calcPremType == "2") { //保额算保费
+						//						} else if(this.peopledetail.cvrgExtInfo.calcPremType == "2") { //基本保险金额算保费
 						//							console.log('m')
 						//							data = {
 						//								"list": [{
@@ -592,7 +592,7 @@
 						if(this.peopledetail.cvrgCode == "C000034000114") {
 							sexadd = this.gender;
 						}
-						if(this.peopledetail.cvrgExtInfo.calcPremType == "1") { //保费算保额
+						if(this.peopledetail.cvrgExtInfo.calcPremType == "1") { //保费算基本保险金额
 							data = {
 								"list": [{
 									"cvrgCode": this.peopledetail.cvrgCode,
@@ -613,7 +613,7 @@
 									"isWho": this.nexusType
 								}]
 							}
-						} else if(this.peopledetail.cvrgExtInfo.calcPremType == "2") { //保额算保费
+						} else if(this.peopledetail.cvrgExtInfo.calcPremType == "2") { //基本保险金额算保费
 
 							data = {
 								"list": [{
@@ -637,7 +637,7 @@
 							}
 						}
 					} else {
-						//						if(this.peopledetail.cvrgExtInfo.calcPremType == "1") { //保费算保额
+						//						if(this.peopledetail.cvrgExtInfo.calcPremType == "1") { //保费算基本保险金额
 						//							data = {
 						//								"list": [{
 						//									"cvrgCode": this.peopledetail.cvrgCode,
@@ -654,7 +654,7 @@
 						//									"freqyNo": ""
 						//								}]
 						//							}
-						//						} else if(this.peopledetail.cvrgExtInfo.calcPremType == "2") { //保额算保费
+						//						} else if(this.peopledetail.cvrgExtInfo.calcPremType == "2") { //基本保险金额算保费
 						var sexadd = sex1;
 						if(this.peopledetail.cvrgCode == "C000034010290" || this.peopledetail.cvrgCode == "C000034010291") {
 							sexadd = "";
@@ -775,10 +775,6 @@
 		outline: none;
 	}
 	
-	input {
-		font-weight: 100;
-	}
-	
 	input::-ms-clear {
 		display: none;
 		width: 0;
@@ -792,12 +788,10 @@
 	textarea::-webkit-input-placeholder,
 	input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	.btnImg {
@@ -835,7 +829,7 @@
 	
 	.inputLabel {
 		display: block;
-		width: 2.04rem;
+		width: 2.64rem;
 		height: 0.88rem;
 		line-height: 0.88rem;
 		font-weight: bold;
@@ -845,11 +839,11 @@
 	.inputText {
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.inputWidth {
-		width: 4.66rem;
+		width: 4.06rem;
 	}
 	
 	select {
@@ -875,7 +869,7 @@
 		height: 0.88rem;
 		line-height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		/*overflow: hidden;
 		white-space: nowrap;
 		text-overflow: ellipsis;*/
@@ -886,7 +880,7 @@
 		width: 3.8rem;
 		line-height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.upDownImg {

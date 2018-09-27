@@ -279,9 +279,9 @@
 						  "imgType": "00401011",
 						  "pkgNo": this.$route.query.orderNo
 						}
-				console.log(dataCode)
-					Indicator.open();
-				this.$http.post(this.$store.state.link5 + "/doc/v1/ocr", dataCode).then(res => {
+				console.log(JSON.stringify(dataCode))
+				Indicator.open();
+				this.$http.post('http://192.168.171.12:9009' + "/doc/v1/ocr", dataCode).then(res => {
 						Indicator.close();
 						console.log(res.data);
 						if(res.data.code == "SYS_S_000"){
@@ -323,7 +323,7 @@
 						}
 				console.log(dataCode)
 					Indicator.open();
-				this.$http.post(this.$store.state.link5 + "/doc/v1/ocr", dataCode).then(res => {
+				this.$http.post('http://192.168.171.12:9009' + "/doc/v1/ocr", dataCode).then(res => {
 						Indicator.close();
 						console.log(res.data);
 						if(res.data.code == "SYS_S_000"){

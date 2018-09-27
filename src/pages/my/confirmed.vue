@@ -243,8 +243,7 @@
 						this.$http.post(this.$store.state.link + '/cut/cut/validIDCard', data).then(response => {
 							console.log(response.data);
 							if(response.data.code == "SYS_S_000") {
-								if(response.data.output.valid == true) {
-								} else {
+								if(response.data.output.valid == true) {} else {
 									Toast("证件号码不合法");
 								}
 							} else {
@@ -272,79 +271,85 @@
 						return;
 					}
 				}
-
+				if(this.confirm_cardnum != "") {
+					if(this.card == "" || this.card == "0") {
+						Toast("请选择证件类型");
+						return;
+					}
+				}
+				console.log(this.card)
 				if(this.card != "" && this.card != "0") {
 					if(this.confirm_cardnum == "") {
 						Toast("请输入证件号码");
 						return;
 					}
-//					else if(this.confirm_cardnum.length < 18) {
-//						Toast("请输入正确的证件号码");
-//						return;
-//					} 
+					//					else if(this.confirm_cardnum.length < 18) {
+					//						Toast("请输入正确的证件号码");
+					//						return;
+					//					} 
 					else {
 						this.changeCount();
 						var data = {
-										"applicantName": this.name, //真实姓名
-										"certiCode": this.confirm_cardnum, //证件号码
-										"certiType": this.card, //证件类型
-										"mobileNo": this.confirm_tel, //联系电话
-										"fkBrokerId": this.$store.state.brokerInfo.brokerId, //BrokerId
-										"pkInsureId": pkInsureId, //主键ID
-										"token": localStorage.token,
-										"userId": localStorage.userId
-									}
-									console.log("1111" + JSON.stringify(data))
-									document.getElementById("confirm_id").style.disabled = "true";
-									this.$http.post(this.$store.state.link + '/core/order/addInsureInput', data).then(response => {
-										console.log(response.data);
-										document.getElementById("confirm_id").style.disabled = "false";
-										if(response.data.code == "SYS_S_000") {
-											pkInsureId = response.data.output.pkInsureId;
-											//							shareURL1=response.data.output.h5Url+"?pkInsureId="+response.data.output.pkInsureId+"&beforeOrderStatus="+response.data.output.beforeOrderStatus+"&userId="+localStorage.getItem("userId")+"&token="+localStorage.getItem("token");
-											//	 						this.shareclick();
-											this.$router.push('/custConfirmationdetails?beforeOrderStatus=' + response.data.output.beforeOrderStatus + "&pkInsureId=" + response.data.output.pkInsureId + "&h5Url=" + response.data.output.h5Url)
-											console.log("1111" + shareURL);
-										} else {
-											Toast("保存失败");
-										}
-									}, response => {
-										console.log("ajax error");
-										Toast("网络错误");
-										document.getElementById("confirm_id").style.disabled = "false";
-									});
+							"applicantName": this.name, //真实姓名
+							"certiCode": this.confirm_cardnum, //证件号码
+							"certiType": this.card, //证件类型
+							"mobileNo": this.confirm_tel, //联系电话
+							"fkBrokerId": this.$store.state.brokerInfo.brokerId, //BrokerId
+							"pkInsureId": pkInsureId, //主键ID
+							"token": localStorage.token,
+							"userId": localStorage.userId
+						}
+						console.log("1111" + JSON.stringify(data))
+						document.getElementById("confirm_id").style.disabled = "true";
+						this.$http.post(this.$store.state.link + '/core/order/addInsureInput', data).then(response => {
+							console.log(response.data);
+							document.getElementById("confirm_id").style.disabled = "false";
+							if(response.data.code == "SYS_S_000") {
+								pkInsureId = response.data.output.pkInsureId;
+								//							shareURL1=response.data.output.h5Url+"?pkInsureId="+response.data.output.pkInsureId+"&beforeOrderStatus="+response.data.output.beforeOrderStatus+"&userId="+localStorage.getItem("userId")+"&token="+localStorage.getItem("token");
+								//	 						this.shareclick();
+								this.$router.push('/custConfirmationdetails?beforeOrderStatus=' + response.data.output.beforeOrderStatus + "&pkInsureId=" + response.data.output.pkInsureId + "&h5Url=" + response.data.output.h5Url)
+								console.log("1111" + shareURL);
+							} else {
+								Toast("保存失败");
+							}
+						}, response => {
+							console.log("ajax error");
+							Toast("网络错误");
+							document.getElementById("confirm_id").style.disabled = "false";
+						});
 
 					}
 				} else {
 					var data = {
-										"applicantName": this.name, //真实姓名
-										"certiCode": this.confirm_cardnum, //证件号码
-										"certiType": this.card, //证件类型
-										"mobileNo": this.confirm_tel, //联系电话
-										"fkBrokerId": localStorage.getItem("BrokerId"), //BrokerId
-										"pkInsureId": pkInsureId, //主键ID
-										"token": localStorage.token,
-										"userId": localStorage.userId
-									}
-									console.log("1111" + JSON.stringify(data))
-									document.getElementById("confirm_id").style.disabled = "true";
-									this.$http.post(this.$store.state.link + '/core/order/addInsureInput', data).then(response => {
-										console.log(response.data);
-										document.getElementById("confirm_id").style.disabled = "false";
-										if(response.data.code == "SYS_S_000") {
-											pkInsureId = response.data.output.pkInsureId;
-											//							shareURL1=response.data.output.h5Url+"?pkInsureId="+response.data.output.pkInsureId+"&beforeOrderStatus="+response.data.output.beforeOrderStatus+"&userId="+localStorage.getItem("userId")+"&token="+localStorage.getItem("token");
-											//	 						this.shareclick();
-											this.$router.push('/custConfirmationdetails?beforeOrderStatus=' + response.data.output.beforeOrderStatus + "&pkInsureId=" + response.data.output.pkInsureId + "&h5Url=" + response.data.output.h5Url)
-											console.log("1111" + shareURL);
-										} else {
-											Toast("保存失败");
-										}
-									}, response => {
-										console.log("ajax error");
-										Toast("网络错误");
-										document.getElementById("confirm_id").style.disabled = "false";
-									});
+						"applicantName": this.name, //真实姓名
+						"certiCode": this.confirm_cardnum, //证件号码
+						"certiType": this.card, //证件类型
+						"mobileNo": this.confirm_tel, //联系电话
+						"fkBrokerId": localStorage.getItem("BrokerId"), //BrokerId
+						"pkInsureId": pkInsureId, //主键ID
+						"token": localStorage.token,
+						"userId": localStorage.userId
+					}
+					console.log("1111" + JSON.stringify(data))
+					document.getElementById("confirm_id").style.disabled = "true";
+					this.$http.post(this.$store.state.link + '/core/order/addInsureInput', data).then(response => {
+						console.log(response.data);
+						document.getElementById("confirm_id").style.disabled = "false";
+						if(response.data.code == "SYS_S_000") {
+							pkInsureId = response.data.output.pkInsureId;
+							//							shareURL1=response.data.output.h5Url+"?pkInsureId="+response.data.output.pkInsureId+"&beforeOrderStatus="+response.data.output.beforeOrderStatus+"&userId="+localStorage.getItem("userId")+"&token="+localStorage.getItem("token");
+							//	 						this.shareclick();
+							this.$router.push('/custConfirmationdetails?beforeOrderStatus=' + response.data.output.beforeOrderStatus + "&pkInsureId=" + response.data.output.pkInsureId + "&h5Url=" + response.data.output.h5Url)
+							console.log("1111" + shareURL);
+						} else {
+							Toast("保存失败");
+						}
+					}, response => {
+						console.log("ajax error");
+						Toast("网络错误");
+						document.getElementById("confirm_id").style.disabled = "false";
+					});
 				}
 				//					this.changeCount();
 
@@ -377,35 +382,29 @@
 	.confirm_all {
 		background: #FFFFFF;
 	}
-	
 	.ctc_div_listitemleft {
 		width: 3.2rem;
 		display: block;
 		float: left;
 		line-height: 0.8rem;
 	}
-	
 	.blur_all {
 		filter: blur(0);
 	}
-	
 	.blur_all1 {
 		filter: blur(0.18rem);
 	}
-	
 	.ctc_div_listitemcen {
 		display: block;
 		float: left;
 		line-height: 0.8rem;
 	}
-	
 	.ctc_div_listitemright {
 		/*width: 3rem;*/
 		display: block;
 		float: right;
 		line-height: 0.8rem;
 	}
-	
 	.ctc_div_listitemall {
 		width: 90%;
 		height: 0.8rem;
@@ -413,11 +412,9 @@
 		background: #F3F3F3;
 		border-bottom: 0.01rem solid #8E8E93;
 	}
-	
 	.confirm_span_must {
 		color: #EB7760;
 	}
-	
 	.ctc_div_list {
 		margin-top: 0.3rem;
 		width: 100%;
@@ -426,7 +423,6 @@
 		border-top: 0.01rem solid #8E8E93;
 		/*background: #669900;*/
 	}
-	
 	.ctc_div_title {
 		width: 100%;
 		margin: 0 auto;
@@ -434,7 +430,6 @@
 		text-align: center;
 		color: #555555;
 	}
-	
 	.ctc_div_mask {
 		position: fixed;
 		top: 0;
@@ -445,7 +440,6 @@
 		background: rgba(0, 0, 0, 0.40);
 		z-index: 100;
 	}
-	
 	.ctc_div_maskitem {
 		width: 100%;
 		height: 7rem;
@@ -457,25 +451,21 @@
 		/*border-radius: 0.16rem;*/
 		padding-top: 0.28rem;
 	}
-	
 	.confirm_text {
 		height: 0.88rem;
 		padding: 0 0.2rem;
 	}
-	
 	.confirm_div {
 		height: 0.88rem;
 		width: 100%;
 		border-bottom: 0.01rem solid;
 		border-bottom-color: #E3E3E3;
 	}
-	
 	.confirm_name {
 		line-height: 0.88rem;
 		font-size: 0.36rem;
 		color: #222222;
 	}
-	
 	.confirm_inp {
 		font-size: 0.28rem;
 		text-align: right;
@@ -488,7 +478,6 @@
 		margin-top: 0.18rem;
 		background: #FFFFFF;
 	}
-	
 	.confirm_add {
 		width: 0.48rem;
 		height: 0.48rem;
@@ -496,7 +485,6 @@
 		float: right;
 		margin-top: 0.2rem;
 	}
-	
 	.confirm_card {
 		font-size: 0.24rem;
 		color: #EB7760;
@@ -512,7 +500,6 @@
 		text-align-last: center;
 		background: #FFFFFF;
 	}
-	
 	.confirm_num {
 		width: 74%;
 		float: right;
@@ -524,7 +511,6 @@
 		color: #888888;
 		background: #FFFFFF;
 	}
-	
 	.confirm_share {
 		font-size: 0.32rem;
 		color: #EB7760;

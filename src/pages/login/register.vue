@@ -36,7 +36,7 @@
     			
     		},
     		handleClickNext(){
-    			var regPhone=/^(13|14|15|17|18)\d{9}$/;
+    			var regPhone=/^(13|14|15|16|17|18)\d{9}$/;
     			if(this.phoneNum==""){
     				MessageBox('','手机号不能为空，请输入您的手机号');
     			}else if(regPhone.test(this.phoneNum)==false){

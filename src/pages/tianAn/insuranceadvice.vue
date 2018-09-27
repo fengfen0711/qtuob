@@ -40,11 +40,11 @@
 				</div>
 				<div class="mask_in">
 					<span class="mask_tou">承保日期</span>
-					<input class="mask_wei" type="date" v-model="td3" />
+					<input class="mask_wei selectimg" type="date" v-model="td3" />
 				</div>
 				<div class="mask_in">
 					<span class="mask_tou">保单状态</span>
-					<select class="mask_wei" v-model="td4">
+					<select class="mask_wei selectimg" v-model="td4">
 						<option value="生效">生效</option>
 						<option value="未生效">未生效</option>
 					</select>
@@ -52,7 +52,7 @@
 				</div>
 				<div class="mask_in">
 					<span class="mask_tou">理赔经历</span>
-					<select class="mask_wei" v-model="td5">
+					<select class="mask_wei selectimg" v-model="td5">
 						<option value="有">有</option>
 						<option value="无">无</option>
 					</select>
@@ -87,15 +87,17 @@
 				td1: "",
 				td2: "",
 				td3: "",
-				td4: "",
-				td5: "",
+				td4: "生效",
+				td5: "无",
 				mery: "",
 				code: false,
 				backData: "",
 				sourceList: "",
 				gender:"",
 				age:"",
-				item:""
+				item:"",
+				table:[],
+				count:0
 			}
 		},
 		beforeCreate() {
@@ -147,14 +149,15 @@
 		},
 		updated() {
 			var item = this.$refs.father;
-			this.item=item;
 			this.backView()
+			this.item=item;
 			var c = document.getElementsByClassName('inputAn')
 			var tab = document.getElementsByTagName('table')[0]
+			var tr=tab.getElementsByTagName('tr')
 			var txta = document.getElementsByTagName('textarea')
 			var selec = document.getElementsByTagName('select')[0]
 			//			txta.setAttribute('style','width: 100%;margin-bottom: .2rem;height:2rem')
-			var spa;
+			var spa,spa1;
 			tab.setAttribute('border', '1')
 			tab.setAttribute('style', 'margin-bottom: .2rem;')
 			var td = tab.getElementsByTagName('td');
@@ -162,7 +165,11 @@
 				if(item[i].getElementsByTagName('table')[0] != undefined) {
 					var para = document.createElement("span");
 					item[i].getElementsByClassName('insurance_hidden')[0].appendChild(para)
+					var par = document.createElement("a");
+					item[i].getElementsByClassName('insurance_hidden')[0].appendChild(par)
 					spa = item[i].getElementsByTagName('span')[0]
+					spa1 = item[i].getElementsByTagName('a')[0]
+//					console.log(item[i].getElementsByTagName('span'))
 				}
 				if(item[i].getAttribute('code') == 100) {
 					item[i].getElementsByTagName('select')[0].setAttribute('style', "width: 2rem;height:.8rem;font-size:.28rem;line-height:.5rem;border:none;")
@@ -181,36 +188,37 @@
 
 				}
 			}
-			spa.innerHTML = "填写"
+			spa.innerHTML = "添加"
+			spa1.innerHTML = "删除"
 			spa.setAttribute('style', 'display:block;text-align:center;width: 1.12rem;height: 0.6rem;border-radius: 0.08rem;background: #54CCC1;color:#fff;line-height: 0.6rem;margin: 0 auto .2rem;')
-
+			spa1.setAttribute('style', 'display:block;text-align:center;width: 1.12rem;height: 0.6rem;border-radius: 0.08rem;background: #54CCC1;color:#fff;line-height: 0.6rem;margin: 0 auto .2rem;')
 			for(var i = 0, j = c.length; i < j; i++) {
 				c[i].setAttribute('style', 'width:.98rem;height:.4rem;border:0;border-radius:0; border-bottom:0.01rem solid #222;text-align:center;"')
 			}
 			for(var i = 0, j = txta.length; i < j; i++) {
+				txta[i].setAttribute('maxlength', '200')
 				txta[i].setAttribute('style', 'width: 100%;margin-bottom: .2rem;height:2rem')
-				txta[i].setAttribute('placeholder', '请输入具体描述')
+				txta[i].setAttribute('placeholder', '请输入具体描述(最多200字)')
 			}
 			for(var i = 0, j = td.length; i < j; i++) {
 				td[i].setAttribute('style', 'width:1.2rem;text-align:center')
 			}
+			
 		},
 		methods: {
 			getList(){
 				var data = {
 				"age": this.age,
-//				"amnt": this.$route.query.userId,
 				"gender":this.gender,
-//				"prem":"",
 				"prodCode": this.$route.query.prodCode
 			}
 			console.log(data)
 			this.$http.post(this.$store.state.link + '/prd/prod/heallist', data)
 				.then(res => {
-//					console.log(res)
 					if(res.data.code == "SYS_S_000") {
 						this.tabs = res.data.output;
 						console.log(this.tabs)
+						this.tabs[6].quesRmk="<table><tr><td>说明对象</td><td>承保公司</td><td>身故保额（万元）</td><td>承保日期</td><td>保单状态</td><td>理赔经历</td></tr><tr><td>请选择</td><td></td><td></td><td></td><td>请选择</td><td></td></tr><tr style='display:none'><td>请选择</td><td></td><td></td><td></td><td>请选择</td><td></td></tr><tr style='display:none'><td>说明对象</td><td>承包公司</td><td>身故保额（万元）</td><td>承包日期</td><td>保单状态</td><td>理赔经历</td></tr><tr style='display:none'><td>请选择</td><td></td><td></td><td></td><td>请选择</td><td></td></tr><tr style='display:none'><td>请选择</td><td></td><td></td><td></td><td>请选择</td><td></td></tr><tr style='display:none'><td>说明对象</td><td>承包公司</td><td>身故保额（万元）</td><td>承包日期</td><td>保单状态</td><td>理赔经历</td></tr><tr style='display:none'><td>请选择</td><td></td><td></td><td></td><td>请选择</td><td></td></tr><tr style='display:none'><td>请选择</td><td></td><td></td><td></td><td>请选择</td><td></td></tr><tr style='display:none'><td>请选择</td><td></td><td></td><td></td><td>请选择</td><td></td></tr></table>"
 					} else {
 						Toast(res.data.desc)						
 					}
@@ -231,15 +239,39 @@
 					"opt": "INSNOT",
 					"pkgNo": this.$route.query.orderNo, //订单号
 				}
-				console.log(JSON.stringify(data))
 				this.$http.post(this.$store.state.link + '/trd/order/v1/queryorder', data)
 					.then(res => {
 						if(res.data.output.insNotResp!=undefined){
 							this.backData = res.data.output.insNotResp
+							if(this.backData[6].noticeAnswer1!=undefined){
+								this.table.push(this.backData[6].noticeAnswer1)
+								this.count=1
+							}
+							if(this.backData[6].noticeAnswer2!=undefined){
+								this.table.push(this.backData[6].noticeAnswer2)
+								this.count=2
+							}
+							if(this.backData[6].noticeAnswer3!=undefined){
+								this.table.push(this.backData[6].noticeAnswer3)
+								this.count=3
+							}
+							if(this.backData[6].noticeAnswer4!=undefined){
+								this.table.push(this.backData[6].noticeAnswer4)
+								this.count=4
+							}
+							if(this.backData[6].noticeAnswer5!=undefined){
+								this.table.push(this.backData[6].noticeAnswer5)
+								this.count=5
+							}
+							if(this.backData[6].noticeAnswer6!=undefined){
+								this.table.push(this.backData[6].noticeAnswer6)
+								this.count=6
+							}
+							if(this.backData[6].noticeAnswer7!=undefined){
+								this.table.push(this.backData[6].noticeAnswer7)
+								this.count=7
+							}
 						}
-						
-						console.log(res.data.output)
-//						console.log("123"+JSON.stringify(this.backData))
 					}, res => {
 						console.log(res.data);
 					})
@@ -248,14 +280,11 @@
 				var arr = [],
 					item = this.$refs.father,
 					list = document.getElementsByClassName('inputAn');
-					console.log(item)
 				for(var i = 0, j = item.length; i < j; i++) {
 					if(item[i].getAttribute('status') == 1) {
 						arr.push(item[i])
 					}
 				}
-//				console.log(arr.length)
-//				console.log("123"+JSON.stringify(this.backData))
 				for(var i = 0, j = this.backData.length; i < j; i++) {
 					if(this.backData[i].noticeAnswer1 != undefined && arr[i].getElementsByClassName('inputAn').length > 0) {
 						console.log(this.backData[i].noticeAnswer1)
@@ -265,7 +294,6 @@
 						arr[i].getElementsByClassName('insurance_no')[0].setAttribute('class', "insurance_no1")
 						arr[i].getElementsByClassName('inputAn')[0].value = this.backData[i].noticeAnswer1
 						if(this.backData[i].noticeAnswer2 != undefined) {
-//							console.log(arr[i].getElementsByTagName('select'))
 							if(arr[i].getElementsByTagName('select').length > 0) {
 								arr[i].getElementsByClassName('sel')[0].value = this.backData[i].noticeAnswer2
 							} else if(arr[i].getElementsByClassName('inputAn').length > 1) {
@@ -299,38 +327,121 @@
 						arr[i].getElementsByClassName('insurance_hidden')[0].style.display = "block"
 						arr[i].getElementsByClassName('insurance_yes')[0].setAttribute('class', "insurance_yes1")
 						arr[i].getElementsByClassName('insurance_no')[0].setAttribute('class', "insurance_no1")
-						arr[i].getElementsByTagName('td')[6].innerHTML = this.backData[i].noticeAnswer1
-						arr[i].getElementsByTagName('td')[7].innerHTML = this.backData[i].noticeAnswer2
-						arr[i].getElementsByTagName('td')[8].innerHTML = this.backData[i].noticeAnswer3
-						arr[i].getElementsByTagName('td')[9].innerHTML = this.backData[i].noticeAnswer4
-						arr[i].getElementsByTagName('td')[10].innerHTML = this.backData[i].noticeAnswer5
-						arr[i].getElementsByTagName('td')[11].innerHTML = this.backData[i].noticeAnswer6
+						if(this.backData[i].noticeAnswer1!= undefined){
+							var arrNew=this.backData[i].noticeAnswer1.split(',')
+							arr[i].getElementsByTagName('td')[6].innerHTML = arrNew[0]
+							arr[i].getElementsByTagName('td')[7].innerHTML = arrNew[1]
+							arr[i].getElementsByTagName('td')[8].innerHTML = arrNew[2]
+							arr[i].getElementsByTagName('td')[9].innerHTML = arrNew[3]
+							arr[i].getElementsByTagName('td')[10].innerHTML =arrNew[4]
+							arr[i].getElementsByTagName('td')[11].innerHTML = arrNew[5]
+							this.count=1
+							arr[i].getElementsByTagName('tr')[1].setAttribute('style','diaplay:;')
+						}
+						if(this.backData[i].noticeAnswer2!= undefined){
+							var arrNew=this.backData[i].noticeAnswer2.split(',')
+							arr[i].getElementsByTagName('td')[12].innerHTML = arrNew[0]
+							arr[i].getElementsByTagName('td')[13].innerHTML = arrNew[1]
+							arr[i].getElementsByTagName('td')[14].innerHTML = arrNew[2]
+							arr[i].getElementsByTagName('td')[15].innerHTML = arrNew[3]
+							arr[i].getElementsByTagName('td')[16].innerHTML = arrNew[4]
+							arr[i].getElementsByTagName('td')[17].innerHTML = arrNew[5]
+							this.count=2
+//							this.table.push(this.backData[i].noticeAnswer2)
+							arr[i].getElementsByTagName('tr')[2].setAttribute('style','display: ;')
+						}
+						if(this.backData[i].noticeAnswer3!= undefined){
+							var arrNew=this.backData[i].noticeAnswer3.split(',')
+							arr[i].getElementsByTagName('td')[18].innerHTML =arrNew[0]
+							arr[i].getElementsByTagName('td')[19].innerHTML = arrNew[1]
+							arr[i].getElementsByTagName('td')[20].innerHTML = arrNew[2]
+							arr[i].getElementsByTagName('td')[21].innerHTML = arrNew[3]
+							arr[i].getElementsByTagName('td')[22].innerHTML = arrNew[4]
+							arr[i].getElementsByTagName('td')[23].innerHTML = arrNew[5]
+							this.count=3
+							arr[i].getElementsByTagName('tr')[3].setAttribute('style','display: ;')
+						}
+						if(this.backData[i].noticeAnswer4!= undefined){
+							var arrNew=this.backData[i].noticeAnswer4.split(',')
+							arr[i].getElementsByTagName('td')[24].innerHTML = arrNew[0]
+							arr[i].getElementsByTagName('td')[25].innerHTML = arrNew[1]
+							arr[i].getElementsByTagName('td')[26].innerHTML = arrNew[2]
+							arr[i].getElementsByTagName('td')[27].innerHTML = arrNew[3]
+							arr[i].getElementsByTagName('td')[28].innerHTML = arrNew[4]
+							arr[i].getElementsByTagName('td')[29].innerHTML = arrNew[5]
+							this.count=4
+							arr[i].getElementsByTagName('tr')[4].setAttribute('style','diaplay:;')
+						}
+						if(this.backData[i].noticeAnswer5!= undefined){
+							var arrNew=this.backData[i].noticeAnswer5.split(',')
+							arr[i].getElementsByTagName('td')[30].innerHTML = arrNew[0]
+							arr[i].getElementsByTagName('td')[31].innerHTML = arrNew[1]
+							arr[i].getElementsByTagName('td')[32].innerHTML = arrNew[2]
+							arr[i].getElementsByTagName('td')[33].innerHTML = arrNew[3]
+							arr[i].getElementsByTagName('td')[34].innerHTML = arrNew[4]
+							arr[i].getElementsByTagName('td')[35].innerHTML = arrNew[5]
+							this.count=5
+							arr[i].getElementsByTagName('tr')[5].setAttribute('style','diaplay:;')
+						}
+						if(this.backData[i].noticeAnswer6!= undefined){
+							var arrNew=this.backData[i].noticeAnswer6.split(',')
+							arr[i].getElementsByTagName('td')[36].innerHTML = arrNew[0]
+							arr[i].getElementsByTagName('td')[37].innerHTML = arrNew[1]
+							arr[i].getElementsByTagName('td')[38].innerHTML = arrNew[2]
+							arr[i].getElementsByTagName('td')[39].innerHTML = arrNew[3]
+							arr[i].getElementsByTagName('td')[40].innerHTML = arrNew[4]
+							arr[i].getElementsByTagName('td')[41].innerHTML = arrNew[5]
+							this.count=6
+							arr[i].getElementsByTagName('tr')[6].setAttribute('style','diaplay:;')
+						}
+						if(this.backData[i].noticeAnswer7!= undefined){
+							var arrNew=this.backData[i].noticeAnswer7.split(',')
+							arr[i].getElementsByTagName('td')[42].innerHTML = arrNew[0]
+							arr[i].getElementsByTagName('td')[43].innerHTML = arrNew[1]
+							arr[i].getElementsByTagName('td')[44].innerHTML = arrNew[2]
+							arr[i].getElementsByTagName('td')[45].innerHTML = arrNew[3]
+							arr[i].getElementsByTagName('td')[46].innerHTML = arrNew[4]
+							arr[i].getElementsByTagName('td')[47].innerHTML = arrNew[5]
+							this.count=7
+							arr[i].getElementsByTagName('tr')[7].setAttribute('style','diaplay:;')
+						}
 					} else if(this.backData[i].noticeAnswer1 != undefined && arr[i].getElementsByTagName('select').length > 0) {
 						arr[i].setAttribute('yn', 1)
 						arr[i].getElementsByClassName('insurance_hidden')[0].style.display = "block"
 						arr[i].getElementsByClassName('insurance_yes')[0].setAttribute('class', "insurance_yes1")
 						arr[i].getElementsByClassName('insurance_no')[0].setAttribute('class', "insurance_no1")
 						arr[i].getElementsByTagName('select')[0].value = this.backData[i].noticeAnswer2
-						//						console.log(arr[i].getElementsByTagName('select')[0].value)
 					}
 				}
 			},
 			hhh(e) {
 				if(e.currentTarget.getElementsByTagName('span')[0] != undefined) {
-					this.mask = true
-					this.$refs.bg.style.position = "fixed"
+					if(e.target.innerHTML=="添加"){
+						if(this.table.length>=7){
+							Toast('投保经历最多录入7条')
+						}else{
+							this.mask = true	
+							this.td1=""
+							this.td2=""
+							this.td3=""
+							this.td4="生效"
+							this.td5="无"
+						}
+					}else if(e.target.innerHTML=="删除"){
+						if(this.table.length>1){
+							var a=this.table.length
+							this.table.pop();
+							document.getElementsByTagName('tr')[a].setAttribute('style','display:none')
+						}
+					}
 				}
 			},
 			back() {
 				window.history.go(-1)
 			},
 			msg(value) {
-				//				console.log(value)
 				if(value != undefined) {
-					//					var subStr = new RegExp('###')
-					//					var subStr1 = new RegExp('#**')
 					return value = value.replace(/###/g, '<input ref="iii" type="text" class="inputAn" style=""/>').replace(/textarea/g, "<textarea></textarea>").replace(/select/g, "<select class='sel'></select>")
-
 				}
 			},
 			drinking() {
@@ -360,16 +471,10 @@
 				console.log(this.$refs.no)
 				this.$refs.no.setAttribute('class','insurance_img')
 				this.$refs.yes.setAttribute('class','insurance_img1')
-//				this.imgtt = false;
-//				this.mm = "2";
-
 			},
 			img_no() {
 				this.$refs.no.setAttribute('class','insurance_img1')
 				this.$refs.yes.setAttribute('class','insurance_img')
-//				this.imgtt = true;
-//				this.mm = "1";
-
 			},
 			next() {
 				var list = document.getElementsByClassName('inputAn'),
@@ -486,18 +591,28 @@
 									Toast('请回答告知书中的问题')
 									return
 								} else {
-									var data = {
-										'noticeAnswer1': "被保人",
-										'noticeAnswer2': td[7].innerHTML,
-										'noticeAnswer3': td[8].innerHTML,
-										'noticeAnswer4': td[9].innerHTML,
-										'noticeAnswer5': td[10].innerHTML,
-										'noticeAnswer6': td[11].innerHTML,
-										"noticeSubject": "1",
-										"optNo": "Y",
-										"quesNo": item[i].getAttribute('code'),
-										"showOrder":item[i].getAttribute('showOrder')
-									}
+									var arr1 = [],
+									arr2 = [];
+
+								var data = {
+									"noticeSubject": "1",
+									"optNo": "Y",
+									"showOrder":item[i].getAttribute('showOrder'),
+									"quesNo": item[i].getAttribute('code')
+								}
+
+								for(var m = 0, n = this.table.length; m < n; m++) {
+									//								object.noticeAnswer+i=domList[m].value
+									var add = m + 1
+									var keys = "noticeAnswer" + add
+									arr1.push(keys)
+									arr2.push(this.table[m])
+								}
+								for(var s = 0, l = arr1.length; s < l; s++) {
+									var key = arr1[s];
+									var val = arr2[s];
+									data[key] = val;
+								}
 
 								}
 							} else {
@@ -525,6 +640,7 @@
 				}
 				//				console.log(mery)
 				if(this.$refs.yes.getAttribute('class') == "insurance_img1") {
+					console.log(this.code)
 					if(this.code) {
 						this.postData1(mery)
 					} else {
@@ -537,15 +653,47 @@
 			},
 			postData(mery) {
 				this.mery = mery
-
-				for(var i = 0, j = this.mery.length; i < j; i++) {
+				for(var i=0,j=this.mery.length;i<j;i++){
 					if(this.mery[i].noticeSubject == 0) {
 						this.mery[i].noticeSubject = 1
-						if(this.mery[i].noticeAnswer1 == "投保人") {
-							this.mery[i].noticeAnswer1 = "被保人"
-						}
 					}
 				}
+				
+						if(this.mery[6].noticeAnswer1!=undefined&&this.mery[6].noticeAnswer1.split(',')[0] == "投保人") {
+							var arr=this.mery[6].noticeAnswer1.split(',')
+							arr[0]="被保险人"
+							this.mery[6].noticeAnswer1=arr.join(',')
+						}
+						if(this.mery[6].noticeAnswer2!=undefined&&this.mery[6].noticeAnswer2.split(',')[0] == "投保人") {
+							var arr=this.mery[6].noticeAnswer2.split(',')
+							arr[0]="被保险人"
+							this.mery[6].noticeAnswer2=arr.join(',')
+						}
+						if(this.mery[6].noticeAnswer3!=undefined&&this.mery[6].noticeAnswer3.split(',')[0] == "投保人") {
+							var arr=this.mery[6].noticeAnswer3.split(',')
+							arr[0]="被保险人"
+							this.mery[6].noticeAnswer3=arr.join(',')
+						}
+						if(this.mery[6].noticeAnswer4!=undefined&&this.mery[6].noticeAnswer4.split(',')[0] == "投保人") {
+							var arr=this.mery[6].noticeAnswer4.split(',')
+							arr[0]="被保险人"
+							this.mery[6].noticeAnswer4=arr.join(',')
+						}
+						if(this.mery[6].noticeAnswer5!=undefined&&this.mery[6].noticeAnswer5.split(',')[0] == "投保人") {
+							var arr=this.mery[6].noticeAnswer5.split(',')
+							arr[0]="被保险人"
+							this.mery[6].noticeAnswer5=arr.join(',')
+						}
+						if(this.mery[6].noticeAnswer6!=undefined&&this.mery[6].noticeAnswer6.split(',')[0] == "投保人") {
+							var arr=this.mery[6].noticeAnswer6.split(',')
+							arr[0]="被保险人"
+							this.mery[6].noticeAnswer6=arr.join(',')
+						}
+						if(this.mery[6].noticeAnswer7!=undefined&&this.mery[6].noticeAnswer7.split(',')[0] == "投保人") {
+							var arr=this.mery[6].noticeAnswer7.split(',')
+							arr[0]="被保险人"
+							this.mery[6].noticeAnswer7=arr.join(',')
+						}
 				var data = {
 					"token": this.$route.query.token,
 					"userId": this.$route.query.userId,
@@ -579,15 +727,46 @@
 			},
 			postData1(mery) {
 				this.mery = mery
-				console.log(this.mery)
-				for(var i = 0, j = this.mery.length; i < j; i++) {
+				for(var i=0,j=this.mery.length;i<j;i++){
 					if(this.mery[i].noticeSubject == 1) {
 						this.mery[i].noticeSubject = 0
-						if(this.mery[i].noticeAnswer1 == "被保人") {
-							this.mery[i].noticeAnswer1 = "投保人"
-						}
 					}
 				}
+						if(this.mery[6].noticeAnswer1!=undefined&&this.mery[6].noticeAnswer1.split(',')[0] == "被保险人") {
+							var arr=this.mery[6].noticeAnswer1.split(',')
+							arr[0]="投保人"
+							this.mery[6].noticeAnswer1=arr.join(',')
+						}
+						if(this.mery[6].noticeAnswer2!=undefined&&this.mery[6].noticeAnswer2.split(',')[0] == "被保险人") {
+							var arr=this.mery[6].noticeAnswer2.split(',')
+							arr[0]="投保人"
+							this.mery[6].noticeAnswer2=arr.join(',')
+						}
+						if(this.mery[6].noticeAnswer3!=undefined&&this.mery[6].noticeAnswer3.split(',')[0] == "被保险人") {
+							var arr=this.mery[6].noticeAnswer3.split(',')
+							arr[0]="投保人"
+							this.mery[6].noticeAnswer3=arr.join(',')
+						}
+						if(this.mery[6].noticeAnswer4!=undefined&&this.mery[6].noticeAnswer4.split(',')[0] == "被保险人") {
+							var arr=this.mery[6].noticeAnswer4.split(',')
+							arr[0]="投保人"
+							this.mery[6].noticeAnswer4=arr.join(',')
+						}
+						if(this.mery[6].noticeAnswer5!=undefined&&this.mery[6].noticeAnswer5.split(',')[0] == "被保险人") {
+							var arr=this.mery[6].noticeAnswer5.split(',')
+							arr[0]="投保人"
+							this.mery[6].noticeAnswer5=arr.join(',')
+						}
+						if(this.mery[6].noticeAnswer6!=undefined&&this.mery[6].noticeAnswer6.split(',')[0] == "被保险人") {
+							var arr=this.mery[6].noticeAnswer6.split(',')
+							arr[0]="投保人"
+							this.mery[6].noticeAnswer6=arr.join(',')
+						}
+						if(this.mery[6].noticeAnswer7!=undefined&&this.mery[6].noticeAnswer7.split(',')[0] == "被保险人") {
+							var arr=this.mery[6].noticeAnswer7.split(',')
+							arr[0]="投保人"
+							this.mery[6].noticeAnswer7=arr.join(',')
+						}
 				var data = {
 					"token": this.$route.query.token,
 					"userId": this.$route.query.userId,
@@ -627,15 +806,19 @@
 				} else if(a == 2) {
 					if(this.td1 != "" && this.td2 != "" && this.td3 != "" && this.td4 != "" && this.td5 != "") {
 						this.mask = false
-						var td = document.getElementsByTagName('td')
-						console.log(td)
+						var tr = document.getElementsByTagName('tr')
+						tr[this.count+1].setAttribute('style','display: ;')
+						var td=tr[this.count+1].getElementsByTagName('td')
 						this.$refs.bg.style.position = "absolute"
-						td[6].innerHTML = "被保人"
-						td[7].innerHTML = this.td1
-						td[8].innerHTML = this.td2
-						td[9].innerHTML = this.td3
-						td[10].innerHTML = this.td4
-						td[11].innerHTML = this.td5
+						var data="被保险人,"+this.td1+","+this.td2+","+this.td3+","+this.td4+","+this.td5
+						td[0].innerHTML = "被保险人"
+						td[1].innerHTML = this.td1
+						td[2].innerHTML = this.td2
+						td[3].innerHTML = this.td3
+						td[4].innerHTML = this.td4
+						td[5].innerHTML = this.td5
+						this.table.push(data)
+						this.count++
 					} else {
 						Toast('请完善投保信息')
 					}
@@ -649,6 +832,9 @@
 			},
 			tabs: function(value) {
 				this.tabs = value
+			},
+			table:function(value) {
+				this.table = value
 			}
 		}
 
@@ -931,6 +1117,9 @@
 		width: 3.5rem;
 		height: 1rem;
 		border: none;
+		appearance:none;
+		 -moz-appearance:none;
+		 -webkit-appearance:none;
 	}
 	
 	.btn_left {
@@ -965,5 +1154,10 @@
 		position: absolute;
 		opacity: 0.5;
     	background: #222;
+	}
+	.selectimg{
+		background: url(/static/upDown.png) no-repeat right center;
+		background-size: 0.4rem 0.45rem;
+		outline: none;
 	}
 </style>

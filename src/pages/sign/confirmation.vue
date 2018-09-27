@@ -500,6 +500,7 @@
 				this.imgPreview(this.picValue, code);
 			},
 			imgPreview(file, code) {
+				
 				let self = this;
 				let Orientation;
 				//去获取拍照时的信息，解决拍出来的照片旋转问题  
@@ -516,24 +517,29 @@
 					reader.readAsDataURL(file);
 					// 读取成功后的回调  
 					reader.onloadend = function() {
-						let result = this.result;
-						let img = new Image();
+						console.log(this)
+						let result = this.result;						
+						let img = new Image();						
 						img.src = result;
 						//判断图片是否大于100K,是就直接上传，反之压缩图片  
 						if(this.result.length <= (100 * 1024)) {
 							if(code == 1) {
 								self.img = this.result;
+	
 							} else if(code == 2) {
 								self.img1 = this.result
 							}
 
 							self.postImg(this.result, code);
 						} else {
+						
 							Indicator.close()
 							img.onload = function() {
+								
 								let data = self.compress(img, Orientation);
 								if(code == 1) {
 									self.img = data;
+									
 								} else if(code == 2) {
 									self.img1 = data
 								}
@@ -544,8 +550,10 @@
 				}
 			},
 			postImg(data, code) {
+				
 				//这里写接口  
 				var a = data.split(";")[0].split("/")[1];
+				
 				if(code == 1) {
 					var base64Info = {
 						"fileType": a,
@@ -573,6 +581,7 @@
 							if(code == 1) {
 
 								this.code = res.data.output[0].fileSerialNo
+								console.log(this.code)
 								this.ocr(this.code);
 
 							} else if(code == 2) {

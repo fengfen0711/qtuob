@@ -16,7 +16,7 @@
     	},
     	methods:{
     		handleClickProducts(){
-    			this.$router.push('/produch')
+    			this.$router.push('/product')
 			}
     	}
    }
@@ -36,9 +36,6 @@
 	input, button {
 		outline: none;
 	}
-	input {
-		font-weight: 100;
-	}
 	input::-ms-clear {
 		display: none;
 		width: 0;
@@ -49,11 +46,9 @@
 	}
 	textarea::-webkit-input-placeholder, input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	.clearFloat:after {
 		height: 0;

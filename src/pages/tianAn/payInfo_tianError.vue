@@ -13,11 +13,11 @@
 			<div class="div_titleName">
 				<span class="pt_span_riskName">{{riskName}}</span>
 				<div class="pt_div_item">
-					<span class="pt_span_itemleft">保障期间</span>
+					<span class="pt_span_itemleft">保险期间</span>
 					<span class="pt_span_itemright">{{guarantee}}</span>
 				</div>
 				<div class="pt_div_item1">
-					<span class="pt_span_itemleft">保障额度</span>
+					<span class="pt_span_itemleft">基本保险金额</span>
 					<span class="pt_span_itemright">{{quota}}</span>
 				</div>
 			</div>
@@ -97,7 +97,7 @@
 				<img src="/static/selected.png" class="sImg left" v-show="!sBoxShow" />
 				<span class="sDes">我已阅读<span>《保险费自动转账授权声明》</span>。</span>
 			</p>
-			<p v-if="hui" class="warnP warnP1">1.银行账号的账户所有人为投保人，且开户银行以及账户信息真是可靠；</p>
+			<p v-if="hui" class="warnP warnP1">1.银行账号的账户所有人为投保人，且开户银行以及账户信息真实可靠；</p>
 			<p v-if="hui" class="warnP warnP2">2.投保人授权天安人寿保险股份有限公司委托投保人开户银行从上述银行账户按照保险和其他约定的方式、金额划款期、续期保险费。</p>
 			<p v-if="hui" class="btnBox clearFloat" :class="{btnBox1:btnBoxShow}">
 				<span class="btn btn1 left" @click="handleClickUp">上一步</span>
@@ -179,7 +179,6 @@
 				});
 				// 看支持不支持FileReader  
 				if(!file || !window.FileReader) return;
-
 				if(/^image/.test(file.type)) {
 					// 创建一个reader  
 					let reader = new FileReader();
@@ -203,6 +202,121 @@
 							}
 						}
 					}
+				}
+			},
+			compress(img, Orientation) {
+				let canvas = document.createElement("canvas");
+				let ctx = canvas.getContext('2d');
+				//瓦片canvas  
+				let tCanvas = document.createElement("canvas");
+				let tctx = tCanvas.getContext("2d");
+				let initSize = img.src.length;
+				let width = img.width;
+				let height = img.height;
+				//如果图片大于四百万像素，计算压缩比并将大小压至400万以下  
+				let ratio;
+				if((ratio = width * height / 4000000) > 1) {
+					console.log("大于400万像素")
+					ratio = Math.sqrt(ratio);
+					width /= ratio;
+					height /= ratio;
+				} else {
+					ratio = 1;
+				}
+				canvas.width = width;
+				canvas.height = height;
+				//        铺底色  
+				ctx.fillStyle = "#fff";
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+				//如果图片像素大于100万则使用瓦片绘制  
+				let count;
+				if((count = width * height / 1000000) > 1) {
+					console.log("超过100W像素");
+					count = ~~(Math.sqrt(count) + 1); //计算要分成多少块瓦片  
+					//            计算每块瓦片的宽和高  
+					let nw = ~~(width / count);
+					let nh = ~~(height / count);
+					tCanvas.width = nw;
+					tCanvas.height = nh;
+					for(let i = 0; i < count; i++) {
+						for(let j = 0; j < count; j++) {
+							tctx.drawImage(img, i * nw * ratio, j * nh * ratio, nw * ratio, nh * ratio, 0, 0, nw, nh);
+							ctx.drawImage(tCanvas, i * nw, j * nh, nw, nh);
+						}
+					}
+				} else {
+					ctx.drawImage(img, 0, 0, width, height);
+				}
+				//修复ios上传图片的时候 被旋转的问题  
+				if(Orientation != "" && Orientation != 1) {
+					switch(Orientation) {
+						case 6: //需要顺时针（向左）90度旋转  
+							this.rotateImg(img, 'left', canvas);
+							break;
+						case 8: //需要逆时针（向右）90度旋转  
+							this.rotateImg(img, 'right', canvas);
+							break;
+						case 3: //需要180度旋转  
+							this.rotateImg(img, 'right', canvas); //转两次  
+							this.rotateImg(img, 'right', canvas);
+							break;
+					}
+				}
+				//进行最小压缩  
+				let ndata = canvas.toDataURL('image/jpeg', 0.1);
+				//				    alert('压缩前：' + initSize);  
+				//				    alert('压缩后：' + ndata.length);  
+				//				    alert('压缩率：' + ~~(100 * (initSize - ndata.length) / initSize) + "%");  
+				tCanvas.width = tCanvas.height = canvas.width = canvas.height = 0;
+				return ndata;
+			},
+			rotateImg(img, direction, canvas) {
+				//最小与最大旋转方向，图片旋转4次后回到原方向      
+				const min_step = 0;
+				const max_step = 3;
+				if(img == null) return;
+				//img的高度和宽度不能在img元素隐藏后获取，否则会出错      
+				let height = img.height;
+				let width = img.width;
+				let step = 2;
+				if(step == null) {
+					step = min_step;
+				}
+				if(direction == 'right') {
+					step++;
+					//旋转到原位置，即超过最大值      
+					step > max_step && (step = min_step);
+				} else {
+					step--;
+					step < min_step && (step = max_step);
+				}
+				//旋转角度以弧度值为参数      
+				let degree = step * 90 * Math.PI / 180;
+				let ctx = canvas.getContext('2d');
+				switch(step) {
+					case 0:
+						canvas.width = width;
+						canvas.height = height;
+						ctx.drawImage(img, 0, 0);
+						break;
+					case 1:
+						canvas.width = height;
+						canvas.height = width;
+						ctx.rotate(degree);
+						ctx.drawImage(img, 0, -height);
+						break;
+					case 2:
+						canvas.width = width;
+						canvas.height = height;
+						ctx.rotate(degree);
+						ctx.drawImage(img, -width, -height);
+						break;
+					case 3:
+						canvas.width = height;
+						canvas.height = width;
+						ctx.rotate(degree);
+						ctx.drawImage(img, -width, 0);
+						break;
 				}
 			},
 			postImg(data, code) {
@@ -251,9 +365,7 @@
 									Indicator.close();
 									console.log("===" + JSON.stringify(res.data))
 									var dataCode = res.data.code;
-									if(dataCode == "SYS_S_000") {
-
-									} else {
+									if(dataCode == "SYS_S_000") {} else {
 										this.c = "/static/img/banka.png";
 										this.c1 = "";
 										Toast(res.data.desc);
@@ -608,54 +720,54 @@
 								console.log(res.data);
 							})
 					} else {
-						this.$router.push('/bankCardEnter?prodCode=' + this.$route.query.prodCode + "&bankCode=" + this.bankNumber.replace(/\s/g, "") + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
+						var paymentReqData = {
+											"mark": "1",
+											"accName": this.bankName, //银行账户姓名
+											"accNo": this.bankNumber.replace(/\s/g, ""), //银行账户
+											"bankCode": this.bankCode, //银行代码
+											"bankName": bankCodeName, //银行名称
+											//						"cardType": "string", //卡折类型 : 0-借记卡;1-存折 
+											"cityCode": this.cityType, //开户行所在市代码 
+											"cityName": this.cityName, //开户行所在市 
+											"payMode": "4", //支付方式 9-网银电汇转账 J-网络支付 
+											"payPrem": this.allData.mainResp.initialPremamt, //支付金额 
+											"payType": payType, //支付标识 : 1-实时;2-线下 
+											//						"policyDeliveryFee": 0, //快递费
+											"provinceCode": this.provinceType, //开户行所在省代码 
+											"provinceName": this.provinceName //开户行所在省
+										}
+										var data = {
+											"token": this.$route.query.token,
+											"userId": this.$route.query.userId,
+											"mark": "CALC",
+											"head": {
+												"channelCode": "qtb_h5",
+												"deptCode": this.$route.query.cmpCode,
+												"oprCode": this.$route.query.userId,
+												"prodCode": this.$route.query.prodCode
+											},
+											"opt": "PAY",
+											"pkgNo": this.$route.query.orderNo, //订单号
+											"paymentReq": paymentReqData,
+											"upPay":"1"
+										}
+										Indicator.open();
+										console.log("请求报文=====" + JSON.stringify(data))
+										this.$http.post(this.$store.state.link + '/trd/order/v1/saveorder', data)
+											.then(res => {
+												Indicator.close();
+												console.log("响应数据=====" + JSON.stringify(res.data))
+												if(res.data.code == "SYS_S_000") {
+													this.$router.push('/bankCardEnter?prodCode=' + this.$route.query.prodCode + "&bankCode=" + this.bankNumber.replace(/\s/g, "") + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
+												};
+											}, res => {
+												Indicator.close();
+												console.log(res.data);
+											})
+						
 					}
-					//					if(this.allData.paymentResp.accNo == this.bankNumber.replace(/\s/g, "")) { //直接支付
-					//					} else { //d
-					//					}
-					//					var paymentReqData = {
-					//						"mark": "1",
-					//						"accName": this.bankName, //银行账户姓名
-					//						"accNo": this.bankNumber.replace(/\s/g, ""), //银行账户
-					//						"bankCode": this.bankCode, //银行代码
-					//						"bankName": bankCodeName, //银行名称
-					//						//						"cardType": "string", //卡折类型 : 0-借记卡;1-存折 
-					//						"cityCode": this.cityType, //开户行所在市代码 
-					//						"cityName": this.cityName, //开户行所在市 
-					//						"payMode": "4", //支付方式 9-网银电汇转账 J-网络支付 
-					//						"payPrem": this.allData.mainResp.initialPremamt, //支付金额 
-					//						"payType": payType, //支付标识 : 1-实时;2-线下 
-					//						//						"policyDeliveryFee": 0, //快递费
-					//						"provinceCode": this.provinceType, //开户行所在省代码 
-					//						"provinceName": this.provinceName //开户行所在省
-					//					}
-					//					var data = {
-					//						"token": this.$route.query.token,
-					//						"userId": this.$route.query.userId,
-					//						"mark": "CALC",
-					//						"head": {
-					//							"channelCode": "qtb_h5",
-					//							"deptCode": this.$route.query.cmpCode,
-					//							"oprCode": this.$route.query.userId,
-					//							"prodCode": this.$route.query.prodCode
-					//						},
-					//						"opt": "PAY",
-					//						"pkgNo": this.$route.query.orderNo, //订单号
-					//						"paymentReq": paymentReqData
-					//					}
-					//					Indicator.open();
-					//					console.log("请求报文=====" + JSON.stringify(data))
-					//					this.$http.post(this.$store.state.link + '/trd/order/v1/saveorder', data)
-					//						.then(res => {
-					//							Indicator.close();
-					//							console.log("响应数据=====" + JSON.stringify(res.data))
-					//							if(res.data.code == "SYS_S_000") {
-					//								this.$router.push('/taInsureNine?prodCode=' + this.$route.query.prodCode + "&orderNo=" + this.$route.query.orderNo + "&cmpCode=" + this.$route.query.cmpCode + "&userId=" + this.$route.query.userId + "&prodNo=" + this.$route.query.prodNo + "&token=" + this.$route.query.token)
-					//							};
-					//						}, res => {
-					//							Indicator.close();
-					//							console.log(res.data);
-					//						})
+										
+										
 
 					//					this.$router.push('/taInsureNine')
 				}
@@ -687,10 +799,6 @@
 		outline: none;
 	}
 	
-	input {
-		font-weight: 100;
-	}
-	
 	input::-ms-clear {
 		display: none;
 		width: 0;
@@ -704,12 +812,10 @@
 	textarea::-webkit-input-placeholder,
 	input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	.ctc_div_labtitle1 {
@@ -976,7 +1082,7 @@
 	}
 	
 	.pt_span_select {
-		color: #666666;
+		color: #333333;
 		font-size: 0.28rem;
 		line-height: 0.84rem;
 	}
@@ -1120,13 +1226,13 @@
 	.inputText {
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.inputText2 {
 		height: 0.88rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		width: 4.5rem;
 	}
 	
@@ -1198,7 +1304,7 @@
 	
 	.inputText1 {
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 	}
 	
 	.pro {

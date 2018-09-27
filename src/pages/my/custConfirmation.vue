@@ -69,7 +69,9 @@
 			}
 		},
 		created() {
-
+			if (this.$route.query.token != undefined) {
+				window.localStorage.token = this.$route.query.token
+			}
 			if(this.$route.query.custId == "" || this.$route.query.custId == undefined || this.$route.query.custId == null) {
 				console.log("=======1")
 				this.init();
@@ -353,7 +355,7 @@
 	.ctc_div_introduce {
 		width: 7.3rem;
 		padding-left: 0.2rem;
-		color: #666666;
+		color: #333333;
 		font-size: 0.26rem;
 		line-height: 0.4rem;
 		margin-top: 0.16rem;
@@ -457,7 +459,7 @@
 	
 	.ctc_div_null {
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		margin-top: 0.34rem;
 		text-align: center;
 	}

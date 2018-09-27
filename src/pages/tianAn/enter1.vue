@@ -36,7 +36,7 @@
 					<img v-if="sign" class="signPhoto" :code="code" :src="signPhoto" alt="" /> 点击签字
 				</div>
 				<div class="context">
-					本人确认上述信息的真是、准确和完整，且当这些信息发生变更时，将在30日内通知贵机构，否则本人承担由此造成的不利后果。
+					签名即表示本人已详细阅读并同意上述所有集成了电子签名的单证内容
 				</div>
 				<p class="inputGrop clearFloat">
 					<input type="tel" class="inputText left" v-model="validata" placeholder="短信验证码" />
@@ -44,7 +44,7 @@
 					<span class="inputLabel right" v-show="!show" @click="handleGetCode">{{count}}s后重发</span>
 				</p>
 				<p class="pushBox">
-					<span @click="Additional_risk" class="pushBtn">提交</span>
+					<span @click="smsverification" class="pushBtn">提交</span>
 				</p>
 				<!--<div class="btn">
 				<div class="last" @click="back">上一步</div>
@@ -74,7 +74,7 @@
 	import { Indicator } from 'mint-ui';
 	import Pdf from '@/components/pdf.vue'
 	export default {
-		name: "Code",
+		name: "enter1",
 		data() {
 			return {
 				mark_flag: false,
@@ -220,6 +220,7 @@
 				console.log(data)
 				this.$http.post(this.$store.state.link + '/sms/sendsmscode', data).then(response => {
 					if(response.data.code == "SYS_S_000") {
+						console.log(response.data)
 						this.smsvalidata=response.data.output
 						const TIME_COUNT = 60;
 						if(!this.timer) {
@@ -238,13 +239,40 @@
 							}, 1000)
 						}
 					}
-					console.log(response.data)
+//					console.log(response.data)
 				}, response => {
 					console.log("ajax error");
 				});
 			}
 			},
-
+			smsverification(){
+				if(this.ispdf == false) {
+					Toast("请先预览合同");
+				} else if(this.code == "") {
+					Toast("请先签字");
+				}
+				var data={
+					  "code": this.validata,
+					  "exSystem": "QTBApp",
+					  "mobile": this.$route.query.phonenum
+				}
+				Indicator.open();
+				this.$http.post(this.$store.state.link + "/sms/validatesmscode", data)
+						.then(res => {
+							Indicator.close();
+							console.log(res.data)
+						
+							var dataCode = res.data.code;
+							if(dataCode == "SYS_S_000") {
+								this.Additional_risk();
+							}else{
+								Toast(res.data.desc);
+							}
+						}, res => {
+							Indicator.close();
+							console.log(res.data);
+						})
+			},
 			Additional_risk() {
 				
 				if(this.ispdf == false) {
@@ -253,8 +281,6 @@
 					Toast("请先签字");
 				} else if(this.validata == "") {
 					Toast("请先输入短信验证码");
-				}else if(this.validata!=this.smsvalidata){
-					Toast("请输入正确短信验证码");
 				}
 				else {
 					
@@ -268,7 +294,10 @@
 						"userId": this.$store.state.userId,
 						"token": this.$store.state.token,
 						"pkgNo": this.$route.query.pkgNo,
-						"plcyNo": this.$route.query.policyno
+						"plcyNo": this.$route.query.policyno,
+						 "code": this.validata,
+					  	"exSystem": "QTBApp",
+					  	"mobile": this.$route.query.phonenum
 						
 					}
 					console.log(receiptdata);
@@ -320,6 +349,7 @@
 				console.log(obj);
 				this.startX = obj.x;
 				this.startY = obj.y;
+				this.canvasTxt.lineWidth = 5;
 				this.canvasTxt.beginPath();
 				this.canvasTxt.moveTo(this.startX, this.startY);
 				this.canvasTxt.lineTo(obj.x, obj.y);
@@ -340,6 +370,7 @@
 				};
 				this.startX = obj.x;
 				this.startY = obj.y;
+				this.canvasTxt.lineWidth = 5;
 				this.canvasTxt.beginPath();
 				this.canvasTxt.moveTo(this.startX, this.startY);
 				this.canvasTxt.lineTo(obj.x, obj.y);
@@ -359,6 +390,7 @@
 				};
 				this.moveY = obj.y;
 				this.moveX = obj.x;
+				this.canvasTxt.lineWidth = 5;
 				this.canvasTxt.beginPath();
 				this.canvasTxt.moveTo(this.startX, this.startY);
 				this.canvasTxt.lineTo(obj.x, obj.y);
@@ -380,6 +412,7 @@
 				};
 				this.moveY = obj.y;
 				this.moveX = obj.x;
+				this.canvasTxt.lineWidth = 5;
 				this.canvasTxt.beginPath();
 				this.canvasTxt.moveTo(this.startX, this.startY);
 				this.canvasTxt.lineTo(obj.x, obj.y);
@@ -399,6 +432,7 @@
 					x: ev.offsetX,
 					y: ev.offsetY
 				};
+				this.canvasTxt.lineWidth = 5;
 				this.canvasTxt.beginPath();
 				this.canvasTxt.moveTo(this.startX, this.startY);
 				this.canvasTxt.lineTo(obj.x, obj.y);
@@ -422,6 +456,7 @@
 					x: ev.targetTouches[0].clientX,
 					y: ev.targetTouches[0].clientY - 40
 				};
+				this.canvasTxt.lineWidth = 5;
 				this.canvasTxt.beginPath();
 				this.canvasTxt.moveTo(this.startX, this.startY);
 				this.canvasTxt.lineTo(obj.x, obj.y);
@@ -584,9 +619,9 @@
 	}
 	
 	.inputText {
-		height: 0.88rem;
+		height: 0.87rem;
 		font-size: 0.28rem;
-		color: #666666;
+		color: #333333;
 		background: #F3F3F3;
 		border: none;
 		margin-left: 0.5rem;

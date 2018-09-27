@@ -18,7 +18,7 @@
 		</p>
 		
 		
-		<p class="describe">密码必须6~12位字符，且同时包含字母和数字。</p>
+		<p class="describe">密码必须6~20位字符，且同时包含字母和数字。</p>
 		<div class="btn" @click="handleClickNext">
 			完成
 		</div>
@@ -27,6 +27,8 @@
 
 <script>
 	import { Toast } from 'mint-ui';
+	import { Indicator } from 'mint-ui';
+	import { MessageBox } from 'mint-ui';
 	export default {
     	name: "Login",
     	data () {
@@ -39,7 +41,7 @@
     	},
     	methods:{
     		handleClickNext(){
-    			var reg=/^[a-zA-Z0-9]{6,12}$/
+    			var reg=/^[a-zA-Z0-9]{6,20}$/
     			if(this.oldpd==""){
     				Toast("旧密码不能为空");
     			}else if(this.newpd==""){
@@ -62,17 +64,55 @@
 	    			).then(response => {
 						console.log(response.data)
 						if(response.data.code=="SYS_S_000"){
-							this.$router.push('/logNew?phoneNum='+this.phoneNum)
+							MessageBox.confirm('',{
+							  	title: '提示',
+							  	message: '密码修改成功',
+							  	confirmButtonText: '确定',  
+							  	showCancelButton: false
+							}).then(action => {
+								window.localStorage.removeItem("userId");
+								if (this.$store.state.brokerInfo && this.$store.state.brokerInfo.brokerId) {
+									window.localStorage.removeItem("BrokerId");
+								}
+								this.$store.dispatch("changeToken", '')
+								this.$store.dispatch("changeUserId", '')
+								this.$store.dispatch("changeUserInfoData", {})
+								this.$store.dispatch("changeBrokerInfoData", {})
+								this.getToken();
+								this.$router.push('/pasLog?phoneNum='+this.phoneNum)
+							})
 						}else{
 							Toast(response.data.desc);
+							console.log(response.data.desc);
 						}
 			        },response => {
 			        	console.log("ajax error");
 			      	});
     			}
     			
+    		},
+			getToken(){
+    			var sceneInfo = {
+					"sceneCode": "s001"
+				}
+	  			this.$http.post(this.$store.state.link + '/sso/v2/applytoken', sceneInfo)
+				.then(res =>{
+					Indicator.close()
+				    console.log(res.data);
+					var dataCode = res.data.code;
+					if (dataCode == "SYS_S_000") {
+						window.localStorage.token = res.data.output.token;
+						this.$store.dispatch("changeToken", res.data.output.token);
+						this.$store.dispatch("changeLoginId", res.data.output.userType);
+					}else{
+						Toast(res.data.desc);
+						console.log(res.data.desc)
+					}
+				},res =>{
+					Indicator.close()
+					console.log(res.data);
+				})
     		}
-			  
     	}
    }
 </script>
@@ -84,9 +124,6 @@
 	}
 	input, button {
 		outline: none;
-	}
-	input {
-		font-weight: 100;
 	}
 	input::-ms-clear {
 		display: none;

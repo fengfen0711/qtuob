@@ -6,8 +6,25 @@ Vue.use(Vuex);
 export default new Vuex.Store({
 	state: {
 //		"link5": 'http://192.168.171.12:9002',
+//		"link": 'http://192.168.171.16:9002', //UAT
+//		'link2': 'http://192.168.171.16:9019',
+//		'link3': 'http://192.168.171.16:10009',
+//		"wx_share": "http://test.outer.qtoubao.cn/wx/wxShare",
+//		'imgUrl': 'http://192.168.171.16:9900/group1/M00/00/15/wKirC1rho1iAN5lqAACnKMbZhdk730.png',
+//		'MDimgUrl': 'http://192.168.171.16:9900/group1/M00/00/29/rBUADVthhTeAZsWSAAAlbKuBRh8684.png',
+//		'echoImgUrl': 'http://192.168.171.16:9900/',
+//		"shareLink": "http://test.outer.qtoubao.cn",
+//		"shareLink1": "http://test.outer.qtoubao.cn",
+		
+
+//		"link7": 'http://192.168.171.12:9005',
+//		"link6": 'http://192.168.171.12:9009',
+//		"link5": 'http://192.168.171.16:9002',
+//		//"link5": 'http://192.144.139.88:9002',
 //		"link": 'http://192.144.139.88:9002', //UAT
 //		'link2': 'http://192.144.139.88:9019',
+//		'link3': 'http://192.144.139.88:10009',
+//		"link4": 'http://192.144.139.88:9010',
 //		"wx_share": "http://outer.qtoubao.cn/wx/wxShare",
 //		'imgUrl': 'http://192.144.139.88:9900/group1/M00/00/15/wKirC1rho1iAN5lqAACnKMbZhdk730.png',
 //		'MDimgUrl': 'http://192.144.139.88:9900/group1/M00/00/29/rBUADVthhTeAZsWSAAAlbKuBRh8684.png',
@@ -17,6 +34,7 @@ export default new Vuex.Store({
 
 						"link":'http://140.143.32.49:9002',//生产
 						'link2':'http://h5.qtoubao.cn:9019',//上传图片
+						"link4": 'http://140.143.32.49:9010',
 						"wx_share":	'http://mp.qtoubao.cn/wx/wxShare',
 						'imgUrl': 'http://h5.qtoubao.cn:9900/group1/M00/00/5C/rBUQCFtQHCiAMN3IAABo_GXPjgk101.jpg',
 						'MDimgUrl': 'http://h5.qtoubao.cn:9900/group1/M00/00/73/rBUQCFthhb-AWoQ5AAAlbKuBRh8107.png',
@@ -29,6 +47,7 @@ export default new Vuex.Store({
 		'brokerInfo':'',
 		'userInfo':'',
 		'loginId': '0',
+		'serchInfo':'',
 		"insrntReqInfo": "", //上海人寿
 		"invitecode": "", //邀请码
 		"sign": "", //代理人上岗签字数据
@@ -100,7 +119,7 @@ export default new Vuex.Store({
 			"PREP": "PREP", //可支付  
 			"PAY_OUT": "PAY_OUT", //支付超时  
 			"AUS": "AUS", //该订单已核保成功或进入人工核保中  
-			"HUS": "HUS", //人核预审  
+			"HUS": "HUS", //人核预审 
 			"CAL_ACCEPT": "CAL_ACCEPT", //退保受理  
 			"CAL_FAL": "CAL_FAL", //退保失败
 			"ISSP": "ISSP", //承保已提交
@@ -112,6 +131,9 @@ export default new Vuex.Store({
 	mutations: {
 		changeLoginId: function(state, payload) {
 			state.loginId = payload;
+		},
+		changeSerchInfo: function(state, payload) {
+			state.serchInfo = payload;
 		},
 		changeToken: function(state, payload) {
 			state.token = payload;
@@ -168,6 +190,11 @@ export default new Vuex.Store({
 			commit
 		}, payload) {
 			commit("changeLoginId", payload)
+		},
+		changeSerchInfo({
+			commit
+		}, payload) {
+			commit("changeSerchInfo", payload)
 		},
 		changeToken({
 			commit

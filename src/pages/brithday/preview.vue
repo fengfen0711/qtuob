@@ -40,6 +40,9 @@
 			}
 		},
 		created() {
+			if (this.$route.query.token != undefined) {
+				window.localStorage.token = this.$route.query.token
+			}
 			var data = {
 				"userId": this.$route.query.userId,
 				"token": this.$route.query.token

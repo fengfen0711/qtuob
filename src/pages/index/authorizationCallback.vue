@@ -15,7 +15,7 @@
 			}
 		},
 		created() {
-			this.$router.push('/login')
+			this.$router.push('/reglog')
 //			var code = this.getUrlParms("code")
 //			console.log(code);
 //			var wxUrl = "http://outer.qtoubao.cn/wx/getOAuth2UserInfo";

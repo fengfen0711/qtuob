@@ -63,10 +63,11 @@
 				tabs: []
 			}
 		},
-		created() {
+		created() {			
 			this.select_title('1');
 		},
 		methods: {
+			
 			allorders() {
 				var data = {
 					"head": {
@@ -76,12 +77,13 @@
 					"userId": this.$store.state.userId,
 					"token": this.$store.state.token,
 					"orderStatus": ""
-				}
+				}			
+				
+			
 				//				console.log(JSON.stringify(data));
-				//					Indicator.open();
+									Indicator.open();
 				this.$http.post(this.$store.state.link + '/trd/order/v1/listorder', data).then(response => {
-									//this.$http.post(this.$store.state.link5 + '/trd/order/v1/listorder', data).then(response => {
-					//					console.log(JSON.stringify(response.data));
+									console.log(JSON.stringify(response.data));
 					Indicator.close();
 					if(response.data.code == "SYS_S_000") {
 
@@ -201,7 +203,7 @@
 					"orderStatus": "08"
 				};
 				Indicator.open();
-				this.$http.post(this.$store.state.link + "/trd/order/v1/listorder", data).then(response => {
+				this.$http.post(this.$store.state.link+ "/trd/order/v1/listorder", data).then(response => {
 					console.log(response.data);
 					Indicator.close();
 					if(response.data.code == "SYS_S_000") {
@@ -467,10 +469,6 @@
 		outline: none;
 	}
 	
-	input {
-		font-weight: 100;
-	}
-	
 	input::-ms-clear {
 		display: none;
 		width: 0;
@@ -484,12 +482,10 @@
 	textarea::-webkit-input-placeholder,
 	input::-webkit-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	input:-ms-input-placeholder {
 		color: #B2B2B2;
-		font-weight: 100;
 	}
 	
 	.clearFloat:after {

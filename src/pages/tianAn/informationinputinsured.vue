@@ -1,11 +1,11 @@
 <template>
 	<div class="information_all">
-		<div class="information_text">
-			<label class="information_label">被保人个税声明</label>
-			<select class="information_select" v-model="identityType" @change="getIdentity">
+		<div class="information_text clearFloat">
+			<label class="information_label left">被保险人个税声明</label>
+			<select class="information_select left" v-model="identityType" @change="getIdentity">
 				<option value="1">仅为中国税收居民</option>
-				<option value="2">仅为非居民</option>
-				<option value="3">既是中国税收居民又是其他国家(地区)税收居民</option>
+				<!--<option value="2">仅为非居民</option>
+				<option value="3">既是中国税收居民又是其他国家(地区)税收居民</option>-->
 			</select>
 			<img src="/static/img/upDown.png" class="information_img" />
 		</div>
@@ -160,7 +160,14 @@
 	.left {
 		float: left;
 	}
-	
+	.clearFloat:after {
+		height: 0;
+		display: block;
+		overflow: hidden;
+		visibility: hidden;
+		clear: both;
+		content: "";
+	}
 	.startopacity {
 		display: block;
 		height: 0.88rem;
@@ -232,17 +239,17 @@
 		margin-left: 0.4rem;
 		font-size: 0.28rem;
 		color: #555555;
-		width: 1.12rem;
+		width: 2.28rem;
 	}
 	
 	.information_select {
 		width: 4.2rem;
-		height: 0.52rem;
+		height: 0.88rem;
 		font-size: 0.28rem;
-		line-height: 0.5rem;
-		margin-left: 0.76rem;
+		line-height: 0.9rem;
+		margin-left: 0.6rem;
 		background: #FFFFFF;
-		color: #666666;
+		color: #333333;
 		border: none;
 	}
 	
@@ -332,9 +339,9 @@
 	}
 	
 	.information_bottom_fixed {
-		position: fixed;
-		bottom: 0.56rem;
-		left: 0.48rem;
+		margin-top: 1rem;
+		margin-left: 0.48rem;
+		margin-bottom: 0.56rem;
 	}
 	
 	.information_bottom_next {
